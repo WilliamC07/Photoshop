@@ -1,6 +1,4 @@
-package src.main.java;
-
-import src.main.java.viewController.ApplicationStart;
+import viewController.ApplicationStart;
 
 /**
  * True starting point of the program. This should only have one method, the main method. This class cannot extend 
@@ -9,7 +7,7 @@ import src.main.java.viewController.ApplicationStart;
  * 
  * Related link: http://mail.openjdk.java.net/pipermail/openjfx-dev/2018-June/021977.html
  * 
- * @see src.main.java.viewController.ApplicationStart
+ * @see viewController.ApplicationStart
  * @author William Cao
  * @since 1.0
  */

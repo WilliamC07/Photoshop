@@ -88,7 +88,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>src/main/java/Main</mainClass>
+          <mainClass>Main</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -96,7 +96,7 @@
       <configuration>
         <archive>
           <manifest>
-            <mainClass>src/main/java/Main</mainClass>
+            <mainClass>Main</mainClass>
           </manifest>
         </archive>
         <descriptorRefs>
