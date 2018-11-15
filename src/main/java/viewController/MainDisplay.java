@@ -20,5 +20,5 @@ import javafx.scene.control.SplitPane;
  * @since 1.0
  */
 final class MainDisplay extends SplitPane{
-
+  WHbox hbox;
 }
