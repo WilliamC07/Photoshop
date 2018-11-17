@@ -33,3 +33,7 @@ out/
 
 #Scripts
 .sh
+
+#images
+.jpg
+.png
