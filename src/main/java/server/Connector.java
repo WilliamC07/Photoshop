@@ -66,7 +66,7 @@ class Connector extends Thread{
                             break;
                         case END:
                             fileReceived = new File("copy.png");
-                            fileReceiver.setFile(inputStream, fileReceived);
+                            fileReceiver.setFile(fileReceived);
                             ActionType actionType = ActionType.get(inputStream.readInt());
                             actionHandler.handle(fileReceived, actionType);
                             break;
