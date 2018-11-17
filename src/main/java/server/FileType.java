@@ -1,5 +1,9 @@
 package server;
 
+/**
+ * This tells what type of File is being sent.
+ * You are safe to add more objects to this enum without side effects.
+ */
 public enum FileType {
     /**
      * Value of 0
