@@ -30,3 +30,6 @@ buildNumber.properties
 .idea
 out/
 *.iml
+
+#Scripts
+.sh
