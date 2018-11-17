@@ -1,57 +1,50 @@
-//package server;
+package server;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.File;
 import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.ArrayList;
 
-// TODO: Fix up whatever mess this is
-public class Server {
+/**
+ * Only one user should have this instance running when sharing a file with collaborators.
+ */
+public class Server implements ActionHandler{
+    private ArrayList<Connector> connectors = new ArrayList<>();
+
     /**
-     * Temporary
+     * Constructs a server to deal with the sharing of a file with multiple collaborators.
+     */
+    public Server(){
+        int targetPort = 49153; // TODO: replace with 0, leave it for testing purposes
+        // TODO: Make into another thread to allow multiple connections through the same port
+        try(ServerSocket serverSocket = new ServerSocket(targetPort)){
+            Connector connector = new Connector(serverSocket.accept(), this);
+            connector.start();
+            connectors.add(connector);
+        }catch(IOException e){
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }
+
+    /**
+     * Handles the file sent through given the file and action type
+     * Must be synchronized since multiple threads are accessing this
+     *
+     * @see server.ActionType
+     * @param file File to be received
+     * @param actionType What action to be performed
+     */
+    @Override public synchronized void handle(File file, ActionType actionType) {
+
+    }
+
+    /**
+     * Temporary TODO: Remove
      * Use this method for testing features.
      * @param args Command line argument
      */
     public static void main(String[] args) {
-        int port = 49153; // This should later be changed to 0 the port is guaranteed to be free
-
-        FileHandle fileHandle = null;
-        FileType fileType = null;
-
-        try(ServerSocket serverSocket = new ServerSocket(port);
-            Socket socket = serverSocket.accept();
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream())
-        ){
-            while(true){
-                // Make sure there is something to read
-                if(dataInputStream.available() <= 0){
-                    continue;
-                }
-                int chunkID = dataInputStream.readInt();
-                System.out.println("CHUNKID: " + chunkID);
-                ChunkType chunkType = ChunkType.get(chunkID);
-                switch(chunkType){
-                    case START:
-                        fileType = FileType.get(dataInputStream.readInt());
-                        // TODO: Checksum, for now just read off the data
-                        dataInputStream.readInt();
-                        fileHandle = new FileHandle(dataInputStream.readInt());
-                        break;
-                    case DATA:
-                        fileHandle.build(dataInputStream);
-                        break;
-                    case END:
-                        File file = fileHandle.get("copy.jpg");
-                        fileHandle = null;
-                        fileType = null;
-                        break;
-                }
-                try{
-                    Thread.sleep(100);
-                }catch(InterruptedException e){}
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-            System.exit(0);
-        }
+        new Server();
     }
 }
