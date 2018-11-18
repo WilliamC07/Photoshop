@@ -29,7 +29,7 @@ final class Sender {
         this.actionType = actionType;
 
         int fileSize = (int) file.length();
-        this.chunksAmount = (int) Math.ceil((double) fileSize / 100_000);
+        this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE);
     }
 
     public Sender(ActionType actionType){
@@ -85,12 +85,11 @@ final class Sender {
     private void sendData(DataOutputStream stream, File file) throws IOException{
         FileInputStream fileInputStream = new FileInputStream(file);
         int fileSize = (int) file.length();
-        int amountOfChunks = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE);
-        int lastChunkSize = fileSize - (amountOfChunks - 1) * MAX_DATA_SIZE;
+        int lastChunkSize = fileSize - (chunksAmount - 1) * MAX_DATA_SIZE;
 
-        for(int i = 0; i < amountOfChunks; i++){
+        for(int i = 0; i < chunksAmount; i++){
             // Last chunk has a different sizes for all files
-            boolean isLastChunk = i == amountOfChunks - 1;
+            boolean isLastChunk = i == chunksAmount - 1;
             // File must be converted into a byte array to be sent by a stream
             byte[] byteRepresentation = new byte[isLastChunk ? lastChunkSize : MAX_DATA_SIZE];
             fileInputStream.read(byteRepresentation);
