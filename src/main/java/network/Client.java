@@ -27,21 +27,18 @@ public class Client implements ActionHandler{
         }catch (IOException e){
             e.printStackTrace();
         }
+        /*
+        TODO: Remove testing
+        File file = new File("network/4k.png");
+        System.out.println("go" + file.length());
+        sendFile(new Sender(file, FileType.IMAGE, ActionType.SEND_LATEST_CHANGES));*/
     }
 
     void sendFile(Sender sender){
-        // Testing purposes TODO: Remove
-        sender = new Sender(new File("4k.png"), FileType.IMAGE, ActionType.SEND_LATEST_CHANGES);
-
         connector.sendFile(sender);
     }
 
     @Override public void handle(File file, ActionType actionType) {
 
-    }
-
-    // Testing purposes TODO: remove
-    public static void main(String[] args) {
-        new Client("", 1);
     }
 }
