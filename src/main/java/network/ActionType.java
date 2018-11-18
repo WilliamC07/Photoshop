@@ -4,9 +4,73 @@ package network;
  * What action to perform on the receiving end of a socket.
  */
 public enum ActionType {
-    // TODO: replace these placeholders with useful ones
-    SEND_LATEST_CHANGES,
-    UPDATE_TO_LATEST_CHANGES;
+    /**
+     * Server to client
+     * Tells the client to update their instructions to the one received.
+     */
+    UPDATE_TO_LATEST_INSTRUCTION,
+
+    /**
+     * Server to client
+     * Tells the client to use the latest checkpoint image.
+     */
+    UPDATE_TO_LATEST_CHECKPOINT,
+
+
+    /**
+     * Client to server or server to client
+     * Tells the receiving end that the connection is closed and the sender will terminate the connection
+     */
+    QUIT_CONNECTION,
+
+    /**
+     * Client to server or server to client
+     * Tells the receiving end to send the information it most recently sent to the server.
+     */
+    RESEND,
+
+
+    /**
+     * Host client to server.
+     * This should be called when a user wants to share the image with others. The user should send the original image.
+     * This should be sent before {@link #SHARE_INITIALIZE_INSTRUCTIONS}.
+     */
+    SHARE_INITIALIZE_IMAGE,
+
+    /**
+     * Host client to server.
+     * This should be called when a user wants to share the image with others. The user should send the XML file with
+     * all the instructions done already.
+     * This should be sent after {@link #SHARE_INITIALIZE_IMAGE}
+     */
+    SHARE_INITIALIZE_INSTRUCTIONS,
+
+    /**
+     * Client to server
+     * Tells the server to accept the changes done by the client.
+     */
+    PUSH_INSTRUCTION,
+
+    /**
+     * Client to server
+     * Gets the original image (the very first image used in the project)
+     */
+    SEND_ORIGINAL_IMAGE,
+    /**
+     * Client to server
+     * Gets the most recent checkpoint image.
+     */
+    SEND_LATEST_CHECKPOINT_IMAGE,
+    /**
+     * Client to server
+     * Gets all the instruction done on the original image
+     */
+    SEND_ALL_INSTRUCTIONS,
+    /**
+     * Client to server
+     * Gets the instruction done on the latest checkpoint image
+     */
+    SEND_LATEST_INSTRUCTION;
 
     /**
      * Give values to the enum values (index position)
