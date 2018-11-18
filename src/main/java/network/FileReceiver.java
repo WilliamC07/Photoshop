@@ -1,4 +1,4 @@
-package server;
+package network;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Builds a file given a stream that sends data in chunks. The is formatted through FileSender.
  *
- * @see server.FileSender
+ * @see network.FileSender
  */
 public class FileReceiver {
     private final int MAX_CHUNK_SIZE = FileSender.MAX_DATA_SIZE;

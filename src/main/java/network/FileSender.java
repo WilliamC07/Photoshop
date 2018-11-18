@@ -1,4 +1,4 @@
-package server;
+package network;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -35,7 +35,7 @@ final class FileSender {
      * This method is only used for the Connector class. If you are not calling if from the Connector class, there
      * is not reason to use this.
      *
-     * @see server.Connector
+     * @see network.Connector
      * @param outputStream
      * @throws IOException
      */

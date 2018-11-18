@@ -1,22 +1,22 @@
-package server;
+package network;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Everyone connected to a server should have an instance of this class. This is used to communicate with the server,
+ * Everyone connected to a network should have an instance of this class. This is used to communicate with the network,
  * which is hosted by the same program or a different computer.
  *
- * @see server.Server
+ * @see network.Server
  */
 public class Client implements ActionHandler{
     private Connector connector;
 
     /**
-     * Constructs a Client to communicate with a server
-     * @param targetHost IP address of the server
-     * @param targetPort Port of the server
+     * Constructs a Client to communicate with a network
+     * @param targetHost IP address of the network
+     * @param targetPort Port of the network
      */
     public Client(String targetHost, int targetPort){
         targetHost = "127.0.0.1"; // For testing purposes. TODO: Remove

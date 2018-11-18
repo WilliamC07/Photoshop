@@ -1,4 +1,4 @@
-package server;
+package network;
 
 import java.io.IOException;
 import java.io.File;
@@ -12,7 +12,7 @@ public class Server implements ActionHandler{
     private ArrayList<Connector> connectors = new ArrayList<>();
 
     /**
-     * Constructs a server to deal with the sharing of a file with multiple collaborators.
+     * Constructs a network to deal with the sharing of a file with multiple collaborators.
      */
     public Server(){
         int targetPort = 49153; // TODO: replace with 0, leave it for testing purposes
@@ -31,7 +31,7 @@ public class Server implements ActionHandler{
      * Handles the file sent through given the file and action type
      * Must be synchronized since multiple threads are accessing this
      *
-     * @see server.ActionType
+     * @see network.ActionType
      * @param file File to be received
      * @param actionType What action to be performed
      */

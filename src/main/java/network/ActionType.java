@@ -1,4 +1,4 @@
-package server;
+package network;
 
 /**
  * What action to perform on the receiving end of a socket.

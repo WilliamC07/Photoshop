@@ -1,4 +1,4 @@
-package server;
+package network;
 
 /**
  * This tells what type of File is being sent.

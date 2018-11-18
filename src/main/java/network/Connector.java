@@ -1,4 +1,4 @@
-package server;
+package network;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
  * This is used to deal with the information coming in through the stream from a socket. The class that uses this
  * needs implement ActionHandler. Information received through the socket will be passed onto the ActionHandler.
  *
- * @see server.ActionHandler
+ * @see network.ActionHandler
  */
 class Connector extends Thread{
     private File fileReceived;

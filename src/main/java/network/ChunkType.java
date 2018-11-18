@@ -1,4 +1,4 @@
-package server;
+package network;
 
 /**
  * Enum to identify what type of data is being sent.
