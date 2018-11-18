@@ -54,6 +54,10 @@ public class Receiver {
      * @throws IOException Exception from the stream
      */
     void setFile(File file) throws IOException{
+        // No file received, don't do anything
+        if(byteRepresentation == null){
+            return;
+        }
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         for(int i = 0; i < byteRepresentation.length; i++){
             fileOutputStream.write(byteRepresentation[i]);

@@ -10,5 +10,12 @@ import java.io.File;
  * @see network.ActionType
  */
 interface ActionHandler {
-    void handle(File file, ActionType actionType);
+    /**
+     * Handles the instruction given by the sender
+     *
+     * @param file File received (can be null)
+     * @param actionType Action to be perform
+     * @throws Exception If actionType is not for the receiving end
+     */
+    void handle(File file, ActionType actionType) throws Exception;
 }
