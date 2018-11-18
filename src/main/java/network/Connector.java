@@ -53,7 +53,6 @@ class Connector extends Thread{
                 if(inputStream.available() > 0){
                     // Build file
                     int chunkNum = inputStream.readInt();
-                    System.out.println(chunkNum);
                     ChunkType chunkIdentifier = ChunkType.get(chunkNum); // First int is always identifier
                     switch(chunkIdentifier){
                         case START:
@@ -65,9 +64,11 @@ class Connector extends Thread{
                             receiver.build(inputStream);
                             break;
                         case END:
-                            File fileReceived = new File("copy.png");
-                            receiver.setFile(fileReceived);
+                            FileType fileType = FileType.get(inputStream.readInt());
                             ActionType actionType = ActionType.get(inputStream.readInt());
+
+                            File fileReceived = new File("network/copy.png");
+                            receiver.setFile(fileReceived);
                             actionHandler.handle(fileReceived, actionType);
                             receiver = null;  // Garbage collect
                             break;
