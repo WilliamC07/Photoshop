@@ -14,10 +14,8 @@ import java.net.UnknownHostException;
  * @see network.ActionHandler
  */
 class Connector extends Thread{
-    private File fileReceived;
     private final Socket socket;
-    private FileSender fileSender;
-    private FileReceiver fileReceiver;
+    private Sender sender;
     private final ActionHandler actionHandler;
 
     /**
@@ -32,10 +30,10 @@ class Connector extends Thread{
 
     /**
      * Send a file through the stream.
-     * @param fileSender Information to be sent
+     * @param sender Information to be sent
      */
-    void sendFile(FileSender fileSender){
-        this.fileSender = fileSender;
+    void sendFile(Sender sender){
+        this.sender = sender;
     }
 
     /**
@@ -44,6 +42,8 @@ class Connector extends Thread{
      * There is no reason to call this method. Call {@link #start()} instead.
      */
     @Override public void run() {
+        Receiver receiver = null;
+
         try(DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
 
@@ -59,16 +59,17 @@ class Connector extends Thread{
                         case START:
                             int chunkSize = inputStream.readInt();
                             int fileSize = inputStream.readInt();
-                            fileReceiver = new FileReceiver(chunkSize, fileSize);
+                            receiver = new Receiver(chunkSize, fileSize);
                             break;
                         case DATA:
-                            fileReceiver.build(inputStream);
+                            receiver.build(inputStream);
                             break;
                         case END:
-                            fileReceived = new File("copy.png");
-                            fileReceiver.setFile(fileReceived);
+                            File fileReceived = new File("copy.png");
+                            receiver.setFile(fileReceived);
                             ActionType actionType = ActionType.get(inputStream.readInt());
                             actionHandler.handle(fileReceived, actionType);
+                            receiver = null;  // Garbage collect
                             break;
                     }
                 }else{
@@ -76,9 +77,9 @@ class Connector extends Thread{
                 }
 
                 // Send any information
-                if(fileSender != null){
-                    fileSender.send(outStream);
-                    fileSender = null; // All data spent, nothing to do now
+                if(sender != null){
+                    sender.send(outStream);
+                    sender = null; // All data spent, nothing to do now
                 }
             }
         }catch(UnknownHostException e){

@@ -58,8 +58,5 @@ public class Receiver {
         for(int i = 0; i < byteRepresentation.length; i++){
             fileOutputStream.write(byteRepresentation[i]);
         }
-
-        // Don't need it anymore, can be garbage collected
-        byteRepresentation = null;
     }
 }
