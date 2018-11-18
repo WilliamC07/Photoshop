@@ -3,19 +3,21 @@ package network;
 import java.io.File;
 
 /**
- * All classes that uses Connector must implement this class.
- * This class forces you to deal with the received file and instruction (ActionType)
+ * Deal with the information sent.
  *
  * @see network.Connector
  * @see network.ActionType
  */
+@FunctionalInterface
 interface ActionHandler {
     /**
-     * Handles the instruction given by the sender
-     *
-     * @param file File received (can be null)
-     * @param actionType Action to be perform
-     * @throws Exception If actionType is not for the receiving end
+     * Handles the file sent through given the file, file type, action type, and connector
+     * 
+     * @param file file received
+     * @param fileType file type received
+     * @param actionType action type received.
+     * @param connector Connector that delivered the information
+     * @throws IllegalArgumentException Wrong instruction sent
      */
-    void handle(File file, ActionType actionType) throws Exception;
+    void handle(File file, FileType fileType, ActionType actionType, Connector connector) throws IllegalArgumentException;
 }
