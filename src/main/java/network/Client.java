@@ -10,7 +10,7 @@ import java.net.Socket;
  *
  * @see network.Server
  */
-public class Client implements ActionHandler{
+public class Client{
     private Connector connector;
 
     /**
@@ -22,7 +22,7 @@ public class Client implements ActionHandler{
         targetHost = "127.0.0.1"; // For testing purposes. TODO: Remove
         targetPort = 49153; // For testing purpises TODO: Remove
         try{
-            connector = new Connector(new Socket(targetHost, targetPort), this);
+            connector = new Connector(new Socket(targetHost, targetPort), this::handle);
             connector.start();
         }catch (IOException e){
             e.printStackTrace();
@@ -31,14 +31,26 @@ public class Client implements ActionHandler{
         TODO: Remove testing
         File file = new File("network/4k.png");
         System.out.println("go" + file.length());
-        sendFile(new Sender(file, FileType.IMAGE, ActionType.SEND_LATEST_CHANGES));*/
+        sendFile(new Sender(file, FileType.IMAGE, ActionType.SEND_LATEST_CHANGES));
+        */
+        sendFile(new Sender(ActionType.SEND_ORIGINAL_IMAGE));
     }
 
     void sendFile(Sender sender){
         connector.sendFile(sender);
     }
 
-    @Override public void handle(File file, ActionType actionType) {
+    /**
+     *
+     * @param file File received
+     * @param fileType File type received
+     * @param actionType Action type received
+     * @param connector Connector that delivered the information
+     * @throws IllegalArgumentException Wrong instruction sent
+     */
+    private void handle(File file, FileType fileType, ActionType actionType, Connector connector) throws IllegalArgumentException{
+        switch(actionType){
 
+        }
     }
 }

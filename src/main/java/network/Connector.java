@@ -69,7 +69,7 @@ class Connector extends Thread{
 
                             File fileReceived = new File("network/copy.png");
                             receiver.setFile(fileReceived);
-                            actionHandler.handle(fileReceived, actionType);
+                            actionHandler.handle(fileReceived, fileType, actionType, this);
                             receiver = null;  // Garbage collect
                             break;
                     }
