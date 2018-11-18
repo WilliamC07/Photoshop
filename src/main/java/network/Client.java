@@ -27,13 +27,9 @@ public class Client{
         }catch (IOException e){
             e.printStackTrace();
         }
-        /*
-        TODO: Remove testing
-        File file = new File("network/4k.png");
-        System.out.println("go" + file.length());
-        sendFile(new Sender(file, FileType.IMAGE, ActionType.SEND_LATEST_CHANGES));
-        */
-        sendFile(new Sender(ActionType.SEND_ORIGINAL_IMAGE));
+        //TODO: Remove testing
+        File file = new File("network/4k.png"); // Rename 4k.png to what file you are sending (must be a .png)
+        sendFile(new Sender(file, FileType.IMAGE, ActionType.SEND_LATEST_CHANGES)); // Ignore ActionType since it isn't completed yet
     }
 
     void sendFile(Sender sender){
