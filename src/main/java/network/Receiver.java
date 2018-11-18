@@ -6,12 +6,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Builds a file given a stream that sends data in chunks. The is formatted through FileSender.
+ * Receives information send by Sender. Gets the File sent (if any) and tells the receiving end to perform the action
+ * described by ActionType.
  *
- * @see network.FileSender
+ * @see Sender
+ * @see ActionType
  */
-public class FileReceiver {
-    private final int MAX_CHUNK_SIZE = FileSender.MAX_DATA_SIZE;
+public class Receiver {
+    private final int MAX_CHUNK_SIZE = Sender.MAX_DATA_SIZE;
     private int readBytes = 0;
     private byte[][] byteRepresentation;
 
@@ -20,17 +22,23 @@ public class FileReceiver {
      * @param chunksAmount Amount of chunks expected to be sent
      * @param fileSize Final size of File expected to be created
      */
-    FileReceiver(int chunksAmount, int fileSize){
-        // Allocated space in the array to store the content of future incoming DATA chunks
-        byteRepresentation = new byte[chunksAmount][];
-        int remainder = fileSize - (chunksAmount - 1) * 100_000;
-        for(int i = 0; i < chunksAmount; i++){
-            byteRepresentation[i] = new byte[i == chunksAmount - 1 ? remainder : 100_000];
+    Receiver(int chunksAmount, int fileSize){
+        // We are receiving instructions only
+        if(chunksAmount == 0){
+            byteRepresentation = null;
+        }else{
+            // Allocated space in the array to store the content of future incoming DATA chunks
+            byteRepresentation = new byte[chunksAmount][];
+            int remainder = fileSize - (chunksAmount - 1) * MAX_CHUNK_SIZE;
+            for(int i = 0; i < chunksAmount; i++){
+                byteRepresentation[i] = new byte[i == chunksAmount - 1 ? remainder : MAX_CHUNK_SIZE];
+            }
         }
     }
 
     /**
-     * Build the file up given a stream that contains only part of the File to be made
+     * Build the file up given a stream that contains only part of the File to be made.
+     * If no file is sent, this function should never be called (this is guaranteed by the Sender class)
      * @param stream Stream with the data chunk.
      * @throws IOException Exception from the stream
      */
@@ -43,7 +51,7 @@ public class FileReceiver {
      * Creates the file given all the data received from {@link #build(DataInputStream)}.
      *
      * @param file File to create (does not create a new instance, it modifies the existing one)
-     * @throws IOException
+     * @throws IOException Exception from the stream
      */
     void setFile(File file) throws IOException{
         FileOutputStream fileOutputStream = new FileOutputStream(file);
