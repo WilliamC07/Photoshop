@@ -29,11 +29,11 @@ public class Client implements ActionHandler{
         }
     }
 
-    void sendFile(FileSender fileSender){
+    void sendFile(Sender sender){
         // Testing purposes TODO: Remove
-        fileSender = new FileSender(new File("4k.png"), FileType.IMAGE, ActionType.SEND_LATEST_CHANGES);
+        sender = new Sender(new File("4k.png"), FileType.IMAGE, ActionType.SEND_LATEST_CHANGES);
 
-        connector.sendFile(fileSender);
+        connector.sendFile(sender);
     }
 
     @Override public void handle(File file, ActionType actionType) {
