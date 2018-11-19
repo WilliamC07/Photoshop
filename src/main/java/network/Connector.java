@@ -61,6 +61,7 @@ class Connector extends Thread{
                             receiver = new Receiver(chunkSize, fileSize);
                             break;
                         case DATA:
+                            // This *should* never be null, since the first chunk always initializes an object
                             receiver.build(inputStream);
                             break;
                         case END:
@@ -68,6 +69,7 @@ class Connector extends Thread{
                             ActionType actionType = ActionType.get(inputStream.readInt());
 
                             File fileReceived = new File("network/copy.png");
+                            // This *should* never be null, since the first chunk always initializes an object
                             receiver.setFile(fileReceived);
                             actionHandler.handle(fileReceived, fileType, actionType, this);
                             receiver = null;  // Garbage collect
