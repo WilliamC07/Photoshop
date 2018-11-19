@@ -14,7 +14,8 @@ import java.io.IOException;
  */
 public class Receiver {
     private final int MAX_CHUNK_SIZE = Sender.MAX_DATA_SIZE;
-    private int readBytes = 0;
+    private int expectedReadBytes;
+    private int readBytes;
     private byte[][] byteRepresentation;
 
     /**
@@ -27,6 +28,8 @@ public class Receiver {
         if(chunksAmount == 0){
             byteRepresentation = null;
         }else{
+            expectedReadBytes = fileSize;
+
             // Allocated space in the array to store the content of future incoming DATA chunks
             byteRepresentation = new byte[chunksAmount][];
             int remainder = fileSize - (chunksAmount - 1) * MAX_CHUNK_SIZE;
@@ -53,11 +56,18 @@ public class Receiver {
      * @param file File to create (does not create a new instance, it modifies the existing one)
      * @throws IOException Exception from the stream
      */
-    void setFile(File file) throws IOException{
+    void setFile(File file) throws IOException, NetworkException{
         // No file received, don't do anything
         if(byteRepresentation == null){
             return;
         }
+
+        // TODO: Temporary checksum, will improve on later
+        if(readBytes != expectedReadBytes){
+            throw new NetworkException(
+                    String.format("Read bytes(%d) doesn't match expected read(%d)", readBytes, expectedReadBytes));
+        }
+
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         for(int i = 0; i < byteRepresentation.length; i++){
             fileOutputStream.write(byteRepresentation[i]);

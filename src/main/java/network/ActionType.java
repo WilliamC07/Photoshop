@@ -29,6 +29,12 @@ public enum ActionType {
      */
     RESEND,
 
+    /**
+     * Special case where Connector tells the host to request data again (Connector to client or Connector to server)
+     * @see Connector
+     */
+    RESOLVE_FAILED_FILE_TRANSFER,
+
 
     /**
      * Host client to server.

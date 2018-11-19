@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * This is used to deal with the information coming in through the stream from a socket. The class that uses this
@@ -43,54 +42,60 @@ class Connector extends Thread{
      */
     @Override public void run() {
         Receiver receiver = null;
-
-        try(DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
-            DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
+        try (DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+             DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
 
             socket.setSoTimeout(0); // The socket will NEVER timeout, connection is forever (TODO: good idea?)
-            while(true){
-                // Listen for data first
-                if(inputStream.available() > 0){
-                    // Build file
-                    int chunkNum = inputStream.readInt();
-                    ChunkType chunkIdentifier = ChunkType.get(chunkNum); // First int is always identifier
-                    switch(chunkIdentifier){
-                        case START:
-                            int chunkSize = inputStream.readInt();
-                            int fileSize = inputStream.readInt();
-                            receiver = new Receiver(chunkSize, fileSize);
-                            break;
-                        case DATA:
-                            // This *should* never be null, since the first chunk always initializes an object
-                            receiver.build(inputStream);
-                            break;
-                        case END:
-                            FileType fileType = FileType.get(inputStream.readInt());
-                            ActionType actionType = ActionType.get(inputStream.readInt());
+            while (true) {
+                try{
+                    // Listen for data first
+                    if (inputStream.available() > 0) {
+                        // Build file
+                        int chunkNum = inputStream.readInt();
+                        ChunkType chunkIdentifier = ChunkType.get(chunkNum); // First int is always identifier
+                        switch (chunkIdentifier) {
+                            case START:
+                                int chunkSize = inputStream.readInt();
+                                int fileSize = inputStream.readInt();
+                                receiver = new Receiver(chunkSize, fileSize);
+                                break;
+                            case DATA:
+                                // This *should* never be null, since the first chunk always initializes an object
+                                receiver.build(inputStream);
+                                break;
+                            case END:
+                                FileType fileType = FileType.get(inputStream.readInt());
+                                ActionType actionType = ActionType.get(inputStream.readInt());
 
-                            File fileReceived = new File("network/copy.png");
-                            // This *should* never be null, since the first chunk always initializes an object
-                            receiver.setFile(fileReceived);
-                            actionHandler.handle(fileReceived, fileType, actionType, this);
-                            receiver = null;  // Garbage collect
-                            break;
+                                File fileReceived = new File("network/copy.png");
+                                // This *should* never be null, since the first chunk always initializes an object
+                                receiver.setFile(fileReceived);
+                                actionHandler.handle(fileReceived, fileType, actionType, this);
+                                receiver = null;  // Garbage collect
+                                break;
+                            // Don't need default because if the byte is read wrong, error is thrown from ChunkType
+                        }
+                    } else {
+                        Thread.sleep(1000); // Nothing to do, pause
                     }
-                }else{
-                    Thread.sleep(1000); // Nothing to do, pause
-                }
 
-                // Send any information
-                if(sender != null){
-                    sender.send(outStream);
-                    sender = null; // All data spent, nothing to do now
+                    // Send any information
+                    if (sender != null) {
+                        sender.send(outStream);
+                        sender = null; // All data spent, nothing to do now
+                    }
+                }catch(IOException e){
+                    // Exception from reading data from the stream
+                }catch(NetworkException e){
+                    actionHandler.handle(null, null, ActionType.RESOLVE_FAILED_FILE_TRANSFER, this);
+                    // Error in building the file
+                }catch(InterruptedException e){
+                    // Thread was stopped
                 }
             }
-        }catch(UnknownHostException e){
-            // Deal with if the connect cannot be made (ip address doesn't exist)
+        // TODO: Catching IOException is too vague
         }catch(IOException e){
-            // Deal with if the reading/writing of data cannot be made
-        }catch(InterruptedException e){
-            // Cannot send information
+            // Exception from reading data from stream or socket
         }
     }
 
