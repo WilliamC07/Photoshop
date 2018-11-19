@@ -26,8 +26,24 @@ public enum ActionType {
     /**
      * Client to server or server to client
      * Tells the receiving end to send the information it most recently sent to the server.
+     * Works with {@link #SUCCESSFUL_TRANSACTION} and {@link #FAILURE}. One of these will be sent.
      */
     RESEND,
+
+    /**
+     * Client to server or server to client
+     * Tells the sender that the file transfer was successful and the receiver is ready to take in another file.
+     * Works with {@link #RESEND} and {@link #FAILURE}. One of these will be sent.
+     */
+    SUCCESSFUL_TRANSACTION,
+
+    /**
+     * Client to server or server to client
+     * Tells the receiving end that it took too many attempts to send the file again and it will not be sending it
+     * again. The response from the receiving should deal with it and send {@link #SUCCESSFUL_TRANSACTION}.
+     * Works with {@link #RESEND} and {@link #SUCCESSFUL_TRANSACTION}.
+     */
+    FAILURE,
 
     /**
      * Special case where Connector tells the host to request data again (Connector to client or Connector to server)

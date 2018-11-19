@@ -69,7 +69,12 @@ class Connector extends Thread{
 
                                 File fileReceived = new File("network/copy.png");
                                 // This *should* never be null, since the first chunk always initializes an object
+                                // Throws an error if there are any issues (bad checksum/file...)
                                 receiver.setFile(fileReceived);
+
+                                // Inform the sender that the message was successfully received
+                                new Sender(null, FileType.NONE, ActionType.SUCCESSFUL_TRANSACTION);
+
                                 actionHandler.handle(fileReceived, fileType, actionType, this);
                                 receiver = null;  // Garbage collect
                                 break;
