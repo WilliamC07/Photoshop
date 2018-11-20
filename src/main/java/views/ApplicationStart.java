@@ -1,4 +1,4 @@
-package viewController;
+package views;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

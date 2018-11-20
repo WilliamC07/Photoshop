@@ -1,4 +1,4 @@
-package viewController;
+package views;
 
 import javafx.scene.control.SplitPane;
 

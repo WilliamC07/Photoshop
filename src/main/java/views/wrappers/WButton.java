@@ -1,4 +1,4 @@
-package viewController.wrappers;
+package views.wrappers;
 
 import javafx.scene.control.Button;
 
