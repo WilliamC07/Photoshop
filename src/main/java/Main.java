@@ -1,13 +1,13 @@
-import viewController.ApplicationStart;
+import views.ApplicationStart;
 
 /**
  * True starting point of the program. This should only have one method, the main method. This class cannot extend 
  * javafx.application.Application because JavaFX is run with dependencies. Its only purpose is to call 
- * src.main.java.viewController.ApplicationStart.
+ * src.main.java.views.ApplicationStart.
  * 
  * Related link: http://mail.openjdk.java.net/pipermail/openjfx-dev/2018-June/021977.html
  * 
- * @see viewController.ApplicationStart
+ * @see views.ApplicationStart
  * @author William Cao
  * @since 1.0
  */
