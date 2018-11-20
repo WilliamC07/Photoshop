@@ -13,7 +13,7 @@ import java.util.PriorityQueue;
  */
 public class Client{
     private Connector connector;
-    private PriorityQueue<Sender> thingsToSend = new PriorityQueue<>(5);
+    private PriorityQueue<Sender> thingsToSend = new PriorityQueue<>();
     private Sender recentSend;
     private int resentAttempts;
 
@@ -64,7 +64,7 @@ public class Client{
                     connector.sendFile(thingsToSend.peek());
                     resentAttempts++;
                 }else{
-                    connector.sendFile(new Sender(null, FileType.NONE, ActionType.FAILURE));
+                    connector.sendFile(new Sender(ActionType.FAILURE));
                 }
                 break;
             case SUCCESSFUL_TRANSACTION:

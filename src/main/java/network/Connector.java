@@ -73,7 +73,7 @@ class Connector extends Thread{
                                 receiver.setFile(fileReceived);
 
                                 // Inform the sender that the message was successfully received
-                                new Sender(null, FileType.NONE, ActionType.SUCCESSFUL_TRANSACTION);
+                                new Sender(ActionType.SUCCESSFUL_TRANSACTION);
 
                                 actionHandler.handle(fileReceived, fileType, actionType, this);
                                 receiver = null;  // Garbage collect
