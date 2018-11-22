@@ -116,7 +116,7 @@ public class Project {
      * Name the project. This can be renamed multiple times.
      * You must check if the name won't conflict before passing it into this function.
      */
-    public void setProjectName(String name){
+    public void setName(String name){
         this.name = name;
         try{
             Files.move(projectRoot, Files.createFile(projectRoot.getParent().resolve(name)),
