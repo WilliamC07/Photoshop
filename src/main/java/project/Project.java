@@ -16,9 +16,18 @@ public class Project {
      * Singleton instance
      */
     static Project project;
-
+    /**
+     * Name of the project
+     */
     private String name;
+    /**
+     * Path to the directory of the project.
+     */
     private Path projectRoot;
+    /**
+     * Path to the directory of the program. (Contains all the project directories and program information like
+     * settings).
+     */
     private Path programRoot;
 
     /**
