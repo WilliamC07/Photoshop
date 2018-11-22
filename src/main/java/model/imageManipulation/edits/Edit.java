@@ -9,6 +9,8 @@ import javafx.scene.image.PixelWriter;
  * edited indirectly using WritableImage's PixelWriter. ImageBuilder looks for this abstract method. See more
  * instructions on that class.
  *
+ * The constructor for the subclasses must have a constructor that accepts the string representation of the object.
+ *
  * @see model.imageManipulation.edits.ImageBuilder
  * @see javafx.scene.image.WritableImage
  * @see javafx.scene.image.PixelWriter
