@@ -7,15 +7,19 @@ import java.io.File;
  * Before using anything in this class, you must initialize the project ({@link #initializeProject(String)}
  */
 public class Project {
-    public static String projectName;
-    public static ProjectFolder projectFolder;
+    /**
+     * Singleton instance
+     */
+    public static Project project;
 
-    public static void initializeProject(String projectName){
-        Project.projectName = projectName;
-        Project.projectFolder = new ProjectFolder(projectName);
-    }
-
-    public static void initializeProject(File file){
-        Project.projectFolder = new ProjectFolder(file);
+    /**
+     * Singleton accessor
+     * @return singleton instance of the class
+     */
+    public static Project getInstance(){
+        if(project == null){
+            project = new Project();
+        }
+        return project;
     }
 }
