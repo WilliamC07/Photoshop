@@ -1,4 +1,4 @@
-package server;
+package network;
 
 /**
  * This tells what type of File is being sent.
@@ -15,6 +15,12 @@ public enum FileType {
     XML,
     /**
      * Value of 2
+     * If you are not sending any files, send this
+     */
+    NONE,
+
+    /**
+     * Value of 3
      */
     MISC;
 
