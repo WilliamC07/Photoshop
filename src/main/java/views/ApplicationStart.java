@@ -1,7 +1,10 @@
-package viewController;
+package views;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.information.ScreenDimensions;
+
 
 /**
  * This class is the real start to the program (it is called by another class (src.main.java.Main)). It should be
@@ -21,7 +24,12 @@ public class ApplicationStart extends Application{
 	/**
 	 * Entry point of the application. Gets called after {@link #init()}.
 	 */
-	@Override public void start(Stage primaryStage){}
+	@Override public void start(Stage primaryStage){
+		Scene scene = new Scene(new MainDisplay(), ScreenDimensions.width, ScreenDimensions.height);
+		primaryStage.setScene(scene);
+		primaryStage.setFullScreen(true); // This is meant to be a fullscreen application
+		primaryStage.show();
+	}
 
 	/**
 	 * Called when Platform.exit() is run.
