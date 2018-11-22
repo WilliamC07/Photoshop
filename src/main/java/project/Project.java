@@ -1,9 +1,7 @@
 package project;
 
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 
 /**
  * Relevant information about the project. Used to access the images used in the project, instructions done, server
@@ -116,9 +114,16 @@ public class Project {
 
     /**
      * Name the project. This can be renamed multiple times.
+     * You must check if the name won't conflict before passing it into this function.
      */
     public void setProjectName(String name){
         this.name = name;
+        try{
+            Files.move(projectRoot, Files.createFile(projectRoot.getParent().resolve(name)),
+                       StandardCopyOption.REPLACE_EXISTING);
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
     /**
      * Get the name of the project
