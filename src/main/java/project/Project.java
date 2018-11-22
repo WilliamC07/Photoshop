@@ -25,8 +25,9 @@ public class Project {
 
     /**
      * Constructor to create an instance of this singleton.
-     * @param name
-     * @throws FileAlreadyExistsException
+     * @param name Name of the project
+     * @throws FileAlreadyExistsException If the directory is created in the same directory as the project with the
+     *                                    same name, it will throw this.
      */
     Project(String name) throws FileAlreadyExistsException{
         this.name = name;
@@ -34,6 +35,12 @@ public class Project {
         createProjectDirectory();
     }
 
+    /**
+     * Constructor to create an instance of this singleton
+     * @param projectRoot Path to the existing directory of the project. The directory can be empty and it will
+     *                    create the files needed. If any files are empty, it will be placed in a sub directory
+     *                    of old files and generate new ones.
+     */
     Project(Path projectRoot) {
         this.projectRoot = projectRoot;
         createProgramDirectory();
@@ -48,6 +55,9 @@ public class Project {
         return project;
     }
 
+    /**
+     * Create the directory for the program.
+     */
     private void createProgramDirectory(){
         // Make program directory (information about the program (setting, etc...) and the projects)
         // Because the program directory also contains information about program itself, it must still exists even
@@ -77,6 +87,11 @@ public class Project {
         }
     }
 
+    /**
+     * Create a directory for the project
+     * @throws FileAlreadyExistsException If the project name is already used, it will create a conflict in directory
+     *                                    name.
+     */
     private void createProjectDirectory() throws FileAlreadyExistsException{
         try{
             // Make project directory (information about a project; One directory per project)
