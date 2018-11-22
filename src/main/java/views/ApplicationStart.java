@@ -25,9 +25,9 @@ public class ApplicationStart extends Application{
 	 * Entry point of the application. Gets called after {@link #init()}.
 	 */
 	@Override public void start(Stage primaryStage){
-		Scene scene = new Scene(new MainDisplay(), ScreenDimensions.width, ScreenDimensions.height);
+		// First view is the welcome screen, so use those dimensions
+		Scene scene = new Scene(new WelcomeScreen(), ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
 		primaryStage.setScene(scene);
-		primaryStage.setFullScreen(true); // This is meant to be a fullscreen application
 		primaryStage.show();
 	}
 
