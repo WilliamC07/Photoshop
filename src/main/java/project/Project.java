@@ -36,7 +36,7 @@ public class Project {
      * @throws FileAlreadyExistsException If the directory is created in the same directory as the project with the
      *                                    same name, it will throw this.
      */
-    Project(String name) throws FileAlreadyExistsException{
+    Project(String name) throws IOException{
         this.name = name;
         createProgramDirectory();
         createProjectDirectory();
@@ -99,25 +99,15 @@ public class Project {
      * @throws FileAlreadyExistsException If the project name is already used, it will create a conflict in directory
      *                                    name.
      */
-    private void createProjectDirectory() throws FileAlreadyExistsException{
-        try{
-            // Make project directory (information about a project; One directory per project)
-            this.projectRoot = programRoot.resolve(name);
-            Files.createDirectory(projectRoot);
+    private void createProjectDirectory() throws IOException{
+        // Make project directory (information about a project; One directory per project)
+        this.projectRoot = programRoot.resolve(name);
+        Files.createDirectory(projectRoot);
 
-            // Create CheckPointImage directory if one doesn't exist
-            Path checkpointImageDirectory = projectRoot.resolve("CheckPointImages");
-            if(!(Files.exists(checkpointImageDirectory) && Files.isDirectory(checkpointImageDirectory))){
-                Files.createDirectory(checkpointImageDirectory);
-            }
-        }catch(FileAlreadyExistsException e){
-            // Will only be thrown if the project directory exists.
-            // If the CheckpointImage directory exists, this will not be thrown
-            throw e;
-        }catch(IOException e){
-            // Can't continue without a destination to store data
-            e.printStackTrace();
-            System.exit(1);
+        // Create CheckPointImage directory if one doesn't exist
+        Path checkpointImageDirectory = projectRoot.resolve("CheckPointImages");
+        if(!(Files.exists(checkpointImageDirectory) && Files.isDirectory(checkpointImageDirectory))){
+            Files.createDirectory(checkpointImageDirectory);
         }
     }
 

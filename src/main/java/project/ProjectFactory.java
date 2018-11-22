@@ -1,5 +1,6 @@
 package project;
 
+import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
 
@@ -16,7 +17,7 @@ public class ProjectFactory {
      * @param name Name of the project
      * @return Instance of Project
      */
-    public static Project createProject(String name) throws FileAlreadyExistsException {
+    public static Project createProject(String name) throws IOException {
         Project.project = new Project(name);
         return Project.getInstance();
     }
