@@ -65,14 +65,13 @@ public class Project {
         this.programRoot = Path.of(System.getProperty("user.home"));
         // Depending on operating system, the data will be storied in different places
         String osName = System.getProperty("os.name");
-        String programName = "photoshopJava";
+        String programName = "PhotoshopJava";
         if(osName.startsWith("Mac")){
             this.programRoot = programRoot.resolve("Library").resolve(programName);
-
         }else if(osName.startsWith("Windows")){
             this.programRoot = programRoot.resolve("AppData").resolve(programName);
         }else if(osName.startsWith("Linux")){
-            // TODO: finish if condition and project root
+            this.programRoot = projectRoot.resolve(programName);
         }
 
         try{
