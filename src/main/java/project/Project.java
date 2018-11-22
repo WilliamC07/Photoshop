@@ -88,7 +88,8 @@ public class Project {
     }
 
     /**
-     * Create a directory for the project
+     * Create a directory for the project. If the user imported the project (from {@link #Project(Path)}) and there are
+     * missing subdirectories, it will create them.
      * @throws FileAlreadyExistsException If the project name is already used, it will create a conflict in directory
      *                                    name.
      */
@@ -97,7 +98,15 @@ public class Project {
             // Make project directory (information about a project; One directory per project)
             this.projectRoot = programRoot.resolve(name);
             Files.createDirectory(projectRoot);
+
+            // Create CheckPointImage directory if one doesn't exist
+            Path checkpointImageDirectory = projectRoot.resolve("CheckPointImages");
+            if(!(Files.exists(checkpointImageDirectory) && Files.isDirectory(checkpointImageDirectory))){
+                Files.createDirectory(checkpointImageDirectory);
+            }
         }catch(FileAlreadyExistsException e){
+            // Will only be thrown if the project directory exists.
+            // If the CheckpointImage directory exists, this will not be thrown
             throw e;
         }catch(IOException e){
             // Can't continue without a destination to store data
