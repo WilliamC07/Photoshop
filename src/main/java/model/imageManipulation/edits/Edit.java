@@ -21,4 +21,13 @@ public abstract class Edit{
 	 * package-private method (other than the constructor). Everything else should be private (fields, methods, ect.) 
 	 */
 	abstract void change(PixelWriter pixelWriter);
+
+	/**
+	 * When writing the Edit onto a xml file, this method will return what data to write. This allows the object to be
+	 * recreated from the xml file.
+	 *
+	 * The xml file can be sent through sockets (between users and server) or it can be written to disk.
+	 * @return String representation of the object to be written onto an xml file.
+	 */
+	abstract String getStringRepresentation();
 }
