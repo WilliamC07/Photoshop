@@ -1,6 +1,7 @@
 package views;
 
 import javafx.scene.control.SplitPane;
+import javafx.scene.layout.Pane;
 
 /**
  * This is the view that is always shown to the user. The components are:
@@ -19,6 +20,9 @@ import javafx.scene.control.SplitPane;
  * @author William Cao
  * @since 1.0
  */
-final class MainDisplay extends SplitPane{
-  WHbox hbox;
+final class MainDisplay extends Pane {
+  MainDisplay(){
+
+    getChildren().setAll(new WelcomeScreen());
+  }
 }
