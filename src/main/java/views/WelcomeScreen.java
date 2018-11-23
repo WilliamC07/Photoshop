@@ -13,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -80,6 +81,9 @@ class WelcomeScreen extends VBox {
         // makeProjectButton design and action
         makeProjectButton.setOnAction(e -> createProject(inputField.getText(), errorLabel));
 
+        // Make error label red
+        errorLabel.setTextFill(Color.RED);
+
         // container design
         makerContainer.setPadding(new Insets(5));  // The nodes won't touch each other and appear clumped together
         makerContainer.setAlignment(Pos.CENTER);
@@ -119,7 +123,8 @@ class WelcomeScreen extends VBox {
         TextField ipInputField = new TextField();
         TextField portInputField = new TextField();
         Button connectButton = new Button("Connect");
-        VBox connectToServerContainer = new VBox(ipInputField, portInputField, connectButton);
+        Label errorLabel = new Label();
+        VBox connectToServerContainer = new VBox(ipInputField, portInputField, connectButton, errorLabel);
 
         HBox headContainer = new HBox(openDirectoryContainer, separator, connectToServerContainer);
 
@@ -136,9 +141,11 @@ class WelcomeScreen extends VBox {
         ipInputField.setFont(new Font(TEXT_SIZE));
         ipInputField.setPromptText("IP address");
         ipInputField.setMaxWidth(ScreenDimensions.welcomeWidth / 4.0);
+        ipInputField.setAlignment(Pos.CENTER);
         portInputField.setFont(new Font(TEXT_SIZE));
         portInputField.setPromptText("Port");
         portInputField.setMaxWidth(ScreenDimensions.welcomeWidth / 8.0);
+        portInputField.setAlignment(Pos.CENTER);
 
         // Head container spacing nodes
         // Have to set pref width to actually make it center (connectToServerContainer would take up too much space)
@@ -148,6 +155,8 @@ class WelcomeScreen extends VBox {
         HBox.setHgrow(openDirectoryContainer, Priority.ALWAYS);
         openDirectoryContainer.setPrefWidth(ScreenDimensions.welcomeWidth / 2.0);
 
+        // Make error label red
+        errorLabel.setTextFill(Color.RED);
 
         // Make the container take up space equally
         VBox.setVgrow(headContainer, Priority.ALWAYS);
