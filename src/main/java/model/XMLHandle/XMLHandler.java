@@ -1,9 +1,11 @@
 package model.XMLHandle;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -28,18 +30,16 @@ abstract class XMLHandler<T>{
      */
     XMLHandler(Path path){
         file = new File(path.toUri());
+        // Make the xml file if it doesn't exists
+        if(!file.isFile()){
+            createBlankXML(new StreamResult(file));
+        }
     }
 
     /**
-     * Creates the XML content with only the root element (no other elements or data).
-     * @param rootName Name of the root element (Cannot be null value)
+     * Creates the XML if the file does not exist.
      */
-    final void createBlankXML(String rootName){
-        Document document = getEmptyDocument();
-
-        document.appendChild(document.createElement(rootName));
-        saveFile(document, new StreamResult(file));
-    }
+    abstract void createBlankXML(StreamResult streamResult);
 
     /**
      * Read the data in {@link #file} into the given data structure.
@@ -63,6 +63,7 @@ abstract class XMLHandler<T>{
         try{
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
             DOMSource source = new DOMSource(document);
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes"); // So the xml isn't one long line
             transformer.transform(source, streamResult);
         }catch(TransformerException e){
             e.printStackTrace();
