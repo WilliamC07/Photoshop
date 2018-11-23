@@ -2,11 +2,13 @@ package model.XMLHandle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.xml.transform.stream.StreamResult;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 
 public class CheckPointImagesDiskData extends XMLHandler<ArrayList<Path>> {
     /**
@@ -39,7 +41,40 @@ public class CheckPointImagesDiskData extends XMLHandler<ArrayList<Path>> {
 
     @Override
     public ArrayList<Path> readData() {
-        return null;
+        ArrayList<Path> imagePaths = new ArrayList<>();
+        Document document = getReadDocument();
+        Element root = document.getDocumentElement();
+
+        // Get the original image path
+        String originalImagePathString = root.getElementsByTagName("original").item(0).getTextContent();
+        if(originalImagePathString.isBlank()){
+            // If the original image doesn't exist, checkpoint images and most recent image cannot
+            imagePaths.addAll(Arrays.asList(null, null, null));
+            return imagePaths;
+        }else{
+            imagePaths.add(Paths.get(originalImagePathString));
+        }
+
+        // Get the checkpoint images
+        Element checkpointImage = (Element) root.getElementsByTagName("checkpoints").item(0);
+        NodeList checkPointImages = checkpointImage.getElementsByTagName("checkpoint");
+        if(checkPointImages.getLength() == 0){
+            // No checkpoint images
+            imagePaths.add(null);
+            return imagePaths;
+        }else{
+            // Checkpoint images do exists
+            for(int i = 0; i < checkPointImages.getLength(); i++){
+                Element element = (Element) checkPointImages.item(i);
+                imagePaths.add(Paths.get(element.getTextContent()));
+            }
+        }
+
+        // There will be a recent image since if we reached this point
+        String recentImagePathString = root.getElementsByTagName("recent").item(0).getTextContent();
+        imagePaths.add(Paths.get(recentImagePathString));
+
+        return imagePaths;
     }
 
     @Override

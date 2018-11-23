@@ -2,6 +2,7 @@ package model.XMLHandle;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -12,6 +13,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -81,5 +83,22 @@ abstract class XMLHandler<T>{
             e.printStackTrace();
         }
         return null;  // Should never reach this point
+    }
+
+    /**
+     * Returns a document representation of the xml file on disk. This method should always be called after
+     * {@link #createBlankXML(StreamResult)} if there is a chance the file might not exist.
+     * @return Document representation of the xml file on disk.
+     */
+    final Document getReadDocument(){
+        try{
+            Document d =  DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+            // https://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
+            d.normalizeDocument();
+            return d;
+        }catch(IOException | ParserConfigurationException | SAXException e){
+            e.printStackTrace();
+        }
+        return null; // Should never reach this point
     }
 }
