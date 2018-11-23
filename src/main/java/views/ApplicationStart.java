@@ -26,7 +26,7 @@ public class ApplicationStart extends Application{
 	 */
 	@Override public void start(Stage primaryStage){
 		// First view is the welcome screen, so use those dimensions
-		Scene scene = new Scene(new WelcomeScreen(), ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
+		Scene scene = new Scene(new WelcomeScreen(primaryStage), ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}

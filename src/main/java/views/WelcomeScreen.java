@@ -4,6 +4,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -17,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import model.information.ScreenDimensions;
 import project.ProjectFactory;
 import views.wrappers.*;
@@ -28,8 +30,10 @@ class WelcomeScreen extends VBox {
     private final int TITLE_FONT_SIZE = 30;
     private final int HEADER_FONT_SIZE = 20;
     private final int TEXT_SIZE = 13;
+    private final Stage primaryStage;
 
-    WelcomeScreen(){
+    WelcomeScreen(Stage primaryStage){
+        this.primaryStage = primaryStage;
         this.setAlignment(Pos.CENTER);
         this.setPrefSize(ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
 
@@ -105,7 +109,7 @@ class WelcomeScreen extends VBox {
         // Or text design
         orLabel.setFont(new Font(20));
 
-        getChildren().addAll(makerContainer, errorLabel, orSeparatorContainer);
+        getChildren().addAll(header, makerContainer, errorLabel, orSeparatorContainer);
     }
 
     /**
@@ -172,6 +176,10 @@ class WelcomeScreen extends VBox {
 
         try{
             ProjectFactory.createProject(projectName);
+            // Project was successfully made, show the main view
+            primaryStage.setScene(new Scene(new MainDisplay()));
+            primaryStage.setFullScreen(true);
+
         }catch(IOException e){
             errorLabel.setText("Please enter a unique valid project name");
         }
