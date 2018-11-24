@@ -1,9 +1,17 @@
 package views;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import project.Project;
+
+import java.io.File;
 
 /**
  * This is the view that is always shown to the user. The components are:
@@ -23,9 +31,11 @@ import javafx.scene.layout.VBox;
  * @since 1.0
  */
 final class MainDisplay extends SplitPane {
+    private Project project = Project.getInstance();
+
     MainDisplay(){
         // Screen is divided into 3 different parts
-        getItems().addAll(new Button("App"), new Button("Bpp"), new Button("ccc"));
+        getItems().addAll(new Button("App"), new EditPane(), new Button("ccc"));
         setDividerPositions(0.2f, 0.6f);
     }
 
@@ -42,8 +52,59 @@ final class MainDisplay extends SplitPane {
      * The image being edited goes here. If no image is selected, this should prompt the user to choose a file
      * or use a blank canvas.
      */
-    private class EditPane extends Pane{
+    private class EditPane extends VBox{
+        EditPane(){
+            // If there is no original image, the user most choose one. If there is one, use the most recent image to
+            // display.
+            if(!project.hasOriginalImage()){
+                showRequestMode();
+            }else{
+                showEditMode();
+            }
 
+            // Basic designs
+            setAlignment(Pos.CENTER);
+
+            // TODO: Code multiple pages (see google docs for more information)
+        }
+
+        /**
+         * Sets the view up to ask the user to choose the base picture of the project. If the user chooses a valid image
+         * (defined by project.Project), the view will change using {@link #showEditMode()} and remove all the nodes
+         * created by this method.
+         */
+        private void showRequestMode(){
+            Label directions = new Label("Open a image to get started");
+            Button chooseFile = new Button("Pick an image");
+            Label errorLabel = new Label();
+
+            // directions label design
+            directions.setFont(new Font(30));
+
+            // chooseFile functionality
+            chooseFile.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+                if(project.setOriginalImage(file)){
+                    // User can now start editing the image
+                    // Remove the nodes created by this method
+                    this.getChildren().removeAll(directions, chooseFile, errorLabel);
+                    // show the image on the screen
+                    showEditMode();
+                }else{
+                    errorLabel.setText("Please choose a valid image (.png files only)");
+                }
+            });
+
+            this.getChildren().addAll(directions, chooseFile, errorLabel);
+        }
+
+        /**
+         * Sets the view up to allow the user to edit the image.
+         */
+        private void showEditMode(){
+            ImageView imageView = new ImageView();
+        }
     }
 
     /**
