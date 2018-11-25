@@ -24,9 +24,11 @@ final class MainDisplay extends SplitPane{
 
   //top menus I'm not sure if this needs to be a wrapper class or whatever it is so im not going to add it for now
   Menu file = new Menu("File");
-  file.getItems().add(new MenuItem("Open..."));
-  file.getItems().add(new MenuItem("Save"));
-  file.getItems().add(new MenuItem("Exit"));
+  MenuItem open = new MenuItem("Open...");
+  MenuItem save = new MenuItem("Save");
+  MenuItem exit = new MenuItem("Exit");
+  exit.setOnAction(e -> window.close());
+  file.getItems().addAll(open,save,exit);
 
   //Will be on left side of screen, icons for image editing tools
   WVbox tools = new WVBox(10);
