@@ -1,6 +1,5 @@
 package views;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -10,21 +9,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.information.ScreenDimensions;
+import network.Client;
 import project.ProjectFactory;
-import views.wrappers.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 
 class WelcomeScreen extends VBox {
     private final int TITLE_FONT_SIZE = 30;
@@ -165,7 +163,32 @@ class WelcomeScreen extends VBox {
         // Make the container take up space equally
         VBox.setVgrow(headContainer, Priority.ALWAYS);
 
+        // Functionality to connect to the given ip address and port
+        connectButton.setOnAction(e -> connectToServer(ipInputField, portInputField, errorLabel));
+
         getChildren().addAll(header, headContainer);
+    }
+
+    /**
+     * Attempts to connect to the server
+     * @param ipField TextField where the user enters the ip address of the server
+     * @param portField TextField where the user enters the port number for the server
+     * @param errorLabel Label to display the error message
+     */
+    private void connectToServer(TextField ipField, TextField portField, Label errorLabel){
+        try{
+            String ip = ipField.getText();
+            // Make sure the port given is a number
+            int port = Integer.parseInt(portField.getText());
+
+            ProjectFactory.createProject(new Client(ip, port));
+        }catch(NumberFormatException e){
+            errorLabel.setText("Port should be an integer, please fix and reconnect");
+        }catch(UnknownHostException e){
+            errorLabel.setText("Cannot connect to the server (doesn't exists). Make sure it is hosted on the same network");
+        }catch(IOException e){
+            errorLabel.setText("Cannot connect to the server at this moment. Please reconnect");
+        }
     }
 
     private void createProject(String projectName, Label errorLabel){

@@ -2,7 +2,9 @@ package network;
 
 import java.io.IOException;
 import java.io.File;
+import java.net.Inet4Address;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 /**
@@ -10,14 +12,29 @@ import java.util.ArrayList;
  */
 public class Server{
     private ArrayList<Connector> connectors = new ArrayList<>();
+    private int port;
 
     /**
      * Constructs a network to deal with the sharing of a file with multiple collaborators.
      */
     public Server(){
-        int targetPort = 49153; // TODO: replace with 0, leave it for testing purposes
-        // TODO: Make into another thread to allow multiple connections through the same port
-        try(ServerSocket serverSocket = new ServerSocket(targetPort)){
+        startServer.start();
+        try{
+            // Pause so the ServerSocket and start up
+            Thread.sleep(500);
+        }catch(InterruptedException e){
+            // Do nothing
+        }
+    }
+
+    /**
+     * ServerSocket.accept() waits until there is a connection before moving on with the code. Make another thread
+     * so it doesn't halt the main thread.
+     */
+    private Thread startServer = new Thread(() -> {
+        try(ServerSocket serverSocket = new ServerSocket(0)){
+            // IP address is the ip address of the current computer, so no need to access from ServerSocket
+            port = serverSocket.getLocalPort();
             Connector connector = new Connector(serverSocket.accept(), this::handle);
             connector.start();
             connectors.add(connector);
@@ -25,7 +42,7 @@ public class Server{
             e.printStackTrace();
             System.exit(1);
         }
-    }
+    });
 
     /**
      * Handles the file sent through given the file, file type, action type, and connector
@@ -52,12 +69,7 @@ public class Server{
         }
     }
 
-    /**
-     * Temporary TODO: Remove
-     * Use this method for testing features.
-     * @param args Command line argument
-     */
-    public static void main(String[] args) {
-        new Server();
+    public int getPort() {
+        return port;
     }
 }

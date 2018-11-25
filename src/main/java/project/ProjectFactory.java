@@ -1,5 +1,7 @@
 package project;
 
+import network.Client;
+
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Path;
@@ -30,6 +32,11 @@ public class ProjectFactory {
      */
     public static Project createProject(Path projectPath) {
         Project.project = new Project(projectPath);
+        return Project.getInstance();
+    }
+
+    public static Project createProject(Client client){
+        Project.project = new Project(client);
         return Project.getInstance();
     }
 }

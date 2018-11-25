@@ -3,6 +3,7 @@ package network;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.PriorityQueue;
 
 /**
@@ -23,18 +24,12 @@ public class Client{
      * @param targetHost IP address of the network
      * @param targetPort Port of the network
      */
-    public Client(String targetHost, int targetPort){
-        targetHost = "127.0.0.1"; // For testing purposes. TODO: Remove
-        targetPort = 49153; // For testing purpises TODO: Remove
-        try{
-            connector = new Connector(new Socket(targetHost, targetPort), this::handle);
-            connector.start();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        //TODO: Remove testing
+    public Client(String targetHost, int targetPort) throws UnknownHostException, IOException {
+        connector = new Connector(new Socket(targetHost, targetPort), this::handle);
+        connector.start();
+        /*//TODO: Remove testing
         File file = new File("network/4k.png"); // Rename 4k.png to what file you are sending (must be a .png)
-        sendFile(new Sender(file, FileType.IMAGE, ActionType.SEND_ORIGINAL_IMAGE)); // Ignore ActionType since it isn't completed yet
+        sendFile(new Sender(file, FileType.IMAGE, ActionType.SEND_ORIGINAL_IMAGE)); // Ignore ActionType since it isn't completed yet*/
     }
 
     void sendFile(Sender sender){

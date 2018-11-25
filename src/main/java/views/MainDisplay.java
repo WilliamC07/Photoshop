@@ -7,11 +7,16 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import network.Server;
 import project.Project;
 
 import java.io.File;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * This is the view that is always shown to the user. The components are:
@@ -35,7 +40,7 @@ final class MainDisplay extends SplitPane {
 
     MainDisplay(){
         // Screen is divided into 3 different parts
-        getItems().addAll(new Button("App"), new EditPane(), new Button("ccc"));
+        getItems().addAll(new Button("App"), new EditPane(), new RightSide());
         setDividerPositions(0.2f, 0.6f);
     }
 
@@ -112,7 +117,39 @@ final class MainDisplay extends SplitPane {
      * Allows the user to host a server and view the collaborators and information on how to join (give ip address and
      * port). Below this, the user can see the history of all the edits done on the image.
      */
-    private class RightSide extends VBox{
+    private class RightSide extends SplitPane{
+        RightSide(){
+            // Sets up the SplitPane
+            // Network half
+            getItems().add(setNetworkDisplay());
+            // History half
+            getItems().add(new Rectangle(20, 20)); // Replace with history section
+        }
+
+        private VBox setNetworkDisplay(){
+            VBox container = new VBox();
+            Label header = new Label("Network:");
+            Button hostServer = new Button("Host server");
+            Label ipLabel = new Label();
+            Label portLabel = new Label();
+
+            // Hosts the server for others to connect
+            hostServer.setOnAction(e -> {
+                Server server = new Server();
+                try{
+                    ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
+                }catch(UnknownHostException error){
+                    error.printStackTrace();
+                }
+                portLabel.setText("Port: " + server.getPort());
+                container.getChildren().remove(hostServer);
+                container.getChildren().addAll(ipLabel, portLabel);
+                Project.getInstance().setServer(server);
+            });
+
+            container.getChildren().addAll(header, hostServer);
+            return container;
+        }
 
     }
 }

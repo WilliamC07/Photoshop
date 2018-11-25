@@ -1,5 +1,8 @@
 package project;
 
+import network.Client;
+import network.Server;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
@@ -36,6 +39,16 @@ public class Project {
      */
     private Path checkpointImageDirectory;
 
+    /**
+     * Client used to connect to the server. If this is null, we are not connected.
+     */
+    private Client client;
+
+    /**
+     * Server (client connects to this).
+     */
+    private Server server;
+
 
     /**
      * Key: Value:
@@ -43,7 +56,7 @@ public class Project {
      * "c#" (ex. "c0" gives the first checkpoint image): path to checkpoint image
      * "recent": path to most recently saved image
      */
-    private final HashMap<String, Path> imagePaths;
+    private HashMap<String, Path> imagePaths;
 
     /**
      * Constructor to create an instance of this singleton.
@@ -77,6 +90,15 @@ public class Project {
         // Initialize project information
         this.projectRoot = projectRoot;
         imagePaths = getCheckpointImages();
+    }
+
+    Project(Client client){
+        // Initializes program information
+        createProgramDirectory();
+
+        // Initialize project information
+        this.client = client;
+
     }
 
     /**
@@ -217,5 +239,17 @@ public class Project {
     }
     public boolean hasOriginalImage(){
         return imagePaths.containsKey("original");
+    }
+    public Client getClient() {
+        return client;
+    }
+    public void setClient(Client client) {
+        this.client = client;
+    }
+    public Server getServer() {
+        return server;
+    }
+    public void setServer(Server server) {
+        this.server = server;
     }
 }
