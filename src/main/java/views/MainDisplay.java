@@ -52,6 +52,17 @@ final class MainDisplay extends SplitPane {
 
     }
 
+    private Tools showTools() {
+      Tools toolmenu = new Tools();
+      Button crop = new Button("Crop");
+      Button brush = new Button("Brush");
+      Button shape = new Button("Shape");
+      Button text = new Button("Text");
+      Button erase = new Button("Erase");
+      toolmenu.getChildren().addAll(crop,brush,shape,text,erase);
+      return toolmenu;
+
+    }
     /**
      * Goes on the center of the screen
      * The image being edited goes here. If no image is selected, this should prompt the user to choose a file

@@ -192,7 +192,7 @@ class WelcomeScreen extends VBox {
     }
 
     private void createProject(String projectName, Label errorLabel){
-        if(projectName.isBlank()){
+        if(projectName.trim().equals("")) {
             errorLabel.setText("Enter a project name");
             return;
         }
