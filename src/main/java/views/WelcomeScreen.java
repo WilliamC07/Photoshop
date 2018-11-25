@@ -17,7 +17,10 @@ import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import model.information.ScreenDimensions;
+import network.ActionType;
 import network.Client;
+import network.Sender;
+import project.Project;
 import project.ProjectFactory;
 
 import java.io.File;
@@ -182,6 +185,9 @@ class WelcomeScreen extends VBox {
             int port = Integer.parseInt(portField.getText());
 
             ProjectFactory.createProject(new Client(ip, port));
+
+            // If we reached this point, the connection was successful
+            showConnectToServerInfo();
         }catch(NumberFormatException e){
             errorLabel.setText("Port should be an integer, please fix and reconnect");
         }catch(UnknownHostException e){
@@ -206,6 +212,31 @@ class WelcomeScreen extends VBox {
         }catch(IOException e){
             errorLabel.setText("Please enter a unique valid project name");
         }
+    }
+
+    /**
+     *
+     */
+    private void showConnectToServerInfo(){
+        // Removes previous content;
+        getChildren().clear();
+        setAlignment(Pos.CENTER);
+        Label usernameLabel = new Label("Username: ");
+        TextField usernameInput = new TextField();
+        HBox usernameFields = new HBox(usernameLabel, usernameInput);
+        Button continueButton = new Button("Continue");
+        Label errorLabel = new Label();
+
+        continueButton.setOnAction(e -> {
+            String username = usernameInput.getText();
+            // ", " is the delimiter to convert a string to an list of usernames
+            if(!username.isBlank() && !username.contains(", ")){
+                System.out.println("username + "+ username);
+                Project.getInstance().getClient().sendFile(new Sender(username, ActionType.ADD_COLLABORATOR_USERNAME));
+            }
+        });
+
+        getChildren().addAll(usernameFields, continueButton, errorLabel);
     }
 
     /**
