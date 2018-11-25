@@ -90,7 +90,8 @@ final class MainDisplay extends SplitPane {
             chooseFile.setOnAction(e -> {
                 FileChooser fileChooser = new FileChooser();
                 File file = fileChooser.showOpenDialog(this.getScene().getWindow());
-                if(project.setOriginalImage(file)){
+                // Check null to make sure the user did choose a file and didn't click close/cancel
+                if(file != null && project.setOriginalImage(file)){
                     // User can now start editing the image
                     // Remove the nodes created by this method
                     this.getChildren().removeAll(directions, chooseFile, errorLabel);
