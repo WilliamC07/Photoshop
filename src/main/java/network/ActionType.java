@@ -16,6 +16,25 @@ public enum ActionType {
      */
     UPDATE_TO_LATEST_CHECKPOINT,
 
+    /**
+     * Server to client
+     * Tells the client to update the list of collaborators to the one sent
+     */
+    UPDATE_TO_LATEST_COLLABORATOR,
+
+    /**
+     * Client to server
+     * Requests the server to send a list of the collaborators to the one sent. The server should respond with
+     * {@link #UPDATE_TO_LATEST_COLLABORATOR}
+     */
+    REQUEST_COLLABORATOR_LIST,
+
+    /**
+     * Client to server
+     * Tells the server to add the client's username to the list of collaborator
+     */
+    ADD_COLLABORATOR_USERNAME,
+
 
     /**
      * Client to server or server to client

@@ -13,17 +13,21 @@ import java.io.IOException;
  * @see ActionType
  */
 public class Receiver {
+    private final FileType fileType;
     private final int MAX_CHUNK_SIZE = Sender.MAX_DATA_SIZE;
     private int expectedReadBytes;
     private int readBytes;
     private byte[][] byteRepresentation;
+    private String message;
 
     /**
      * Constructs an instance to build a file
      * @param chunksAmount Amount of chunks expected to be sent
      * @param fileSize Final size of File expected to be created
      */
-    Receiver(int chunksAmount, int fileSize){
+    Receiver(int chunksAmount, int fileSize, FileType fileType){
+        this.fileType = fileType;
+
         // We are receiving instructions only
         if(chunksAmount == 0){
             byteRepresentation = null;
@@ -42,12 +46,18 @@ public class Receiver {
     /**
      * Build the file up given a stream that contains only part of the File to be made.
      * If no file is sent, this function should never be called (this is guaranteed by the Sender class)
+     * If a string was sent (FileType.STRING), it will just read that string.
      * @param stream Stream with the data chunk.
      * @throws IOException Exception from the stream
      */
     void build(DataInputStream stream) throws IOException {
-        int chunkNumber = stream.readInt(); // First data is always which chunk number
-        readBytes += stream.read(byteRepresentation[chunkNumber]);
+        if(fileType == FileType.STRING){
+            // Only a single UTF string is sent, so read that
+            this.message = stream.readUTF();
+        }else{
+            int chunkNumber = stream.readInt(); // First data is always which chunk number
+            readBytes += stream.read(byteRepresentation[chunkNumber]);
+        }
     }
 
     /**
@@ -72,5 +82,13 @@ public class Receiver {
         for(int i = 0; i < byteRepresentation.length; i++){
             fileOutputStream.write(byteRepresentation[i]);
         }
+    }
+
+    String getMessage(){
+        return message;
+    }
+
+    public FileType getFileType() {
+        return fileType;
     }
 }

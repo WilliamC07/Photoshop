@@ -13,14 +13,21 @@ public enum FileType {
      * Value of 1
      */
     XML,
+
     /**
      * Value of 2
-     * If you are not sending any files, send this
+     * Only send a string value
+     */
+    STRING,
+
+    /**
+     * Value of 3
+     * If you are not sending any files or a {@link #STRING}, send this
      */
     NONE,
 
     /**
-     * Value of 3
+     * Value of 4
      */
     MISC;
 

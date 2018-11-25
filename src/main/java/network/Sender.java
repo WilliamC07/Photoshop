@@ -10,12 +10,25 @@ import java.io.IOException;
  *
  * @see ActionType
  */
-final class Sender {
+public final class Sender implements Comparable<Sender>{
     public static final int MAX_DATA_SIZE = 100_000;
-    private final File file;
+    // Either send a file or a message
+    private File file;
+    private String message;
+
     private final FileType fileType;
     private final ActionType actionType;
+    /**
+     * The amount of data chunks to send
+     */
     private final int chunksAmount;
+    private boolean wasSent = false;
+    private static int sendersSent = 0;
+    /**
+     * The first sender is 0, the next is 1, etc.
+     * Used for comparable
+     */
+    private int number = sendersSent++;
 
     /**
      * Constructs an instance of the class.
@@ -30,6 +43,13 @@ final class Sender {
 
         int fileSize = (int) file.length();
         this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE);
+    }
+
+    public Sender(String message, ActionType actionType){
+        this.message = message;
+        this.fileType = FileType.STRING;
+        this.actionType = actionType;
+        this.chunksAmount = 1; // Only one chunk is needed for sending strings
     }
 
     public Sender(ActionType actionType){
@@ -51,16 +71,20 @@ final class Sender {
         sendIdentifier(outputStream);
         // Only send data if there is a file to send, otherwise just skip to closer
         if(file != null){
-            sendData(outputStream, file);
+            sendFile(outputStream);
         }
-        sendCloser(outputStream, fileType, actionType);
+        if(!message.isEmpty()){
+            sendMessage(outputStream);
+        }
+        sendCloser(outputStream);
     }
 
     /**
      * Sends the START chunk. This chunks includes the following data:
-     * 1. Chunk identifier (int)
-     * 2. Amount of DATA chunks that will be sent through the stream (int)
-     * 3. Final expected file size to act as a checksum (int)
+     * 1. chunkIdentifier: Chunk identifier (int)
+     * 2. chunkSize: Amount of DATA chunks that will be sent through the stream (int)
+     * 3. fileSize: Final expected file size to act as a checksum (int)
+     * 4. fileType: What FileType is being sent
      *
      * @param stream Stream to send the data through
      * @throws IOException Exception from the stream
@@ -69,6 +93,7 @@ final class Sender {
         stream.writeInt(ChunkType.get(ChunkType.START)); // Chunk identifier
         stream.writeInt(chunksAmount);
         stream.writeInt(file != null ? (int) file.length() : 0); // File size
+        stream.writeInt(FileType.get(fileType));
         stream.flush();
     }
 
@@ -79,10 +104,9 @@ final class Sender {
      * 2. Chunk number (starting with 0) (int)
      * 3. Byte[] of a section of the file to be sent (byte[])
      * @param stream Stream to send the data through
-     * @param file File to be sent through the stream
      * @throws IOException Exception from the stream
      */
-    private void sendData(DataOutputStream stream, File file) throws IOException{
+    private void sendFile(DataOutputStream stream) throws IOException{
         FileInputStream fileInputStream = new FileInputStream(file);
         int fileSize = (int) file.length();
         int lastChunkSize = fileSize - (chunksAmount - 1) * MAX_DATA_SIZE;
@@ -102,19 +126,42 @@ final class Sender {
     }
 
     /**
-     * Send the END chunk. This chunks includes the following data:
-     * 1. Chunk identifier (int)
-     * 2. The type of file sent
-     * 3. What action to be performed by the receiver
+     * Sends the {@link #message} through the stream.
+     * The chunk includes the following data:
+     * 1. Chunk identifier
+     * 2. UTF representation of the string
      * @param stream Stream to send the data through
-     * @param fileType Type of file sent
-     * @param actionType Action to be performed by the receiver
      * @throws IOException Exception from the stream
      */
-    private void sendCloser(DataOutputStream stream, FileType fileType, ActionType actionType) throws IOException {
+    private void sendMessage(DataOutputStream stream) throws IOException{
+        stream.writeInt(ChunkType.get(ChunkType.DATA)); // Chunk identifier
+        stream.writeUTF(message);
+        stream.flush();
+    }
+
+    /**
+     * Send the END chunk. This chunks includes the following data:
+     * 1. Chunk identifier (int)
+     * 2. What action to be performed by the receiver
+     * @param stream Stream to send the data through
+     * @throws IOException Exception from the stream
+     */
+    private void sendCloser(DataOutputStream stream) throws IOException {
         stream.writeInt(ChunkType.get(ChunkType.END));
-        stream.writeInt(FileType.get(fileType));
         stream.writeInt(ActionType.get(actionType));
         stream.flush();
+    }
+
+    @Override
+    public int compareTo(Sender o) {
+        return Integer.compare(number, o.number);
+    }
+
+    public boolean wasSent() {
+        return wasSent;
+    }
+
+    public void wasSent(boolean wasSent) {
+        this.wasSent = wasSent;
     }
 }

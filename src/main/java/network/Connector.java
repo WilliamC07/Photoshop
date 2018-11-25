@@ -10,6 +10,8 @@ import java.net.Socket;
  * This is used to deal with the information coming in through the stream from a socket. The class that uses this
  * needs implement ActionHandler. Information received through the socket will be passed onto the ActionHandler.
  *
+ * TODO: MAJOR BUG: The connect should be the one dealing with queues, client and server does not need their own individual queue
+ *
  * @see network.ActionHandler
  */
 class Connector extends Thread{
@@ -57,25 +59,30 @@ class Connector extends Thread{
                             case START:
                                 int chunkSize = inputStream.readInt();
                                 int fileSize = inputStream.readInt();
-                                receiver = new Receiver(chunkSize, fileSize);
+                                FileType fileType = FileType.get(inputStream.readInt());
+                                receiver = new Receiver(chunkSize, fileSize, fileType);
                                 break;
                             case DATA:
-                                // This *should* never be null, since the first chunk always initializes an object
+                                // receiver *should* never be null, since the first chunk always initializes an object
                                 receiver.build(inputStream);
                                 break;
                             case END:
-                                FileType fileType = FileType.get(inputStream.readInt());
                                 ActionType actionType = ActionType.get(inputStream.readInt());
+                                // getFileType() will not be null since the first chunk gives the ChunkType
+                                if(receiver.getFileType() == FileType.STRING){
+                                    // No file to read
+                                    actionHandler.handle(null, receiver.getMessage(), FileType.STRING, actionType, this);
+                                }else{
+                                    File fileReceived = new File("network/copy.png");
+                                    // This *should* never be null, since the first chunk always initializes an object
+                                    // Throws an error if there are any issues (bad checksum/file...)
+                                    receiver.setFile(fileReceived);
 
-                                File fileReceived = new File("network/copy.png");
-                                // This *should* never be null, since the first chunk always initializes an object
-                                // Throws an error if there are any issues (bad checksum/file...)
-                                receiver.setFile(fileReceived);
-
-                                // Inform the sender that the message was successfully received
-                                new Sender(ActionType.SUCCESSFUL_TRANSACTION);
-
-                                actionHandler.handle(fileReceived, fileType, actionType, this);
+                                    // Inform the sender that the message was successfully received
+                                    new Sender(ActionType.SUCCESSFUL_TRANSACTION);
+                                    // No message
+                                    actionHandler.handle(fileReceived, "", receiver.getFileType(), actionType, this);
+                                }
                                 receiver = null;  // Garbage collect
                                 break;
                             // Don't need default because if the byte is read wrong, error is thrown from ChunkType
@@ -87,12 +94,13 @@ class Connector extends Thread{
                     // Send any information
                     if (sender != null) {
                         sender.send(outStream);
+                        sender.wasSent(true);  // So we don't spam repeat the same thing over and over again
                         sender = null; // All data spent, nothing to do now
                     }
                 }catch(IOException e){
                     // Exception from reading data from the stream
                 }catch(NetworkException e){
-                    actionHandler.handle(null, null, ActionType.RESOLVE_FAILED_FILE_TRANSFER, this);
+                    actionHandler.handle(null, null, null, ActionType.RESOLVE_FAILED_FILE_TRANSFER, this);
                     // Error in building the file
                 }catch(InterruptedException e){
                     // Thread was stopped
