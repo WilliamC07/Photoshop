@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.PriorityQueue;
 
 /**
  * This is used to deal with the information coming in through the stream from a socket. The class that uses this
@@ -18,6 +19,7 @@ class Connector extends Thread{
     private final Socket socket;
     private Sender sender;
     private final ActionHandler actionHandler;
+    private final PriorityQueue<Sender> queue = new PriorityQueue<>();
 
     /**
      * Creates a thread to listen and send information through a socket.
