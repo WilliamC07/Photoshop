@@ -30,6 +30,7 @@ import java.net.UnknownHostException;
 class WelcomeScreen extends VBox {
     private final int TITLE_FONT_SIZE = 30;
     private final int HEADER_FONT_SIZE = 20;
+    private final int SUBHEADER_FONT_SIZE = 15;
     private final int TEXT_SIZE = 13;
     private final Stage primaryStage;
 
@@ -125,16 +126,19 @@ class WelcomeScreen extends VBox {
 
         Separator separator = new Separator(Orientation.VERTICAL);
 
+        Label subheaderServer = new Label("Connect to a server:");
+
         TextField ipInputField = new TextField();
         TextField portInputField = new TextField();
         Button connectButton = new Button("Connect");
         Label errorLabel = new Label();
-        VBox connectToServerContainer = new VBox(ipInputField, portInputField, connectButton, errorLabel);
+        VBox connectToServerContainer = new VBox(subheaderServer, ipInputField, portInputField, connectButton, errorLabel);
 
         HBox headContainer = new HBox(openDirectoryContainer, separator, connectToServerContainer);
 
         // header design
         header.setFont(new Font(HEADER_FONT_SIZE));
+        subheaderServer.setFont(new Font(SUBHEADER_FONT_SIZE));
 
         // Centering openDirectoryChooserButton
         openDirectoryContainer.setAlignment(Pos.CENTER);
@@ -221,6 +225,7 @@ class WelcomeScreen extends VBox {
         // Removes previous content;
         getChildren().clear();
         setAlignment(Pos.CENTER);
+
         Label usernameLabel = new Label("Username: ");
         TextField usernameInput = new TextField();
         HBox usernameFields = new HBox(usernameLabel, usernameInput);
