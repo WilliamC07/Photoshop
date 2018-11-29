@@ -38,7 +38,7 @@ class WelcomeScreen extends VBox {
         this.primaryStage = primaryStage;
         this.setAlignment(Pos.CENTER);
         this.setPrefSize(ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
-
+        primaryStage.setTitle("Welcome Screen");
         makeTitle();
         makeCreatorOption();
         makeOpenerOption();
