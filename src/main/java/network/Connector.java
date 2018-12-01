@@ -5,7 +5,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.PriorityQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * This is used to deal with the information coming in through the stream from a socket. The class that uses this
@@ -17,9 +17,11 @@ import java.util.PriorityQueue;
  */
 class Connector extends Thread{
     private final Socket socket;
-    private Sender sender;
     private final ActionHandler actionHandler;
-    private final PriorityQueue<Sender> queue = new PriorityQueue<>();
+    /**
+     * Queue of items to be sent. PriorityBlockingQueue is for thread safety.
+     */
+    private PriorityBlockingQueue<Sender> queue = new PriorityBlockingQueue<>();
 
     /**
      * Creates a thread to listen and send information through a socket.
@@ -36,7 +38,7 @@ class Connector extends Thread{
      * @param sender Information to be sent
      */
     void sendFile(Sender sender){
-        this.sender = sender;
+        queue.offer(sender);
     }
 
     /**
@@ -52,52 +54,53 @@ class Connector extends Thread{
             socket.setSoTimeout(0); // The socket will NEVER timeout, connection is forever (TODO: good idea?)
             while (true) {
                 try{
-                    // Listen for data first
-                    if (inputStream.available() > 0) {
-                        // Build file
-                        int chunkNum = inputStream.readInt();
-                        ChunkType chunkIdentifier = ChunkType.get(chunkNum); // First int is always identifier
-                        switch (chunkIdentifier) {
-                            case START:
-                                int chunkSize = inputStream.readInt();
-                                int fileSize = inputStream.readInt();
-                                FileType fileType = FileType.get(inputStream.readInt());
-                                receiver = new Receiver(chunkSize, fileSize, fileType);
-                                break;
-                            case DATA:
-                                // receiver *should* never be null, since the first chunk always initializes an object
-                                receiver.build(inputStream);
-                                break;
-                            case END:
-                                ActionType actionType = ActionType.get(inputStream.readInt());
-                                // getFileType() will not be null since the first chunk gives the ChunkType
-                                if(receiver.getFileType() == FileType.STRING){
-                                    // No file to read
-                                    actionHandler.handle(null, receiver.getMessage(), FileType.STRING, actionType, this);
-                                }else{
-                                    File fileReceived = new File("network/copy.png");
-                                    // This *should* never be null, since the first chunk always initializes an object
-                                    // Throws an error if there are any issues (bad checksum/file...)
-                                    receiver.setFile(fileReceived);
-
-                                    // Inform the sender that the message was successfully received
-                                    new Sender(ActionType.SUCCESSFUL_TRANSACTION);
-                                    // No message
-                                    actionHandler.handle(fileReceived, "", receiver.getFileType(), actionType, this);
-                                }
-                                receiver = null;  // Garbage collect
-                                break;
-                            // Don't need default because if the byte is read wrong, error is thrown from ChunkType
-                        }
-                    } else {
-                        Thread.sleep(1000); // Nothing to do, pause
+                    // Send out data
+                    Sender sender;
+                    if(queue.size() > 0 && !(sender = queue.peek()).wasSent()){
+                        sender.send(outStream);
+                        sender.wasSent(true); // One send data once and wait for a response
                     }
 
-                    // Send any information
-                    if (sender != null) {
-                        sender.send(outStream);
-                        sender.wasSent(true);  // So we don't spam repeat the same thing over and over again
-                        sender = null; // All data spent, nothing to do now
+                    // Do not want an infinite loop, so we have to sleep if there is not data to read.
+                    // We do not want a pause between reading data from the stream to speed up the program
+                    if(inputStream.available() == 0){
+                        Thread.sleep(200);
+                        continue;
+                    }
+
+                    // This will be run when there is data to be read
+                    // Build file
+                    ChunkType chunkIdentifier = ChunkType.get(inputStream.readInt()); // First int is always identifier
+                    switch (chunkIdentifier) {
+                        case START:
+                            int chunkSize = inputStream.readInt();
+                            int fileSize = inputStream.readInt();
+                            FileType fileType = FileType.get(inputStream.readInt());
+                            receiver = new Receiver(chunkSize, fileSize, fileType);
+                            break;
+                        case DATA:
+                            // receiver should never be null, since the first chunk always initializes an object
+                            receiver.build(inputStream);
+                            break;
+                        case END:
+                            ActionType actionType = ActionType.get(inputStream.readInt());
+                            // getFileType() will not be null since the first chunk gives the ChunkType
+                            if(receiver.getFileType() == FileType.STRING){
+                                // No file to read
+                                actionHandler.handle(null, receiver.getMessage(), FileType.STRING, actionType, this);
+                            }else{
+                                File fileReceived = new File("network/copy.png");
+                                // This should never be null, since the first chunk always initializes an object
+                                // Throws an error if there are any issues (bad checksum/file...)
+                                receiver.setFile(fileReceived);
+
+                                // Inform the sender that the message was successfully received
+                                new Sender(ActionType.SUCCESSFUL_TRANSACTION);
+                                // No message
+                                actionHandler.handle(fileReceived, "", receiver.getFileType(), actionType, this);
+                            }
+                            receiver = null;  // Garbage collect
+                            break;
                     }
                 }catch(IOException e){
                     // Exception from reading data from the stream
@@ -112,6 +115,10 @@ class Connector extends Thread{
         }catch(IOException e){
             // Exception from reading data from stream or socket
         }
+    }
+
+    private void receiveData(DataInputStream inputStream){
+
     }
 
     /**
