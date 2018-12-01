@@ -17,7 +17,8 @@ public class Receiver {
     private final int MAX_CHUNK_SIZE = Sender.MAX_DATA_SIZE;
     private int expectedReadBytes;
     private int readBytes;
-    private byte[][] byteRepresentation;
+    private int chunksAmount;
+    private byte[] byteRepresentation;
     private String message;
 
     /**
@@ -29,17 +30,14 @@ public class Receiver {
         this.fileType = fileType;
 
         // We are receiving instructions only
-        if(chunksAmount == 0){
+        if(fileSize == 0){
             byteRepresentation = null;
         }else{
             expectedReadBytes = fileSize;
 
             // Allocated space in the array to store the content of future incoming DATA chunks
-            byteRepresentation = new byte[chunksAmount][];
-            int remainder = fileSize - (chunksAmount - 1) * MAX_CHUNK_SIZE;
-            for(int i = 0; i < chunksAmount; i++){
-                byteRepresentation[i] = new byte[i == chunksAmount - 1 ? remainder : MAX_CHUNK_SIZE];
-            }
+            byteRepresentation = new byte[fileSize];
+            this.chunksAmount = chunksAmount;
         }
     }
 
@@ -47,6 +45,8 @@ public class Receiver {
      * Build the file up given a stream that contains only part of the File to be made.
      * If no file is sent, this function should never be called (this is guaranteed by the Sender class)
      * If a string was sent (FileType.STRING), it will just read that string.
+     *
+     * TODO: Checksum for receving all the chunk in order
      * @param stream Stream with the data chunk.
      * @throws IOException Exception from the stream
      */
@@ -56,20 +56,24 @@ public class Receiver {
             this.message = stream.readUTF();
         }else{
             int chunkNumber = stream.readInt(); // First data is always which chunk number
-            readBytes += stream.read(byteRepresentation[chunkNumber]);
+            int start = MAX_CHUNK_SIZE * chunkNumber; // data chunks starts at 0
+            int lastChunkSize = expectedReadBytes - MAX_CHUNK_SIZE * (chunksAmount - 1);
+            int size = chunkNumber == chunksAmount - 1 ? lastChunkSize : MAX_CHUNK_SIZE; // length of chunk
+
+            readBytes += stream.read(byteRepresentation, start, size);
         }
     }
 
     /**
      * Creates the file given all the data received from {@link #build(DataInputStream)}.
      *
-     * @param file File to create (does not create a new instance, it modifies the existing one)
+     * @return byte representation of the file received
      * @throws IOException Exception from the stream
      */
-    void setFile(File file) throws IOException, NetworkException{
+    byte[] getFile() throws NetworkException{
         // No file received, don't do anything
         if(byteRepresentation == null){
-            return;
+            return null;
         }
 
         // TODO: Temporary checksum, will improve on later
@@ -78,10 +82,7 @@ public class Receiver {
                     String.format("Read bytes(%d) doesn't match expected read(%d)", readBytes, expectedReadBytes));
         }
 
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        for(int i = 0; i < byteRepresentation.length; i++){
-            fileOutputStream.write(byteRepresentation[i]);
-        }
+        return byteRepresentation;
     }
 
     String getMessage(){

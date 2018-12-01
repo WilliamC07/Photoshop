@@ -151,7 +151,7 @@ final class MainDisplay extends SplitPane {
                 }catch(UnknownHostException error){
                     error.printStackTrace();
                 }
-                portLabel.setText("Port: " + server.getPort());
+                portLabel.setText("Port: 5000");
                 container.getChildren().remove(hostServer);
                 container.getChildren().addAll(ipLabel, portLabel);
                 Project.getInstance().setServer(server);

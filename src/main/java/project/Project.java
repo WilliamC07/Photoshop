@@ -51,10 +51,10 @@ public class Project {
     private Server server;
 
     /**
-     * List of all the collaborators. The host will see their username as "<username he gave> (you)", but this array
+     * Array of all the collaborators. The host will see their username as "<username he gave> (you)", but this array
      * only contains the username he gave without the "(you)"
      */
-    private ArrayList<String> collaborators = new ArrayList<>();
+    private String[] collaborators;
 
 
     /**
@@ -259,14 +259,13 @@ public class Project {
     public void setServer(Server server) {
         this.server = server;
     }
-    public ArrayList<String> getCollaborators() {
+    public String[] getCollaborators() {
         return collaborators;
     }
-    public void addCollaborator(String username){
-        if(!collaborators.contains(username)){
-            collaborators.add(username);
-            System.out.println("Server read: " + username);
-            // TODO update view;
+    public void setCollaborators(String[] collaborators){
+        this.collaborators = collaborators;
+        for(String s : collaborators){
+            System.out.println(s);
         }
     }
 }

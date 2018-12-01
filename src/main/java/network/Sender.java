@@ -23,6 +23,9 @@ public final class Sender implements Comparable<Sender>{
      */
     private final int chunksAmount;
     private boolean wasSent = false;
+    /**
+     * Keep order of instances of this class
+     */
     private static int sendersSent = 0;
     /**
      * The first sender is 0, the next is 1, etc.
@@ -73,7 +76,7 @@ public final class Sender implements Comparable<Sender>{
         if(file != null){
             sendFile(outputStream);
         }
-        if(!message.isEmpty()){
+        if(!(message == null || message.isEmpty())){
             sendMessage(outputStream);
         }
         sendCloser(outputStream);
@@ -157,11 +160,11 @@ public final class Sender implements Comparable<Sender>{
         return Integer.compare(number, o.number);
     }
 
-    public boolean wasSent() {
+    boolean wasSent() {
         return wasSent;
     }
 
-    public void wasSent(boolean wasSent) {
+    void wasSent(boolean wasSent) {
         this.wasSent = wasSent;
     }
 }
