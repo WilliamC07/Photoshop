@@ -133,7 +133,7 @@ public class Project {
         }else if(osName.startsWith("Windows")){
             this.programRoot = programRoot.resolve("AppData").resolve(programName);
         }else if(osName.startsWith("Linux")){
-            this.programRoot = projectRoot.resolve(programName);
+            this.programRoot = programRoot.resolve(programName);
         }
 
         try{
