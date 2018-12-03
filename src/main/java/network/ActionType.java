@@ -48,22 +48,6 @@ public enum ActionType {
      */
     RESOLVE_FAILED_FILE_TRANSFER,
 
-
-    /**
-     * Host client to server.
-     * This should be called when a user wants to share the image with others. The user should send the original image.
-     * This should be sent before {@link #SHARE_INITIALIZE_INSTRUCTIONS}.
-     */
-    SHARE_INITIALIZE_IMAGE,
-
-    /**
-     * Host client to server.
-     * This should be called when a user wants to share the image with others. The user should send the XML file with
-     * all the instructions done already.
-     * This should be sent after {@link #SHARE_INITIALIZE_IMAGE}
-     */
-    SHARE_INITIALIZE_INSTRUCTIONS,
-
     /**
      * Client to server
      * Tells the server to accept the changes done by the client.
