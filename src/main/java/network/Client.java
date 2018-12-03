@@ -20,6 +20,7 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public class Client implements ActionHandler{
     private Connector connector;
+    private Project project = Project.getInstance();
 
     /**
      * Constructs a Client to communicate with a network
@@ -39,9 +40,13 @@ public class Client implements ActionHandler{
     public void handle(String message, ActionType actionType, Connector connector) {
         switch(actionType){
             case UPDATE_TO_LATEST_COLLABORATOR:
-                Project.getInstance().setCollaborators(message.split(", "));
+                project.setCollaborators(message.split(", "));
+                break;
+            case UPDATE_PROJECT_NAME:
+                project.setName(message);
                 break;
         }
+
     }
 
     @Override

@@ -1,6 +1,8 @@
 package project;
 
+import network.ActionType;
 import network.Client;
+import network.Sender;
 import network.Server;
 
 import java.io.File;
@@ -105,7 +107,6 @@ public class Project {
 
         // Initialize project information
         this.client = client;
-
     }
 
     /**
@@ -163,6 +164,16 @@ public class Project {
         if(!(Files.exists(checkpointImageDirectory) && Files.isDirectory(checkpointImageDirectory))){
             Files.createDirectory(checkpointImageDirectory);
         }
+    }
+
+    /**
+     * Before the main view (the one where the user can see the image and edit it), this method should be called. This
+     * will request the server to send all the information. This should not be called from the constructor because
+     * an instance of this class must already exist before we can request information.
+     */
+    private void getSharedProjectInformation(){
+        client.sendFile(new Sender(ActionType.REQUEST_COLLABORATOR_LIST));
+        client.sendFile(new Sender(ActionType.REQUEST_PROJECT_NAME));
     }
 
     /**
@@ -231,11 +242,15 @@ public class Project {
     public void setName(String name){
         this.name = name;
         try{
+            // Rename the project
             Files.move(projectRoot, Files.createFile(projectRoot.getParent().resolve(name)),
                        StandardCopyOption.REPLACE_EXISTING);
         }catch(IOException e){
             e.printStackTrace();
         }
+
+        // TODO: Update the name on the screen
+        System.out.println(name);
     }
     /**
      * Get the name of the project

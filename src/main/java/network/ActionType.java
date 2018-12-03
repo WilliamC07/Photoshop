@@ -3,7 +3,7 @@ package network;
 /**
  * What action to perform on the receiving end of a socket.
  */
-public enum ActionType {
+public enum ActionType{
     /**
      * Server to client
      * Tells the client to update their instructions to the one received.
@@ -23,11 +23,24 @@ public enum ActionType {
     UPDATE_TO_LATEST_COLLABORATOR,
 
     /**
+     * Server to client
+     * Tells the client to update to the new project name
+     */
+    UPDATE_PROJECT_NAME,
+
+
+    /**
      * Client to server
      * Requests the server to send a list of the collaborators to the one sent. The server should respond with
      * {@link #UPDATE_TO_LATEST_COLLABORATOR}
      */
     REQUEST_COLLABORATOR_LIST,
+
+    /**
+     * Client to server
+     * Request the name of the project named by the host. The server should respond with {@link #UPDATE_PROJECT_NAME}
+     */
+    REQUEST_PROJECT_NAME,
 
     /**
      * Client to server
