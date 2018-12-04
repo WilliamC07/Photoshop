@@ -29,7 +29,8 @@ public class Project {
      */
     private String name;
     /**
-     * Path to the directory of the project.
+     * Path to the directory of the project. This may give the path to the server directory, created by
+     * {@link #createServerDirectory()} if the user is connected to the server.
      */
     private Path projectRoot;
     /**
@@ -104,6 +105,7 @@ public class Project {
     Project(Client client){
         // Initializes program information
         createProgramDirectory();
+        createServerDirectory();
 
         // Initialize project information
         this.client = client;
@@ -154,14 +156,51 @@ public class Project {
      * @throws FileAlreadyExistsException If the project name is already used, it will create a conflict in directory
      *                                    name.
      */
-    private void createProjectDirectory() throws IOException{
-        // Make project directory (information about a project; One directory per project)
+    private void createProjectDirectory(){
         this.projectRoot = programRoot.resolve(name);
-        Files.createDirectory(projectRoot);
 
+        try{
+            // Make project directory (information about a project; One directory per project)
+            Files.createDirectory(projectRoot);
+
+            // Create all the needed files
+            createProjectFiles();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * When the user connects to a server, they will download the project into this directory. If one already exists,
+     * it will delete all the contents inside without warning the user. If the user wants to save the project, they
+     * can either clone the server directory manually and TODO: clone it through the program
+     */
+    private void createServerDirectory(){
+        this.projectRoot = programRoot.resolve("server");
+        try{
+            if(Files.isDirectory(programRoot)){
+                // Delete the files inside if it already exists
+                deleteContentsOfDirectory(projectRoot);
+            }else{
+                // Create the directory because it doesn't exist
+                Files.createDirectory(programRoot);
+            }
+
+            // Create all the needed files
+            createProjectFiles();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Creates all the necessary files needed in the project directory.
+     * @throws IOException Exception from creating the files
+     */
+    private void createProjectFiles() throws IOException{
         // Create CheckPointImage directory if one doesn't exist
         this.checkpointImageDirectory = projectRoot.resolve("CheckPointImages");
-        if(!(Files.exists(checkpointImageDirectory) && Files.isDirectory(checkpointImageDirectory))){
+        if (!(Files.exists(checkpointImageDirectory) && Files.isDirectory(checkpointImageDirectory))) {
             Files.createDirectory(checkpointImageDirectory);
         }
     }
@@ -213,15 +252,7 @@ public class Project {
         if(path.getFileName().toString().endsWith(".png")){
             try {
                 // Remove any original image/checkpoint image/recent image
-                Files.walk(checkpointImageDirectory, 1).
-                        filter(p -> !Files.isDirectory(p)).  // Do not delete a directory, only files
-                        forEach(p -> {  // Delete the individual files
-                            try {
-                                Files.delete(p);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
+                deleteContentsOfDirectory(checkpointImageDirectory);
 
                 // Clone it to the checkpoint directory to prevent editing directly on true original file
                 Files.copy(path, checkpointImageDirectory.resolve("original.png"));
@@ -281,6 +312,29 @@ public class Project {
         this.collaborators = collaborators;
         for(String s : collaborators){
             System.out.println(s);
+        }
+    }
+
+    /**
+     * Deletes all the files in the directory. Depth of 10.
+     * @param path Directory path whose content is to be deleted
+     */
+    private void deleteContentsOfDirectory(Path path){
+        if(!Files.isDirectory(path)){
+            throw new IllegalArgumentException("Not a directory");
+        }
+        try{
+            Files.walk(path, 10).
+                    filter(p -> !Files.isDirectory(p)).  // Do not delete a directory, only files
+                    forEach(p -> {  // Delete the individual files
+                try{
+                    Files.delete(p);
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            });
+        }catch(IOException e){
+            e.printStackTrace();
         }
     }
 }
