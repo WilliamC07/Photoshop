@@ -127,39 +127,43 @@ final class MainDisplay extends SplitPane {
      * Allows the user to host a server and view the collaborators and information on how to join (give ip address and
      * port). Below this, the user can see the history of all the edits done on the image.
      */
-    private class RightSide extends SplitPane{
-        RightSide(){
-            // Sets up the SplitPane
-            // Network half
-            getItems().add(setNetworkDisplay());
-            // History half
-            getItems().add(new Rectangle(20, 20)); // Replace with history section
-        }
+     private class RightSide extends SplitPane{
+         RightSide(){
+             // Sets up the SplitPane
+             // Network half
+             getItems().add(setNetworkDisplay());
+             // History half
+             getItems().add(new Rectangle(20, 20)); // Replace with history section
+         }
 
-        private VBox setNetworkDisplay(){
-            VBox container = new VBox();
-            Label header = new Label("Network:");
-            Button hostServer = new Button("Host server");
-            Label ipLabel = new Label();
-            Label portLabel = new Label();
+         private VBox setNetworkDisplay(){
+             VBox container = new VBox();
+             Label header = new Label("Network:");
+             Button hostServer = new Button("Host server");
+             Label ipLabel = new Label();
+             Label portLabel = new Label();
+             // Hosts the server for others to connect
+             hostServer.setOnAction(e -> {
+                 Server server = new Server();
+                 if (project.hasOriginalImage()){
+                 try{
+                     ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
+                 }catch(UnknownHostException error){
+                     error.printStackTrace();
+                 }
+                 portLabel.setText("Port: 5000");
+                 container.getChildren().remove(hostServer);
+                 container.getChildren().addAll(ipLabel, portLabel);
+                 Project.getInstance().setServer(server);
+             }
+             else{
+               header.setText("pick a valid image");
+               hostServer.setText("don't click me");
+             }});
 
-            // Hosts the server for others to connect
-            hostServer.setOnAction(e -> {
-                Server server = new Server();
-                try{
-                    ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
-                }catch(UnknownHostException error){
-                    error.printStackTrace();
-                }
-                portLabel.setText("Port: 5000");
-                container.getChildren().remove(hostServer);
-                container.getChildren().addAll(ipLabel, portLabel);
-                Project.getInstance().setServer(server);
-            });
+             container.getChildren().addAll(header, hostServer);
+             return container;
+         }
 
-            container.getChildren().addAll(header, hostServer);
-            return container;
-        }
-
-    }
-}
+     }
+     }
