@@ -17,6 +17,7 @@ import java.util.concurrent.PriorityBlockingQueue;
  * Only one user should have this instance running when sharing a file with collaborators.
  */
 public class Server implements ActionHandler{
+    private Project project = Project.getInstance();
     private ArrayList<Connector> connectors = new ArrayList<>();
     /**
      * HashSet to prevent multiple users of the same name
@@ -57,6 +58,9 @@ public class Server implements ActionHandler{
     @Override
     public synchronized void handle(String message, ActionType actionType, Connector connector) {
         switch(actionType){
+            case REQUEST_PROJECT_NAME:
+                // Tells the connector to use the project name
+                connector.sendFile(new Sender(project.getName(), ActionType.UPDATE_PROJECT_NAME));
             case ADD_COLLABORATOR_USERNAME:
                 // Add the newly connected user to the list of contributors
                 collaborators.add(message);
