@@ -1,5 +1,7 @@
 package project;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import network.ActionType;
 import network.Client;
 import network.Sender;
@@ -8,7 +10,6 @@ import network.Server;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -59,7 +60,6 @@ public class Project {
      */
     private String[] collaborators;
 
-
     /**
      * Key: Value:
      * "original": path to original imaged used
@@ -67,6 +67,12 @@ public class Project {
      * "recent": path to most recently saved image
      */
     private HashMap<String, Path> imagePaths;
+
+    /**
+     * Image of the most recent done changes by the user(s). This is also the most recent image, path to this image
+     * is in {@link #imagePaths} with a key of "recent".
+     */
+    private WritableImage writableImage;
 
     /**
      * Constructor to create an instance of this singleton.
@@ -257,7 +263,12 @@ public class Project {
                 deleteContentsOfDirectory(checkpointImageDirectory);
 
                 // Clone it to the checkpoint directory to prevent editing directly on true original file
-                Files.copy(path, checkpointImageDirectory.resolve("original.png"));
+                Path pathToOriginal = checkpointImageDirectory.resolve("original.png");
+                Files.copy(path, pathToOriginal);
+
+                // Load the image onto the program
+                Image image = new Image(Files.newInputStream(pathToOriginal));
+                writableImage = new WritableImage(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
             }catch(IOException e){
                 // Do nothing, this will not occur unless the user decides to delete the project halfway through
             }
@@ -315,6 +326,14 @@ public class Project {
         for(String s : collaborators){
             System.out.println(s);
         }
+    }
+    /**
+     * The file will only exist if the user already chose an original image. If the user didn't choose the original
+     * image yet, it will return null.
+     * @return Instance of the current image being worked on.
+     */
+    public WritableImage getWritableImage() {
+        return writableImage;
     }
 
     /**
