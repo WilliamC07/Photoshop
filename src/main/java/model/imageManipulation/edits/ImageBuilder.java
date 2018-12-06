@@ -15,21 +15,21 @@ import javafx.scene.image.Image;
  * @author William Cao
  * @since 1.0
  */
-final class ImageBuilder{
+public final class ImageBuilder{
 	private final WritableImage WRITABLE_IMAGE;
 
 	/**
 	 * When the image is first loaded onto the program, it should run this method to allow edits to the image.
 	 * @param image Image loaded from disk
 	 */
-	ImageBuilder(Image image){
+	public ImageBuilder(Image image){
 		WRITABLE_IMAGE = new WritableImage(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
 	}
 
 	/**
 	 * To optimize undo, call this method to jump straight into a previously saved state of the WRITABLE_IMAGE.
 	 */
-	ImageBuilder(WritableImage WritableImage){
+	public ImageBuilder(WritableImage WritableImage){
 		WRITABLE_IMAGE = WritableImage;
 	}
 
@@ -38,7 +38,7 @@ final class ImageBuilder{
 	 * @param instruction What edit to make on the image.
 	 * @return Newly edited image
 	 */
-	ImageBuilder edit(Edit instruction){
+	public ImageBuilder edit(Edit instruction){
 		instruction.change(WRITABLE_IMAGE.getPixelWriter());
 		return this;
 	}
@@ -49,11 +49,20 @@ final class ImageBuilder{
 	 * @param instructions array of instructions to perform on the image
 	 * @return Newly edited image
 	 */
-	ImageBuilder edit(Edit[] instructions){
+	public ImageBuilder edit(Edit[] instructions){
 		for(Edit instruction : instructions){
 			edit(instruction);
 		}
 
 		return this;
 	}
+
+    /**
+     * This should only be used to display the image on the screen. Use the other methods in this class to perform
+     * edits on it.
+     * @return Image currently being worked on (same instance, not a copy)
+     */
+	public WritableImage getWritableImage(){
+	    return WRITABLE_IMAGE;
+    }
 }
