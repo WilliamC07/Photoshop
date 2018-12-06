@@ -19,7 +19,7 @@ public class ProjectFactory {
      * @param name Name of the project
      * @return Instance of Project
      */
-    public static Project createProject(String name) throws IOException {
+    public static Project createProject(String name) throws FileAlreadyExistsException {
         Project.project = new Project(name);
         return Project.getInstance();
     }

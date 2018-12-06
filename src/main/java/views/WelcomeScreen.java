@@ -26,6 +26,7 @@ import project.ProjectFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.nio.file.FileAlreadyExistsException;
 
 class WelcomeScreen extends VBox {
     private final int TITLE_FONT_SIZE = 30;
@@ -213,7 +214,7 @@ class WelcomeScreen extends VBox {
             primaryStage.setScene(new Scene(new MainDisplay()));
             primaryStage.setFullScreen(true);
 
-        }catch(IOException e){
+        }catch(FileAlreadyExistsException e){
             errorLabel.setText("Please enter a unique valid project name");
         }
     }

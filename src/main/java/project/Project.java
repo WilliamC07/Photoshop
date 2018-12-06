@@ -76,7 +76,7 @@ public class Project {
      * @throws FileAlreadyExistsException If the directory is created in the same directory as the project with the
      *                                    same name, it will throw this.
      */
-    Project(String name) throws IOException{
+    Project(String name) throws FileAlreadyExistsException{
         // Initializes program information
         createProgramDirectory();
 
@@ -156,7 +156,7 @@ public class Project {
      * @throws FileAlreadyExistsException If the project name is already used, it will create a conflict in directory
      *                                    name.
      */
-    private void createProjectDirectory(){
+    private void createProjectDirectory() throws FileAlreadyExistsException{
         this.projectRoot = programRoot.resolve(name);
 
         try{
@@ -165,6 +165,8 @@ public class Project {
 
             // Create all the needed files
             createProjectFiles();
+        }catch(FileAlreadyExistsException e){
+            throw e;
         }catch(IOException e){
             e.printStackTrace();
         }
