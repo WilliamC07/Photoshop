@@ -3,6 +3,7 @@ package views;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -67,6 +68,10 @@ final class MainDisplay extends SplitPane {
      * or use a blank canvas.
      */
     private class EditPane extends VBox{
+        private ScrollPane imageWrapper;
+        private ImageView imageView;
+
+
         EditPane(){
             // If there is no original image, the user most choose one. If there is one, use the most recent image to
             // display.
@@ -118,7 +123,11 @@ final class MainDisplay extends SplitPane {
          * Sets the view up to allow the user to edit the image.
          */
         private void showEditMode(){
-            ImageView imageView = new ImageView();
+            imageView = new ImageView(project.getImageBuilder().getWritableImage());
+            imageWrapper = new ScrollPane(imageView);
+
+
+            getChildren().add(imageWrapper);
         }
     }
 

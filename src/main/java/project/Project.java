@@ -6,6 +6,7 @@ import network.ActionType;
 import network.Client;
 import network.Sender;
 import network.Server;
+import model.imageManipulation.edits.ImageBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,10 +70,10 @@ public class Project {
     private HashMap<String, Path> imagePaths;
 
     /**
-     * Image of the most recent done changes by the user(s). This is also the most recent image, path to this image
-     * is in {@link #imagePaths} with a key of "recent".
+     * Builder of the most recent image with the most recent edits. The image inside this builder is the same as the
+     * image inside {@link #imagePaths} with a key of "recent".
      */
-    private WritableImage writableImage;
+    private ImageBuilder imageBuilder;
 
     /**
      * Constructor to create an instance of this singleton.
@@ -268,7 +269,7 @@ public class Project {
 
                 // Load the image onto the program
                 Image image = new Image(Files.newInputStream(pathToOriginal));
-                writableImage = new WritableImage(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
+                imageBuilder = new ImageBuilder(image);
             }catch(IOException e){
                 // Do nothing, this will not occur unless the user decides to delete the project halfway through
             }
@@ -332,8 +333,8 @@ public class Project {
      * image yet, it will return null.
      * @return Instance of the current image being worked on.
      */
-    public WritableImage getWritableImage() {
-        return writableImage;
+    public ImageBuilder getImageBuilder() {
+        return imageBuilder;
     }
 
     /**
