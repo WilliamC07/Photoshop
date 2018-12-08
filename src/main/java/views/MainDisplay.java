@@ -38,8 +38,6 @@ import java.net.UnknownHostException;
  */
 final class MainDisplay extends SplitPane {
     private Project project = Project.getInstance();
-    int displayWidth;
-    int displayHeight;
 
     MainDisplay(){
         // Screen is divided into 3 different parts
@@ -74,6 +72,8 @@ final class MainDisplay extends SplitPane {
     private class EditPane extends VBox{
         private ScrollPane imageWrapper;
         private ImageView imageView;
+        int displayWidth;
+        int displayHeight;
 
         EditPane(){
             // If there is no original image, the user most choose one. If there is one, use the most recent image to
@@ -136,13 +136,14 @@ final class MainDisplay extends SplitPane {
             imageView.setOnZoom((ZoomEvent z) -> {
                 double zoomFactor = z.getZoomFactor();
 
-                displayWidth *= zoomFactor;
-                displayHeight *= zoomFactor;
+                if(!(zoomFactor * displayWidth >= image.getWidth() * 2 ||
+                   zoomFactor * displayWidth <= image.getWidth() / 2)){
+                    displayWidth *= zoomFactor;
+                    displayHeight *= zoomFactor;
 
-                imageView.setFitWidth(displayWidth);
-                imageView.setFitHeight(displayHeight);
-
-                System.out.printf("width: %d height: %d\n", displayWidth, displayHeight);
+                    imageView.setFitWidth(displayWidth);
+                    imageView.setFitHeight(displayHeight);
+                }
             });
 
 
