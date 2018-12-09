@@ -122,8 +122,9 @@ class WelcomeScreen extends VBox {
         Label header = new Label("Open an existing project");
 
         Button openDirectoryChooserButton = new Button("Choose Project");
+        Label openDirectoryErrorLabel = new Label();
         // Need a wrapper to allow centering of the button
-        VBox openDirectoryContainer = new VBox(openDirectoryChooserButton);
+        VBox openDirectoryContainer = new VBox(openDirectoryChooserButton, openDirectoryErrorLabel);
 
         Separator separator = new Separator(Orientation.VERTICAL);
 
@@ -132,8 +133,8 @@ class WelcomeScreen extends VBox {
         TextField ipInputField = new TextField();
         TextField portInputField = new TextField();
         Button connectButton = new Button("Connect");
-        Label errorLabel = new Label();
-        VBox connectToServerContainer = new VBox(subheaderServer, ipInputField, portInputField, connectButton, errorLabel);
+        Label connectErrorLabel = new Label();
+        VBox connectToServerContainer = new VBox(subheaderServer, ipInputField, portInputField, connectButton, connectErrorLabel);
 
         HBox headContainer = new HBox(openDirectoryContainer, separator, connectToServerContainer);
 
@@ -146,6 +147,7 @@ class WelcomeScreen extends VBox {
 
         // Centering items for connectToServerContainer
         connectToServerContainer.setAlignment(Pos.CENTER);
+
 
         // Connecting to server text fonts and text
         ipInputField.setFont(new Font(TEXT_SIZE));
@@ -166,13 +168,17 @@ class WelcomeScreen extends VBox {
         openDirectoryContainer.setPrefWidth(ScreenDimensions.welcomeWidth / 2.0);
 
         // Make error label red
-        errorLabel.setTextFill(Color.RED);
+        connectErrorLabel.setTextFill(Color.RED);
+        openDirectoryErrorLabel.setTextFill(Color.RED);
 
         // Make the container take up space equally
         VBox.setVgrow(headContainer, Priority.ALWAYS);
 
         // Functionality to connect to the given ip address and port
-        connectButton.setOnAction(e -> connectToServer(ipInputField, portInputField, errorLabel));
+        connectButton.setOnAction(e -> connectToServer(ipInputField, portInputField, connectErrorLabel));
+
+        // Functionality to reopen previous project
+        openDirectoryChooserButton.setOnAction(e -> showReopenProject(openDirectoryErrorLabel));
 
         getChildren().addAll(header, headContainer);
     }
@@ -250,8 +256,19 @@ class WelcomeScreen extends VBox {
      * open that project. If it is not, it will inform the user through the label given
      * @param errorLabel Label to output the error message to the user
      */
-    private void showDirectoryChooser(Label errorLabel){
+    private void showReopenProject(Label errorLabel){
         DirectoryChooser directoryChooser = new DirectoryChooser();
         File file = directoryChooser.showDialog(this.getScene().getWindow());
+        // Null if the user didn't choose a directory (clicked cancel)
+        if(file != null){
+            try{
+                ProjectFactory.createProject(file.toPath());
+                // No error were thrown means it is a valid project, show the view
+                primaryStage.setScene(new Scene(new MainDisplay()));
+                primaryStage.setFullScreen(true);
+            }catch(IOException e){
+                errorLabel.setText("Error in opening project");
+            }
+        }
     }
 }

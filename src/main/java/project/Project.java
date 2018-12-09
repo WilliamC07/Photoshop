@@ -110,7 +110,12 @@ public class Project {
 
         // Initialize project information
         this.projectRoot = projectRoot;
+        this.checkpointImageDirectory = projectRoot.resolve("CheckPointImages");
         imagePaths = getCheckpointImages();
+
+        // Load the image onto the program
+        Image image = new Image(Files.newInputStream(imagePaths.get("original")));
+        imageBuilder = new ImageBuilder(image);
     }
 
     Project(Client client){
