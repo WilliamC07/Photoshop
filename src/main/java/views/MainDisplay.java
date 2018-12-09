@@ -1,5 +1,6 @@
 package views;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -43,6 +45,7 @@ final class MainDisplay extends SplitPane {
         // Screen is divided into 3 different parts
         getItems().addAll(new Button("App"), new EditPane(), new RightSide());
         setDividerPositions(0.2f, 0.6f);
+
     }
 
     /**
@@ -125,7 +128,7 @@ final class MainDisplay extends SplitPane {
         /**
          * Sets the view up to allow the user to edit the image.
          */
-        private void showEditMode(){
+        private void showEditMode() {
             WritableImage image = project.getImageBuilder().getWritableImage();
             displayWidth = (int) image.getWidth();
             displayHeight = (int) image.getHeight();
@@ -133,11 +136,13 @@ final class MainDisplay extends SplitPane {
             imageView = new ImageView(image);
             imageWrapper = new ScrollPane(imageView);
 
+            imageView.setPreserveRatio(true);
+
             imageView.setOnZoom((ZoomEvent z) -> {
                 double zoomFactor = z.getZoomFactor();
 
-                if(!(zoomFactor * displayWidth >= image.getWidth() * 2 ||
-                   zoomFactor * displayWidth <= image.getWidth() / 2)){
+                if (!(zoomFactor * displayWidth >= image.getWidth() * 2 ||
+                      zoomFactor * displayWidth <= image.getWidth() / 2)) {
                     displayWidth *= zoomFactor;
                     displayHeight *= zoomFactor;
 
@@ -146,7 +151,14 @@ final class MainDisplay extends SplitPane {
                 }
             });
 
-
+            imageView.setOnMouseClicked(e -> {
+                Bounds bounds = imageView.getLayoutBounds();
+                double scaleFactor = bounds.getWidth() / imageView.getImage().getWidth();
+                int xCord = (int) (e.getX() / scaleFactor);
+                int yCord = (int) (e.getY() / scaleFactor);
+                System.out.println(xCord);
+                System.out.println(yCord);
+            });
             getChildren().add(imageWrapper);
         }
     }
