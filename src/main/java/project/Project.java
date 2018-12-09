@@ -1,7 +1,6 @@
 package project;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import network.ActionType;
 import network.Client;
 import network.Sender;
@@ -90,7 +89,12 @@ public class Project {
         // Initialize project information
         this.name = name;
         createProjectDirectory();
-        imagePaths = getCheckpointImages();
+        try{
+            imagePaths = getCheckpointImages();
+        }catch(IOException e){
+            // Do nothing because the directory will exist (unless the user somehow messes up the whole
+            // file system - in that case, there are bigger problems than this program :\
+        }
     }
 
     /**
@@ -100,7 +104,7 @@ public class Project {
      *                    create the files needed. If any files are empty, it will be placed in a sub directory
      *                    of old files and generate new ones.
      */
-    Project(Path projectRoot) {
+    Project(Path projectRoot) throws IOException{
         // Initializes program information
         createProgramDirectory();
 
@@ -228,21 +232,17 @@ public class Project {
      * Gets the paths for the original image, checkpoint images, and most recent image.
      * @return Paths to the original image, checkpoint image, and most recent image.
      */
-    private HashMap<String, Path> getCheckpointImages(){
+    private HashMap<String, Path> getCheckpointImages() throws IOException{
         HashMap<String, Path> paths = new HashMap<>();
-        try{
-            // The name of the file
-            Files.walk(checkpointImageDirectory).
-                    filter(p -> !Files.isDirectory(p)).
-                    forEach((Path p) -> {
-                        String fileName = p.getFileName().toString();
-                        // Removes file extension (.png) to make it a key for the HashMap
-                        // The files are named as original.png, c# (ex. c0 for first checkpoint image), and recent.png
-                        paths.put(fileName.substring(0, fileName.indexOf(".")), p);
-                    });
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        // The name of the file
+        Files.walk(checkpointImageDirectory).
+                filter(p -> !Files.isDirectory(p)).
+                forEach((Path p) -> {
+                    String fileName = p.getFileName().toString();
+                    // Removes file extension (.png) to make it a key for the HashMap
+                    // The files are named as original.png, c# (ex. c0 for first checkpoint image), and recent.png
+                    paths.put(fileName.substring(0, fileName.indexOf(".")), p);
+                });
 
         return paths;
     }

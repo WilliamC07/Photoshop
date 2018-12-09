@@ -30,7 +30,7 @@ public class ProjectFactory {
      * @param projectPath Path to the existing project.
      * @return Instance of Project
      */
-    public static Project createProject(Path projectPath) {
+    public static Project createProject(Path projectPath) throws IOException{
         Project.project = new Project(projectPath);
         return Project.getInstance();
     }
