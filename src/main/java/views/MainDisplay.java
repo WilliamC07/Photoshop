@@ -2,10 +2,7 @@ package views;
 
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.ZoomEvent;
@@ -27,21 +24,20 @@ import java.net.UnknownHostException;
  * 2. TODO Editing board
  * 3. TODO Chat
  * 4. TODO Switch to different pages
- *
+ * <p>
  * Should only be initialized once in ApplicationStart. We are not having multiple windows, instead we have pages.
  * This is a SplitPane to allow the photo editor to choose how big he/she wants the sections to be.
- *
+ * <p>
  * Use a SplitPane to allow the user to switch
  *
- *
- * @see ApplicationStart
  * @author William Cao
+ * @see ApplicationStart
  * @since 1.0
  */
 final class MainDisplay extends SplitPane {
     private Project project = Project.getInstance();
 
-    MainDisplay(){
+    MainDisplay() {
         // Screen is divided into 3 different parts
         getItems().addAll(new Button("App"), new EditingComponent(), new RightSide());
         setDividerPositions(0.2f, 0.6f);
@@ -52,19 +48,19 @@ final class MainDisplay extends SplitPane {
      * Goes on the left of the screen.
      * This provides all the tools to use to edit the image.
      */
-    private class Tools extends VBox{
+    private class Tools extends VBox {
 
     }
 
     private Tools showTools() {
-      Tools toolmenu = new Tools();
-      Button crop = new Button("Crop");
-      Button brush = new Button("Brush");
-      Button shape = new Button("Shape");
-      Button text = new Button("Text");
-      Button erase = new Button("Erase");
-      toolmenu.getChildren().addAll(crop,brush,shape,text,erase);
-      return toolmenu;
+        Tools toolmenu = new Tools();
+        Button crop = new Button("Crop");
+        Button brush = new Button("Brush");
+        Button shape = new Button("Shape");
+        Button text = new Button("Text");
+        Button erase = new Button("Erase");
+        toolmenu.getChildren().addAll(crop, brush, shape, text, erase);
+        return toolmenu;
 
     }
 
@@ -73,43 +69,43 @@ final class MainDisplay extends SplitPane {
      * Allows the user to host a server and view the collaborators and information on how to join (give ip address and
      * port). Below this, the user can see the history of all the edits done on the image.
      */
-     private class RightSide extends SplitPane{
-         RightSide(){
-             // Sets up the SplitPane
-             // Network half
-             getItems().add(setNetworkDisplay());
-             // History half
-             getItems().add(new Rectangle(20, 20)); // Replace with history section
-         }
+    private class RightSide extends SplitPane {
+        RightSide() {
+            // Sets up the SplitPane
+            // Network half
+            getItems().add(setNetworkDisplay());
+            // History half
+            getItems().add(new Rectangle(20, 20)); // Replace with history section
+        }
 
-         private VBox setNetworkDisplay(){
-             VBox container = new VBox();
-             Label header = new Label("Network:");
-             Button hostServer = new Button("Host server");
-             Label ipLabel = new Label();
-             Label portLabel = new Label();
-             // Hosts the server for others to connect
-             hostServer.setOnAction(e -> {
-                 Server server = new Server();
-                 if (project.hasOriginalImage()){
-                 try{
-                     ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
-                 }catch(UnknownHostException error){
-                     error.printStackTrace();
-                 }
-                 portLabel.setText("Port: 5000");
-                 container.getChildren().remove(hostServer);
-                 container.getChildren().addAll(ipLabel, portLabel);
-                 Project.getInstance().setServer(server);
-             }
-             else{
-               header.setText("pick a valid image");
-               hostServer.setText("don't click me");
-             }});
+        private VBox setNetworkDisplay() {
+            VBox container = new VBox();
+            Label header = new Label("Network:");
+            Button hostServer = new Button("Host server");
+            Label ipLabel = new Label();
+            Label portLabel = new Label();
+            Label errorLabel = new Label();
+            // Hosts the server for others to connect
+            hostServer.setOnAction(e -> {
+                if (project.hasOriginalImage()) {
+                    Server server = new Server();
+                    try {
+                        ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
+                    } catch (UnknownHostException error) {
+                        error.printStackTrace();
+                    }
+                    portLabel.setText("Port: 5000");
+                    container.getChildren().removeAll(hostServer, errorLabel);
+                    container.getChildren().addAll(ipLabel, portLabel);
+                    Project.getInstance().setServer(server);
+                } else {
+                    errorLabel.setText("Please choose an image before sharing");
+                }
+            });
 
-             container.getChildren().addAll(header, hostServer);
-             return container;
-         }
+            container.getChildren().addAll(header, hostServer, errorLabel);
+            return container;
+        }
 
-     }
-     }
+    }
+}
