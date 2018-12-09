@@ -11,6 +11,7 @@ import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import model.imageManipulation.edits.Point;
 import project.Project;
 
 import java.io.File;
@@ -125,11 +126,16 @@ class EditingComponent extends VBox {
                 viewWidth *= zoomFactor;
                 imageHeight *= zoomFactor;
 
+                scaleFactor = imageView.getLayoutBounds().getWidth() / image.getWidth();
+
                 // Update the view to show how zoomed in the image is
                 imageView.setFitWidth(viewWidth);
                 imageView.setFitHeight(imageHeight);
 
-                scaleFactor = imageView.getLayoutBounds().getWidth() / image.getWidth();
+                // Relocate the positioning of the imageWrapper to actually zoom in on the cursor
+                Point centerPoint = new Point(z.getX(), z.getY(), scaleFactor);
+                imageWrapper.setHvalue(centerPoint.getX() / image.getWidth());
+                imageWrapper.setVvalue(centerPoint.getY() / image.getWidth());
             }
         });
 
