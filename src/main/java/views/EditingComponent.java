@@ -43,7 +43,7 @@ class EditingComponent extends VBox {
     /**
      * Zoom factor of how zoomed in or zoomed out the {@link #imageView} is
      */
-    private int scaleFactor;
+    private double scaleFactor;
     /**
      * Maximum scale factor the {@link #imageView} can be
      */
@@ -119,19 +119,21 @@ class EditingComponent extends VBox {
         imageView.setOnZoom((ZoomEvent z) -> {
             double zoomFactor = z.getZoomFactor();
 
-            if (!(zoomFactor * viewWidth >= image.getWidth() * 2 ||
-                  zoomFactor * viewWidth <= image.getWidth() / 2)) {
+            // Only resize the view if the zoom in or zoom out fits the requirements
+            if (!(zoomFactor * viewWidth >= image.getWidth() * maxScaleFactor ||
+                  zoomFactor * viewWidth <= image.getWidth() * minScaleFactor)) {
                 viewWidth *= zoomFactor;
                 imageHeight *= zoomFactor;
 
+                // Update the view to show how zoomed in the image is
                 imageView.setFitWidth(viewWidth);
                 imageView.setFitHeight(imageHeight);
+
+                scaleFactor = imageView.getLayoutBounds().getWidth() / image.getWidth();
             }
         });
 
         imageView.setOnMouseClicked(e -> {
-            Bounds bounds = imageView.getLayoutBounds();
-            double scaleFactor = bounds.getWidth() / imageView.getImage().getWidth();
             int xCord = (int) (e.getX() / scaleFactor);
             int yCord = (int) (e.getY() / scaleFactor);
             System.out.println(xCord);
