@@ -43,7 +43,7 @@ final class MainDisplay extends SplitPane {
 
     MainDisplay(){
         // Screen is divided into 3 different parts
-        getItems().addAll(new Button("App"), new EditPane(), new RightSide());
+        getItems().addAll(new Button("App"), new EditingComponent(), new RightSide());
         setDividerPositions(0.2f, 0.6f);
 
     }
@@ -66,101 +66,6 @@ final class MainDisplay extends SplitPane {
       toolmenu.getChildren().addAll(crop,brush,shape,text,erase);
       return toolmenu;
 
-    }
-    /**
-     * Goes on the center of the screen
-     * The image being edited goes here. If no image is selected, this should prompt the user to choose a file
-     * or use a blank canvas.
-     */
-    private class EditPane extends VBox{
-        private ScrollPane imageWrapper;
-        private ImageView imageView;
-        int displayWidth;
-        int displayHeight;
-
-        EditPane(){
-            // If there is no original image, the user most choose one. If there is one, use the most recent image to
-            // display.
-            if(!project.hasOriginalImage()){
-                showRequestMode();
-            }else{
-                showEditMode();
-            }
-
-            // Basic designs
-            setAlignment(Pos.CENTER);
-
-            // TODO: Code multiple pages (see google docs for more information)
-        }
-
-        /**
-         * Sets the view up to ask the user to choose the base picture of the project. If the user chooses a valid image
-         * (defined by project.Project), the view will change using {@link #showEditMode()} and remove all the nodes
-         * created by this method.
-         */
-        private void showRequestMode(){
-            Label directions = new Label("Open a image to get started");
-            Button chooseFile = new Button("Pick an image");
-            Label errorLabel = new Label();
-
-            // directions label design
-            directions.setFont(new Font(30));
-
-            // chooseFile functionality
-            chooseFile.setOnAction(e -> {
-                FileChooser fileChooser = new FileChooser();
-                File file = fileChooser.showOpenDialog(this.getScene().getWindow());
-                // Check null to make sure the user did choose a file and didn't click close/cancel
-                if(file != null && project.setOriginalImage(file)){
-                    // User can now start editing the image
-                    // Remove the nodes created by this method
-                    this.getChildren().removeAll(directions, chooseFile, errorLabel);
-                    // show the image on the screen
-                    showEditMode();
-                }else{
-                    errorLabel.setText("Please choose a valid image (.png files only)");
-                }
-            });
-
-            this.getChildren().addAll(directions, chooseFile, errorLabel);
-        }
-
-        /**
-         * Sets the view up to allow the user to edit the image.
-         */
-        private void showEditMode() {
-            WritableImage image = project.getImageBuilder().getWritableImage();
-            displayWidth = (int) image.getWidth();
-            displayHeight = (int) image.getHeight();
-
-            imageView = new ImageView(image);
-            imageWrapper = new ScrollPane(imageView);
-
-            imageView.setPreserveRatio(true);
-
-            imageView.setOnZoom((ZoomEvent z) -> {
-                double zoomFactor = z.getZoomFactor();
-
-                if (!(zoomFactor * displayWidth >= image.getWidth() * 2 ||
-                      zoomFactor * displayWidth <= image.getWidth() / 2)) {
-                    displayWidth *= zoomFactor;
-                    displayHeight *= zoomFactor;
-
-                    imageView.setFitWidth(displayWidth);
-                    imageView.setFitHeight(displayHeight);
-                }
-            });
-
-            imageView.setOnMouseClicked(e -> {
-                Bounds bounds = imageView.getLayoutBounds();
-                double scaleFactor = bounds.getWidth() / imageView.getImage().getWidth();
-                int xCord = (int) (e.getX() / scaleFactor);
-                int yCord = (int) (e.getY() / scaleFactor);
-                System.out.println(xCord);
-                System.out.println(yCord);
-            });
-            getChildren().add(imageWrapper);
-        }
     }
 
     /**
