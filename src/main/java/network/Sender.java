@@ -13,7 +13,7 @@ import java.io.IOException;
 public final class Sender implements Comparable<Sender>{
     public static final int MAX_DATA_SIZE = 100_000;
     // Either send a file or a message
-    private File file;
+    private FileInputStream fileInputStream;
     private String message;
 
     private final FileType fileType;
@@ -21,7 +21,7 @@ public final class Sender implements Comparable<Sender>{
     /**
      * The amount of data chunks to send
      */
-    private final int chunksAmount;
+    private int chunksAmount;
     private boolean wasSent = false;
     /**
      * Keep order of instances of this class
@@ -32,6 +32,7 @@ public final class Sender implements Comparable<Sender>{
      * Used for comparable
      */
     private int number = sendersSent++;
+    private int fileSize;
 
     /**
      * Constructs an instance of the class.
@@ -40,12 +41,28 @@ public final class Sender implements Comparable<Sender>{
      * @param actionType What action should the receiving end perform after receiving the data
      */
     public Sender(File file, FileType fileType, ActionType actionType) {
-        this.file = file;
+        try{
+            this.fileInputStream = new FileInputStream(file);
+        }catch(IOException e){
+            // Do nothing
+        }
         this.fileType = fileType;
         this.actionType = actionType;
 
-        int fileSize = (int) file.length();
+        this.fileSize = (int) file.length();
         this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE);
+    }
+
+    public Sender(FileInputStream fileInputStream, FileType fileType, ActionType actionType){
+        this.fileInputStream = fileInputStream;
+        this.fileType = fileType;
+        this.actionType = actionType;
+        try{
+            this.fileSize = fileInputStream.available();
+            this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE);
+        }catch(IOException e){
+            // Do nothing
+        }
     }
 
     public Sender(String message, ActionType actionType){
@@ -58,7 +75,7 @@ public final class Sender implements Comparable<Sender>{
     public Sender(ActionType actionType){
         this.actionType = actionType;
         this.chunksAmount = 0;
-        this.file = null; // Not sending a file
+        this.fileInputStream = null; // Not sending a file
         this.fileType = FileType.NONE;
     }
 
@@ -73,7 +90,7 @@ public final class Sender implements Comparable<Sender>{
     void send(DataOutputStream outputStream) throws IOException {
         sendIdentifier(outputStream);
         // Only send data if there is a file to send, otherwise just skip to closer
-        if(file != null){
+        if(fileInputStream != null){
             sendFile(outputStream);
         }
         if(!(message == null || message.isEmpty())){
@@ -95,14 +112,14 @@ public final class Sender implements Comparable<Sender>{
     private void sendIdentifier(DataOutputStream stream) throws IOException {
         stream.writeInt(ChunkType.get(ChunkType.START)); // Chunk identifier
         stream.writeInt(chunksAmount);
-        stream.writeInt(file != null ? (int) file.length() : 0); // File size
+        stream.writeInt(fileInputStream != null ? (int) fileSize : 0); // File size
         stream.writeInt(FileType.get(fileType));
         stream.flush();
     }
 
     /**
-     * Sends DATA chunks. These chunks will only send if there is a File to send (that is if {@link #file} is not null).
-     * The chunks includes the following data:
+     * Sends DATA chunks. These chunks will only send if there is a File to send (that is if {@link #fileInputStream}
+     * is not null). The chunks includes the following data:
      * 1. Chunk identifier (int)
      * 2. Chunk number (starting with 0) (int)
      * 3. Byte[] of a section of the file to be sent (byte[])
@@ -110,8 +127,6 @@ public final class Sender implements Comparable<Sender>{
      * @throws IOException Exception from the stream
      */
     private void sendFile(DataOutputStream stream) throws IOException{
-        FileInputStream fileInputStream = new FileInputStream(file);
-        int fileSize = (int) file.length();
         int lastChunkSize = fileSize - (chunksAmount - 1) * MAX_DATA_SIZE;
 
         for(int i = 0; i < chunksAmount; i++){

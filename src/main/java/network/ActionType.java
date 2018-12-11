@@ -28,6 +28,11 @@ public enum ActionType{
      */
     UPDATE_PROJECT_NAME,
 
+    /**
+     * Server to client
+     * Tells the client to use the original image defined by the host
+     */
+    UPDATE_ORIGINAL_IMAGE,
 
     /**
      * Client to server
@@ -71,22 +76,22 @@ public enum ActionType{
      * Client to server
      * Gets the original image (the very first image used in the project)
      */
-    SEND_ORIGINAL_IMAGE,
+    REQUEST_ORIGINAL_IMAGE,
     /**
      * Client to server
      * Gets the most recent checkpoint image.
      */
-    SEND_LATEST_CHECKPOINT_IMAGE,
+    REQUEST_LATEST_CHECKPOINT_IMAGE,
     /**
      * Client to server
      * Gets all the instruction done on the original image
      */
-    SEND_ALL_INSTRUCTIONS,
+    REQUEST_ALL_INSTRUCTIONS,
     /**
      * Client to server
      * Gets the instruction done on the latest checkpoint image
      */
-    SEND_LATEST_INSTRUCTION;
+    REQUEST_LATEST_INSTRUCTION;
 
     /**
      * Give values to the enum values (index position)

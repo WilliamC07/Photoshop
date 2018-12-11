@@ -2,8 +2,11 @@ package network;
 
 import project.Project;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -55,6 +58,7 @@ public class Server implements ActionHandler{
             case REQUEST_PROJECT_NAME:
                 // Tells the connector to use the project name
                 connector.sendFile(new Sender(project.getName(), ActionType.UPDATE_PROJECT_NAME));
+                break;
             case ADD_COLLABORATOR_USERNAME:
                 // Add the newly connected user to the list of contributors
                 collaborators.add(message);
@@ -65,7 +69,16 @@ public class Server implements ActionHandler{
                 // Tells all the connectors to update their list of contributors
                 send(new Sender(String.join(", ", collaborators.toArray(new String[0])),
                                 ActionType.UPDATE_TO_LATEST_COLLABORATOR));
-
+                break;
+            case REQUEST_ORIGINAL_IMAGE:
+                // Give the current connector the original image
+                try{
+                    FileInputStream fileInputStream = new FileInputStream(new File(project.getOriginalImage().toUri()));
+                    connector.sendFile(new Sender(fileInputStream, FileType.IMAGE, ActionType.UPDATE_ORIGINAL_IMAGE));
+                }catch(IOException e){
+                    // Do nothing
+                }
+                break;
         }
     }
 

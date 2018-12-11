@@ -51,7 +51,11 @@ public class Client implements ActionHandler{
 
     @Override
     public void handle(byte[] file, FileType fileType, ActionType actionType, Connector connector) {
+        switch(actionType){
+            case UPDATE_ORIGINAL_IMAGE:
 
+                break;
+        }
     }
 
     @Override
