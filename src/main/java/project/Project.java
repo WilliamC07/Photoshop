@@ -8,6 +8,7 @@ import network.Server;
 import model.imageManipulation.edits.ImageBuilder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.HashMap;
@@ -286,6 +287,23 @@ public class Project {
     }
 
     /**
+     * Creates the original image given the byte array. The image must be a .png (for now)
+     * @param byteArray Byte representation of the image.
+     */
+    public void setOriginalImage(byte[] byteArray){
+        try{
+            // Remove any original image/checkpoint image/recent image
+            deleteContentsOfDirectory(checkpointImageDirectory);
+
+            Path pathToOriginal = checkpointImageDirectory.resolve("original.png");
+            FileOutputStream out = new FileOutputStream(new File(pathToOriginal.toUri()));
+            out.write(byteArray);
+        }catch(IOException e){
+
+        }
+    }
+
+    /**
      * Name the project. This can be renamed multiple times.
      * You must check if the name won't conflict before passing it into this function.
      */
@@ -340,6 +358,9 @@ public class Project {
      */
     public ImageBuilder getImageBuilder() {
         return imageBuilder;
+    }
+    public Path getOriginalImage(){
+        return imagePaths.get("original");
     }
 
     /**
