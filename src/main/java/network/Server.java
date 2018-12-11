@@ -3,15 +3,9 @@ package network;
 import project.Project;
 
 import java.io.IOException;
-import java.io.File;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * Only one user should have this instance running when sharing a file with collaborators.
@@ -65,13 +59,22 @@ public class Server implements ActionHandler{
                 // Add the newly connected user to the list of contributors
                 collaborators.add(message);
                 // Tell everyone to request for the update version of the list of collaborator
-                send(new Sender(ActionType.REQUEST_COLLABORATOR_LIST));
+                send(new Sender(collaboratorNames(), ActionType.UPDATE_TO_LATEST_COLLABORATOR));
                 break;
             case REQUEST_COLLABORATOR_LIST:
                 // Tells all the connectors to update their list of contributors
                 send(new Sender(String.join(", ", collaborators.toArray(new String[0])),
                                 ActionType.UPDATE_TO_LATEST_COLLABORATOR));
+
         }
+    }
+
+    /**
+     * Returns a formatted string with the names of all the current contributors
+     * @return A formatted string with the names of all the current contributors
+     */
+    private String collaboratorNames(){
+        return String.join(", ", collaborators.toArray(new String[0]));
     }
 
     @Override
