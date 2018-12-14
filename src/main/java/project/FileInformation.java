@@ -46,7 +46,7 @@ public class FileInformation {
      * "checkpoint#" The checkpoint images created by the program (checkpoint0, checkpoint1, ect.)
      * "recent" The most recent image created (the one with the most recent edits
      */
-    private HashMap<String, Path> images;
+    private HashMap<String, Path> images = new HashMap<>();
 
     /**
      * Constructs an instance of this class. It will create the program directory if it doesn't already exist.
@@ -132,6 +132,28 @@ public class FileInformation {
 
         return true;
     }
+
+    public void openExistingProject(Path pathToProject){
+        // Set variables
+        projectPath = programPath;
+
+        try{
+            // Get all the checkpoint images
+            Files.walk(projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME)).
+                    filter(p -> !p.equals(projectPath)).
+                    forEach(p -> {
+                        String fileName = p.getFileName().toString();
+                        // Removes file extension (.png) to make it a key for the HashMap
+                        // The files are named as original.png, c# (ex. c0 for first checkpoint image), and recent.png
+                        images.put(fileName.substring(0, fileName.indexOf(".")), p);
+                    });
+
+        }catch(IOException e){
+            System.out.println("Bad project, missing information");
+            System.exit(1);
+        }
+    }
+
 
     /**
      * Creates the server directory. This directory is used when the user is connected to another computer. All
