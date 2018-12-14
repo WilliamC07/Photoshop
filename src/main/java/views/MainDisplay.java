@@ -35,11 +35,12 @@ import java.net.UnknownHostException;
  * @since 1.0
  */
 final class MainDisplay extends SplitPane {
-    private Project project = Project.getInstance();
+    private final Project project;
 
-    MainDisplay() {
+    MainDisplay(Project project) {
+        this.project = project;
         // Screen is divided into 3 different parts
-        getItems().addAll(new Button("App"), new EditingComponent(), new RightSide());
+        getItems().addAll(new Button("App"), new EditingComponent(project), new RightSide());
         setDividerPositions(0.2f, 0.6f);
 
     }
@@ -87,8 +88,8 @@ final class MainDisplay extends SplitPane {
             Label errorLabel = new Label();
             // Hosts the server for others to connect
             hostServer.setOnAction(e -> {
-                if (project.hasOriginalImage()) {
-                    Server server = new Server();
+                if (project.getOriginalImage() != null) {
+                    Server server = new Server(project);
                     try {
                         ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
                     } catch (UnknownHostException error) {
@@ -97,7 +98,7 @@ final class MainDisplay extends SplitPane {
                     portLabel.setText("Port: 5000");
                     container.getChildren().removeAll(hostServer, errorLabel);
                     container.getChildren().addAll(ipLabel, portLabel);
-                    Project.getInstance().setServer(server);
+                    project.setServer(server);
                 } else {
                     errorLabel.setText("Please choose an image before sharing");
                 }
