@@ -237,10 +237,13 @@ class WelcomeScreen extends VBox {
 
         continueButton.setOnAction(e -> {
             String username = usernameInput.getText();
-            // ", " is the delimiter to convert a string to an list of usernames
+            // ", " is the delimiter to convert a string to an list of user names
             if(!username.isBlank() && !username.contains(", ")){
                 System.out.println("username + "+ username);
                 project.getClient().sendFile(new Sender(username, ActionType.ADD_COLLABORATOR_USERNAME));
+                project.initializeSharedProject();
+                primaryStage.setScene(new Scene(new MainDisplay(project)));
+                primaryStage.setFullScreen(true);
             }
         });
 

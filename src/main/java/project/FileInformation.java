@@ -236,13 +236,14 @@ public class FileInformation {
         Path path = programPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("original.png");
 
         try{
-            Files.createFile(path);
-            FileOutputStream outputStream = new FileOutputStream(path.toFile());
+            FileOutputStream outputStream = new FileOutputStream(projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME), );
+            outputStream.write(fileBytes);
             outputStream.close();
 
             images.put("original", path);
             return new Image(Files.newInputStream(path));
         }catch(IOException e){
+            e.printStackTrace();
             System.out.println("error in making original data from received data");
         }
 

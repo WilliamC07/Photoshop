@@ -1,7 +1,9 @@
 package project;
 
 import javafx.scene.image.Image;
+import network.ActionType;
 import network.Client;
+import network.Sender;
 import network.Server;
 import model.imageManipulation.edits.ImageBuilder;
 import views.ApplicationStart;
@@ -111,5 +113,12 @@ public class Project {
 
     public String getProjectName(){
         return projectName;
+    }
+
+    /**
+     * Requests the server for a series of information
+     */
+    public void initializeSharedProject(){
+        client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
     }
 }

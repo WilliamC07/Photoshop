@@ -54,7 +54,7 @@ public class Client implements ActionHandler{
     public void handle(byte[] file, FileType fileType, ActionType actionType, Connector connector) {
         switch(actionType){
             case UPDATE_ORIGINAL_IMAGE:
-
+                project.setOriginalImage(file);
                 break;
         }
     }
