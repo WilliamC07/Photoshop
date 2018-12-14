@@ -21,12 +21,10 @@ import network.ActionType;
 import network.Client;
 import network.Sender;
 import project.Project;
-import project.ProjectFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.nio.file.FileAlreadyExistsException;
 
 class WelcomeScreen extends VBox {
     private final int TITLE_FONT_SIZE = 30;
@@ -34,8 +32,10 @@ class WelcomeScreen extends VBox {
     private final int SUBHEADER_FONT_SIZE = 15;
     private final int TEXT_SIZE = 13;
     private final Stage primaryStage;
+    private final Project project;
 
-    WelcomeScreen(Stage primaryStage){
+    WelcomeScreen(Stage primaryStage, Project project){
+        this.project = project;
         this.primaryStage = primaryStage;
         this.setAlignment(Pos.CENTER);
         this.setPrefSize(ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
@@ -194,8 +194,7 @@ class WelcomeScreen extends VBox {
             String ip = ipField.getText();
             // Make sure the port given is a number
             int port = Integer.parseInt(portField.getText());
-
-            ProjectFactory.createProject(new Client(ip, port));
+            project.connectToServer(new Client(ip, port, project));
 
             // If we reached this point, the connection was successful
             showConnectToServerInfo();
@@ -213,14 +212,11 @@ class WelcomeScreen extends VBox {
             errorLabel.setText("Enter a project name");
             return;
         }
-
-        try{
-            ProjectFactory.createProject(projectName);
+        if(project.createProject(projectName)) {
             // Project was successfully made, show the main view
-            primaryStage.setScene(new Scene(new MainDisplay()));
+            primaryStage.setScene(new Scene(new MainDisplay(project)));
             primaryStage.setFullScreen(true);
-
-        }catch(FileAlreadyExistsException e){
+        }else {
             errorLabel.setText("Please enter a unique valid project name");
         }
     }
@@ -244,7 +240,7 @@ class WelcomeScreen extends VBox {
             // ", " is the delimiter to convert a string to an list of usernames
             if(!username.isBlank() && !username.contains(", ")){
                 System.out.println("username + "+ username);
-                Project.getInstance().getClient().sendFile(new Sender(username, ActionType.ADD_COLLABORATOR_USERNAME));
+                project.getClient().sendFile(new Sender(username, ActionType.ADD_COLLABORATOR_USERNAME));
             }
         });
 
@@ -261,14 +257,11 @@ class WelcomeScreen extends VBox {
         File file = directoryChooser.showDialog(this.getScene().getWindow());
         // Null if the user didn't choose a directory (clicked cancel)
         if(file != null){
-            try{
-                ProjectFactory.createProject(file.toPath());
-                // No error were thrown means it is a valid project, show the view
-                primaryStage.setScene(new Scene(new MainDisplay()));
-                primaryStage.setFullScreen(true);
-            }catch(IOException e){
-                errorLabel.setText("Error in opening project");
-            }
+            //TODO: check if directory is a valid project and tell user if it isn't
+            project.openExistingProject(file.toPath());
+            // No error were thrown means it is a valid project, show the view
+            primaryStage.setScene(new Scene(new MainDisplay(project)));
+            primaryStage.setFullScreen(true);
         }
     }
 }

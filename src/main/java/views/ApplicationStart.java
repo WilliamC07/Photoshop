@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.information.ScreenDimensions;
+import project.Project;
 
 
 /**
@@ -15,18 +16,25 @@ import model.information.ScreenDimensions;
  * @since 1.0
  */
 public class ApplicationStart extends Application{
+    /**
+     * This is the head of the program.
+     */
+    private Project project;
 
 	/**
 	 * Initialization before the screen is shown. This method is called right after {@link #main(String[])}.
 	 */
-	@Override public void init(){}
+	@Override public void init(){
+	    project = new Project();
+    }
 
 	/**
 	 * Entry point of the application. Gets called after {@link #init()}.
 	 */
 	@Override public void start(Stage primaryStage){
 		// First view is the welcome screen, so use those dimensions
-		Scene scene = new Scene(new WelcomeScreen(primaryStage), ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
+		Scene scene = new Scene(new WelcomeScreen(primaryStage, project),
+                                ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
@@ -37,7 +45,7 @@ public class ApplicationStart extends Application{
 	@Override public void stop(){}
 
 	/**
-	 * This is what starts the application. This should NOT be the starting point of the program. Another class should 
+	 * This is what starts the application. This should NOT be the starting point of the program. Another class should
 	 * call this to start the application.
 	 */
 	public static void main(String[] args){
