@@ -19,6 +19,10 @@ public class FileInformation {
      * Name of the checkpoint directory. Each project has this directory.
      */
     private final String CHECKPOINT_IMAGE_DIRECTORY_NAME = "checkpoints";
+    /**
+     * Name of the server directory. Only one of this exists.
+     */
+    private final String SERVER_DIRECTORY_NAME = "server";
 
     /**
      * The program will have its own directory.
@@ -32,7 +36,8 @@ public class FileInformation {
     private ArrayList<Path> projectPaths;
     /**
      * Each project will have a unique project name. The project directories are located in the program directory.
-     * This project path should be used only if {@link #createProject(String)} returns true.
+     * This project path should be used only if {@link #createProject(String)} returns true or if the user
+     * is connect to a server. The information received from the server will be located in this path.
      */
     private Path projectPath;
     /**
@@ -47,10 +52,12 @@ public class FileInformation {
      * Constructs an instance of this class. It will create the program directory if it doesn't already exist.
      */
     public FileInformation(){
-        // Creates necessary directories and paths pointing to those directories
+        // Create the program directory
         createProgramDirectory();
         // Get all the existing projects created in the program directory
         projectPaths = getProjectsPath();
+        // Creates any other required directories/files for the program to run
+        createServerDirectory();
     }
 
     /**
@@ -124,5 +131,25 @@ public class FileInformation {
         }
 
         return true;
+    }
+
+    /**
+     * Creates the server directory. This directory is used when the user is connected to another computer. All
+     * the files the server sends will be located in this directory. It is cleared when the user connects to a
+     * server (even if it is the same server).
+     */
+    private void createServerDirectory(){
+        // Delete the old connection data
+        Path oldServerPath = programPath.resolve(SERVER_DIRECTORY_NAME);
+        if(projectPaths.contains(oldServerPath)){
+           try{
+               Files.delete(oldServerPath);
+           }catch(IOException e){
+               // Do nothing
+           }
+        }
+
+        // Creates the directory
+        createProject(SERVER_DIRECTORY_NAME);
     }
 }
