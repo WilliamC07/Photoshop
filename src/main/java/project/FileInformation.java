@@ -133,6 +133,10 @@ public class FileInformation {
         return true;
     }
 
+    /**
+     * Opens the existing project and read its information.
+     * @param pathToProject Path to the existing project
+     */
     public void openExistingProject(Path pathToProject){
         // Set variables
         projectPath = programPath;
