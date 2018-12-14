@@ -10,7 +10,16 @@ import java.util.HashMap;
  * Deals with the file system on the computer. Creates all needed files and provides paths.
  */
 public class FileInformation {
+    /**
+     * Name of the program.
+     * TODO: Come up with a better name
+     */
     public final String PROGRAM_NAME = "PhotoshopJava";
+    /**
+     * Name of the checkpoint directory. Each project has this directory.
+     */
+    private final String CHECKPOINT_IMAGE_DIRECTORY_NAME = "checkpoints";
+
     /**
      * The program will have its own directory.
      * The name of the program directory is "photoshopJava"
@@ -23,6 +32,7 @@ public class FileInformation {
     private ArrayList<Path> projectPaths;
     /**
      * Each project will have a unique project name. The project directories are located in the program directory.
+     * This project path should be used only if {@link #createProject(String)} returns true.
      */
     private Path projectPath;
     /**
@@ -88,5 +98,31 @@ public class FileInformation {
         return paths;
     }
 
+    /**
+     * Attempts to create a project given the name in the program directory. The name not be blank and no other
+     * project can share the same name as it.
+     * @param name Name of the project
+     * @return True if the project was successfully created, false otherwise.
+     */
+    public boolean createProject(String name){
+        projectPath = programPath.resolve(name);
 
+        // Make sure the name is valid and unique
+        if(name.isBlank() || projectPaths.contains(projectPath))
+            return false;
+
+        try{
+            // Create the directory
+            Files.createDirectory(projectPath);
+
+            // Add all necessary files/directories in the project
+            Files.createDirectory(projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME));
+        }catch(IOException e){
+            System.out.println("Cannot create project");
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        return true;
+    }
 }
