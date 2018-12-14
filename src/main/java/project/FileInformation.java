@@ -20,7 +20,7 @@ public class FileInformation {
      * List of all the projects in the program directory.
      * Note: Projects can exist outside the program directory.
      */
-    private ArrayList<Path> projects;
+    private ArrayList<Path> projectPaths;
     /**
      * Each project will have a unique project name. The project directories are located in the program directory.
      */
@@ -37,7 +37,10 @@ public class FileInformation {
      * Constructs an instance of this class. It will create the program directory if it doesn't already exist.
      */
     public FileInformation(){
+        // Creates necessary directories and paths pointing to those directories
         createProgramDirectory();
+        // Get all the existing projects created in the program directory
+        projectPaths = getProjectsPath();
     }
 
     /**
@@ -67,6 +70,22 @@ public class FileInformation {
             System.out.println("Failed to create program directory");
             System.exit(1); // Cannot continue
         }
+    }
+
+    /**
+     * Looks through the program directory and gets the path of all the projects located in the directory.
+     */
+    private ArrayList<Path> getProjectsPath(){
+        ArrayList<Path> paths = new ArrayList<>();
+        try{
+            Files.walk(programPath).
+                    filter(p -> Files.isDirectory(p) && !p.equals(programPath)). // walk gives root directory too
+                    forEach(System.out::println);
+        }catch(IOException e){
+            System.out.println("Error in getting getting paths of existing projects");
+            System.exit(1);
+        }
+        return paths;
     }
 
 
