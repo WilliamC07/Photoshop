@@ -1,6 +1,10 @@
 package project;
 
+import javafx.scene.image.Image;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +33,7 @@ public class FileInformation {
 
     /**
      * The program will have its own directory.
-     * The name of the program directory is "photoshopJava"
+     * The name of the program directory is "PhotoshopJava"
      */
     private Path programPath;
     /**
@@ -100,7 +104,7 @@ public class FileInformation {
         try {
             Files.walk(programPath).
                     filter(p -> Files.isDirectory(p) && !p.equals(programPath)). // walk gives root directory too
-                    forEach(System.out::println);
+                    forEach(paths::add);
         } catch (IOException e) {
             System.out.println("Error in getting getting paths of existing projects");
             System.exit(1);
@@ -171,9 +175,19 @@ public class FileInformation {
     private void createServerDirectory() {
         // Delete the old connection data
         Path serverPath = programPath.resolve(SERVER_DIRECTORY_NAME);
+
         if (projectPaths.contains(serverPath)) {
             deleteContentsOfDirectory(serverPath);
+        }else{
+            // Make the directory since it doesn't exist
+            try{
+                Files.createDirectory(serverPath);
+            }catch(IOException e){
+                e.printStackTrace();
+            }
         }
+
+        System.out.println(serverPath);
 
         // Remake files/directories
         createProjectFiles(serverPath);
@@ -211,9 +225,28 @@ public class FileInformation {
                 // Do nothing, this will not occur unless the user decides to delete the project halfway through
             }
 
+            images.put("original", path);
+
             return true;
         }
         return false; // Not a valid picture
+    }
+
+    public Image setOriginalImage(byte[] fileBytes){
+        Path path = programPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("original.png");
+
+        try{
+            Files.createFile(path);
+            FileOutputStream outputStream = new FileOutputStream(path.toFile());
+            outputStream.close();
+
+            images.put("original", path);
+            return new Image(Files.newInputStream(path));
+        }catch(IOException e){
+            System.out.println("error in making original data from received data");
+        }
+
+        return null; // error in making the file with the received data
     }
 
     private void deleteContentsOfDirectory(Path path){
