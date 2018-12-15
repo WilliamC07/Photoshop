@@ -15,7 +15,7 @@ import project.Project;
  * @author William Cao
  * @since 1.0
  */
-public class ApplicationStart extends Application{
+public class Head extends Application{
     /**
      * This is the head of the program.
      */
