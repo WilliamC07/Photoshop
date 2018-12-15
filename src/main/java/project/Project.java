@@ -93,16 +93,18 @@ public class Project {
     }
 
     public ImageBuilder getImageBuilder() {
+        if(imageBuilder == null){
+            try{
+                imageBuilder = new ImageBuilder(new Image(Files.newInputStream(getOriginalImage().toPath())));
+            }catch(IOException e){
+                System.out.println("cannot get image builder");
+                e.printStackTrace();
+            }
+        }
         return imageBuilder;
     }
 
     public boolean setOriginalImage(File file){
-        try{
-            imageBuilder = new ImageBuilder(new Image(Files.newInputStream(file.toPath())));
-        }catch(IOException e){
-            return false;
-        }
-
         return fileInformation.setOriginalImage(file);
     }
 

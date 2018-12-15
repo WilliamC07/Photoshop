@@ -147,12 +147,12 @@ public class FileInformation {
      */
     public void openExistingProject(Path pathToProject) {
         // Set variables
-        projectPath = programPath;
+        projectPath = pathToProject;
 
         try {
             // Get all the checkpoint images
             Files.walk(projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME)).
-                    filter(p -> !p.equals(projectPath)).
+                    filter(p -> !Files.isDirectory(p)).
                     forEach(p -> {
                         String fileName = p.getFileName().toString();
                         // Removes file extension (.png) to make it a key for the HashMap
