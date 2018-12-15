@@ -55,8 +55,11 @@ class EditingComponent extends VBox {
 
     private final Project project;
 
-    EditingComponent(Project project){
+    private final MainDisplay parent;
+
+    EditingComponent(Project project, MainDisplay parent){
         this.project = project;
+        this.parent = parent;
         // TODO: should be located in a css for design
         setAlignment(Pos.CENTER);
 

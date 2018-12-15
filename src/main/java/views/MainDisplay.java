@@ -31,29 +31,8 @@ final class MainDisplay extends SplitPane {
     MainDisplay(Project project) {
         this.project = project;
         // Screen is divided into 3 different parts
-        getItems().addAll(new Button("App"), new EditingComponent(project), new RightSide());
+        getItems().addAll(new ToolsComponent(this), new EditingComponent(project, this), new RightSide());
         setDividerPositions(0.2f, 0.6f);
-
-    }
-
-    /**
-     * Goes on the left of the screen.
-     * This provides all the tools to use to edit the image.
-     */
-    private class Tools extends VBox {
-
-    }
-
-    private Tools showTools() {
-        Tools toolmenu = new Tools();
-        Button crop = new Button("Crop");
-        Button brush = new Button("Brush");
-        Button shape = new Button("Shape");
-        Button text = new Button("Text");
-        Button erase = new Button("Erase");
-        toolmenu.getChildren().addAll(crop, brush, shape, text, erase);
-        return toolmenu;
-
     }
 
     /**
