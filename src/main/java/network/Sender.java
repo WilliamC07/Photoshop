@@ -112,7 +112,7 @@ public final class Sender implements Comparable<Sender>{
     private void sendIdentifier(DataOutputStream stream) throws IOException {
         stream.writeInt(ChunkType.get(ChunkType.START)); // Chunk identifier
         stream.writeInt(chunksAmount);
-        stream.writeInt(fileInputStream != null ? (int) fileSize : 0); // File size
+        stream.writeInt(fileInputStream != null ? fileSize : 0); // File size
         stream.writeInt(FileType.get(fileType));
         stream.flush();
     }

@@ -15,7 +15,7 @@ import java.util.HashSet;
  */
 public class Server implements ActionHandler{
     private final Project project;
-    private ArrayList<Connector> connectors = new ArrayList<>();
+    private volatile ArrayList<Connector> connectors = new ArrayList<>();
     /**
      * HashSet to prevent multiple users of the same name
      */
