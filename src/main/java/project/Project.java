@@ -6,10 +6,8 @@ import network.Client;
 import network.Sender;
 import network.Server;
 import model.imageManipulation.edits.ImageBuilder;
-import views.ApplicationStart;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -57,6 +55,10 @@ public class Project {
         // Show the view
     }
 
+    /*
+     * One of these three method should be called to initialize the project.
+     */
+
     /**
      * Opens the existing project.
      * @param path Path to the existing project.
@@ -65,13 +67,26 @@ public class Project {
         fileInformation.openExistingProject(path);
     }
 
+    /**
+     * Creates a new project. The name of the project must not repeat those in the program directory.
+     * @param name Name of the new project
+     * @return True if the project could be created, false other wise.
+     */
     public boolean createProject(String name){
         return fileInformation.createProject(name);
     }
 
+    /**
+     * Connects the the server through the given client. Asks the host for series of information.
+     * @param client Client that is connected to the server
+     */
     public void connectToServer(Client client){
         this.client = client;
+        fileInformation.serverConnectionProject();
+
+        client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
     }
+
 
     public Client getClient(){
         return client;
@@ -113,12 +128,5 @@ public class Project {
 
     public String getProjectName(){
         return projectName;
-    }
-
-    /**
-     * Requests the server for a series of information
-     */
-    public void initializeSharedProject(){
-        client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
     }
 }

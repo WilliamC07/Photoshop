@@ -1,6 +1,7 @@
 package project;
 
 import javafx.scene.image.Image;
+import network.Client;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,8 +64,6 @@ public class FileInformation {
         createProgramDirectory();
         // Get all the existing projects created in the program directory
         projectPaths = getProjectsPath();
-        // Creates any other required directories/files for the program to run
-        createServerDirectory();
     }
 
     /**
@@ -170,27 +169,27 @@ public class FileInformation {
     /**
      * Creates the server directory. This directory is used when the user is connected to another computer. All
      * the files the server sends will be located in this directory. It is cleared when the user connects to a
-     * server (even if it is the same server).
+     * server (even if it is the same server). If this is called, it is assumed that the user is connected to the
+     * server.
      */
-    private void createServerDirectory() {
+    public void serverConnectionProject() {
         // Delete the old connection data
-        Path serverPath = programPath.resolve(SERVER_DIRECTORY_NAME);
+        projectPath = programPath.resolve(SERVER_DIRECTORY_NAME);
 
-        if (projectPaths.contains(serverPath)) {
-            deleteContentsOfDirectory(serverPath);
+        if (projectPaths.contains(projectPath)) {
+            deleteContentsOfDirectory(projectPath);
         }else{
             // Make the directory since it doesn't exist
             try{
-                Files.createDirectory(serverPath);
+                Files.createDirectory(projectPath);
             }catch(IOException e){
+                System.out.println("error in server connection project creation");
                 e.printStackTrace();
             }
         }
 
-        System.out.println(serverPath);
-
         // Remake files/directories
-        createProjectFiles(serverPath);
+        createProjectFiles(projectPath);
     }
 
     /**
@@ -233,15 +232,20 @@ public class FileInformation {
     }
 
     public Image setOriginalImage(byte[] fileBytes){
-        Path path = programPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("original.png");
-
         try{
-            FileOutputStream outputStream = new FileOutputStream(projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME), );
+            Path originalImagePath = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("original.png");
+            System.out.println("path" + originalImagePath);
+            File file = new File(originalImagePath.toUri());
+            System.out.println("File: " + file.toString());
+            System.out.println("Check exists: " + Files.isDirectory(originalImagePath.getParent()));
+            System.out.println(file.createNewFile());
+            FileOutputStream outputStream = new FileOutputStream(file);
             outputStream.write(fileBytes);
             outputStream.close();
 
-            images.put("original", path);
-            return new Image(Files.newInputStream(path));
+            // Update the program
+            images.put("original", originalImagePath);
+            return new Image(Files.newInputStream(originalImagePath));
         }catch(IOException e){
             e.printStackTrace();
             System.out.println("error in making original data from received data");
@@ -275,7 +279,7 @@ public class FileInformation {
     private void createProjectFiles(Path projectRoot){
         try{
             // Create CheckPointImage directory if one doesn't exist
-            Path checkpointImageDirectory = projectRoot.resolve("CheckPointImages");
+            Path checkpointImageDirectory = projectRoot.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME);
             if (!(Files.exists(checkpointImageDirectory) && Files.isDirectory(checkpointImageDirectory))) {
                 Files.createDirectory(checkpointImageDirectory);
             }

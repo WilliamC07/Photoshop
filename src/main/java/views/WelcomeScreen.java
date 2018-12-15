@@ -3,7 +3,6 @@ package views;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -15,7 +14,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 import model.information.ScreenDimensions;
 import network.ActionType;
 import network.Client;
@@ -31,15 +29,14 @@ class WelcomeScreen extends VBox {
     private final int HEADER_FONT_SIZE = 20;
     private final int SUBHEADER_FONT_SIZE = 15;
     private final int TEXT_SIZE = 13;
-    private final Stage primaryStage;
     private final Project project;
+    private final Head head;
 
-    WelcomeScreen(Stage primaryStage, Project project){
+    WelcomeScreen(Project project, Head head){
         this.project = project;
-        this.primaryStage = primaryStage;
+        this.head = head;
         this.setAlignment(Pos.CENTER);
         this.setPrefSize(ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
-        primaryStage.setTitle("Welcome Screen");
         makeTitle();
         makeCreatorOption();
         makeOpenerOption();
@@ -213,9 +210,7 @@ class WelcomeScreen extends VBox {
             return;
         }
         if(project.createProject(projectName)) {
-            // Project was successfully made, show the main view
-            primaryStage.setScene(new Scene(new MainDisplay(project)));
-            primaryStage.setFullScreen(true);
+            head.showMainDisplay();
         }else {
             errorLabel.setText("Please enter a unique valid project name");
         }
@@ -241,9 +236,7 @@ class WelcomeScreen extends VBox {
             if(!username.isBlank() && !username.contains(", ")){
                 System.out.println("username + "+ username);
                 project.getClient().sendFile(new Sender(username, ActionType.ADD_COLLABORATOR_USERNAME));
-                project.initializeSharedProject();
-                primaryStage.setScene(new Scene(new MainDisplay(project)));
-                primaryStage.setFullScreen(true);
+                head.showMainDisplay();
             }
         });
 
@@ -263,8 +256,7 @@ class WelcomeScreen extends VBox {
             //TODO: check if directory is a valid project and tell user if it isn't
             project.openExistingProject(file.toPath());
             // No error were thrown means it is a valid project, show the view
-            primaryStage.setScene(new Scene(new MainDisplay(project)));
-            primaryStage.setFullScreen(true);
+            head.showMainDisplay();
         }
     }
 }

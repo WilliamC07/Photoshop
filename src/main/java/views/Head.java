@@ -17,32 +17,55 @@ import project.Project;
  */
 public class Head extends Application{
     /**
-     * This is the head of the program.
+     * Information about the project being worked on.
      */
-    private Project project;
+    private final Project project = new Project();
+    /**
+     * Stage of the program.
+     */
+    private Stage primaryStage;
 
 	/**
 	 * Initialization before the screen is shown. This method is called right after {@link #main(String[])}.
 	 */
-	@Override public void init(){
-	    project = new Project();
+	@Override
+    public void init(){
+
     }
 
 	/**
 	 * Entry point of the application. Gets called after {@link #init()}.
 	 */
-	@Override public void start(Stage primaryStage){
+	@Override
+    public void start(Stage primaryStage){
+	    this.primaryStage = primaryStage;
+
 		// First view is the welcome screen, so use those dimensions
-		Scene scene = new Scene(new WelcomeScreen(primaryStage, project),
+		Scene scene = new Scene(new WelcomeScreen(project, this),
                                 ScreenDimensions.welcomeWidth, ScreenDimensions.welcomeHeight);
+		primaryStage.setTitle("Welcome");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}
 
+    /**
+     * Shows the main screen of the application. This is where the user can see the image being worked on, edit the
+     * image, host the server.
+     *
+     * @see MainDisplay
+     */
+	public void showMainDisplay(){
+	    Scene scene = new Scene(new MainDisplay(project));
+        primaryStage.setScene(scene);
+        primaryStage.setFullScreen(true);
+        primaryStage.setTitle("PhotoshopEdit");
+    }
+
 	/**
 	 * Called when Platform.exit() is run.
 	 */
-	@Override public void stop(){}
+	@Override
+    public void stop(){}
 
 	/**
 	 * This is what starts the application. This should NOT be the starting point of the program. Another class should

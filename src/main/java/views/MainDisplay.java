@@ -1,20 +1,11 @@
 package views;
 
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
 import network.Server;
 import project.Project;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -25,13 +16,13 @@ import java.net.UnknownHostException;
  * 3. TODO Chat
  * 4. TODO Switch to different pages
  * <p>
- * Should only be initialized once in ApplicationStart. We are not having multiple windows, instead we have pages.
+ * Should only be initialized once in Head. We are not having multiple windows, instead we have pages.
  * This is a SplitPane to allow the photo editor to choose how big he/she wants the sections to be.
  * <p>
  * Use a SplitPane to allow the user to switch
  *
  * @author William Cao
- * @see ApplicationStart
+ * @see Head
  * @since 1.0
  */
 final class MainDisplay extends SplitPane {
