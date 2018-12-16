@@ -36,6 +36,17 @@ public class Point {
     public int getY() {
         return y;
     }
+    /**
+     * Checks if 'this' point is between the start and end points that are located on the same line.
+     * Returns True if this is in between start and end, false otherwise.
+     * @param start start point
+     * @param end end point
+    */
+    public boolean inBetween(Point start, Point end){
+      return ((this.x > start.getX() && this.x < end.getX() && this.y > start.getY() && this.y < end.getY()) || // Checks if the point is within bounds of start and end.
+      (this.x < start.getX() && this.x > end.getX() && this.y < start.getY() && this.y > end.getY())) &&        // These makes sure any points can be the start/end points.
+      ((this.y - start.getY()) / (end.getY() - start.getY())) == ((this.x - start.getX()) / (end.getX() - start.getX())) // Checks if point lies on the line start-end.
+    }
 
     @Override
     public String toString() {
