@@ -1,20 +1,16 @@
 package views;
 
-import javafx.geometry.Bounds;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.input.ZoomEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
+import model.imageManipulation.edits.PerformEdit;
+import model.imageManipulation.edits.Point;
+import model.imageManipulation.edits.RectangleFactory;
+import model.imageManipulation.edits.RequirePoints;
 import network.Server;
 import project.Project;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -25,43 +21,38 @@ import java.net.UnknownHostException;
  * 3. TODO Chat
  * 4. TODO Switch to different pages
  * <p>
- * Should only be initialized once in ApplicationStart. We are not having multiple windows, instead we have pages.
+ * Should only be initialized once in Head. We are not having multiple windows, instead we have pages.
  * This is a SplitPane to allow the photo editor to choose how big he/she wants the sections to be.
  * <p>
  * Use a SplitPane to allow the user to switch
  *
  * @author William Cao
- * @see ApplicationStart
+ * @see Head
  * @since 1.0
  */
 final class MainDisplay extends SplitPane {
-    private Project project = Project.getInstance();
+    private final Project project;
+    private final PerformEdit performEdit;
+    private RequirePoints requirePoints;
 
-    MainDisplay() {
+    MainDisplay(Project project) {
+        this.project = project;
+        this.performEdit = new PerformEdit(project);
         // Screen is divided into 3 different parts
-        getItems().addAll(new Button("App"), new EditingComponent(), new RightSide());
+        getItems().addAll(new ToolsComponent(this), new EditingComponent(project, this), new RightSide());
         setDividerPositions(0.2f, 0.6f);
-
     }
 
-    /**
-     * Goes on the left of the screen.
-     * This provides all the tools to use to edit the image.
-     */
-    private class Tools extends VBox {
-
+    void makeRectangle(){
+        RectangleFactory rectangleFactory = performEdit.createRectangle();
+        rectangleFactory.setColor(Color.BLACK);
+        requirePoints = rectangleFactory;
+        System.out.println("made rectangle factory");
     }
 
-    private Tools showTools() {
-        Tools toolmenu = new Tools();
-        Button crop = new Button("Crop");
-        Button brush = new Button("Brush");
-        Button shape = new Button("Shape");
-        Button text = new Button("Text");
-        Button erase = new Button("Erase");
-        toolmenu.getChildren().addAll(crop, brush, shape, text, erase);
-        return toolmenu;
-
+    void supplyPoints(Point point){
+        if(requirePoints != null)
+            requirePoints.addPoint(point);
     }
 
     /**
@@ -87,8 +78,8 @@ final class MainDisplay extends SplitPane {
             Label errorLabel = new Label();
             // Hosts the server for others to connect
             hostServer.setOnAction(e -> {
-                if (project.hasOriginalImage()) {
-                    Server server = new Server();
+                if (project.getOriginalImage() != null) {
+                    Server server = new Server(project);
                     try {
                         ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
                     } catch (UnknownHostException error) {
@@ -97,7 +88,7 @@ final class MainDisplay extends SplitPane {
                     portLabel.setText("Port: 5000");
                     container.getChildren().removeAll(hostServer, errorLabel);
                     container.getChildren().addAll(ipLabel, portLabel);
-                    Project.getInstance().setServer(server);
+                    project.setServer(server);
                 } else {
                     errorLabel.setText("Please choose an image before sharing");
                 }

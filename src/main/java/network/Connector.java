@@ -104,7 +104,7 @@ class Connector extends Thread{
      * @param inputStream Stream to read the data from
      * @throws IOException Checksum failed.
      */
-    private void buildData(DataInputStream inputStream) throws IOException, NetworkException{
+    private synchronized void buildData(DataInputStream inputStream) throws IOException, NetworkException{
         ChunkType chunkIdentifier = ChunkType.get(inputStream.readInt()); // First int is always identifier
         switch (chunkIdentifier) {
             case START: {

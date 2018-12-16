@@ -34,7 +34,7 @@ enum ChunkType {
      */
     static ChunkType get(int val){
         if(val >= ENUMS.length || val < 0){
-            throw new IllegalArgumentException("ChunkType number does not exist");
+            throw new IllegalArgumentException("ChunkType number does not exist " + val);
         }
         return ENUMS[val];
     }

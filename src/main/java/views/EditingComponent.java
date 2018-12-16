@@ -1,6 +1,5 @@
 package views;
 
-import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -44,7 +43,7 @@ class EditingComponent extends VBox {
     /**
      * Zoom factor of how zoomed in or zoomed out the {@link #imageView} is
      */
-    private double scaleFactor;
+    private double scaleFactor = 1;
     /**
      * Maximum scale factor the {@link #imageView} can be
      */
@@ -54,13 +53,17 @@ class EditingComponent extends VBox {
      */
     private final double minScaleFactor = .5;
 
-    private final Project project = Project.getInstance();
+    private final Project project;
 
-    EditingComponent(){
+    private final MainDisplay parent;
+
+    EditingComponent(Project project, MainDisplay parent){
+        this.project = project;
+        this.parent = parent;
         // TODO: should be located in a css for design
         setAlignment(Pos.CENTER);
 
-        if(project.hasOriginalImage()){
+        if(project.getOriginalImage() != null){
            generateView();
         }else{
             // Allow the user to choose a file
@@ -105,9 +108,9 @@ class EditingComponent extends VBox {
 
     /**
      * Sets the view up to allow the user to edit the image.
-     *
+     * Call this to refresh the view.
      */
-    private void generateView(){
+    public void generateView(){
         WritableImage image = project.getImageBuilder().getWritableImage();
         viewWidth = (int) image.getWidth();
         imageHeight = (int) image.getHeight();
@@ -140,12 +143,14 @@ class EditingComponent extends VBox {
         });
 
         imageView.setOnMouseClicked(e -> {
-            int xCord = (int) (e.getX() / scaleFactor);
-            int yCord = (int) (e.getY() / scaleFactor);
-            System.out.println(xCord);
-            System.out.println(yCord);
+            parent.supplyPoints(new Point(e.getX(), e.getY(), scaleFactor));
         });
-        getChildren().add(imageWrapper);
+
+        // Only add if it isn't already being shown
+        if(!getChildren().contains(imageWrapper)){
+            getChildren().add(imageWrapper);
+        }
+
         // TODO: Show multiple pages --  see Google docs for more information
     }
 }

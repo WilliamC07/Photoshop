@@ -14,8 +14,8 @@ import java.util.HashSet;
  * Only one user should have this instance running when sharing a file with collaborators.
  */
 public class Server implements ActionHandler{
-    private Project project = Project.getInstance();
-    private ArrayList<Connector> connectors = new ArrayList<>();
+    private final Project project;
+    private volatile ArrayList<Connector> connectors = new ArrayList<>();
     /**
      * HashSet to prevent multiple users of the same name
      */
@@ -24,7 +24,8 @@ public class Server implements ActionHandler{
     /**
      * Constructs a network to deal with the sharing of a file with multiple collaborators.
      */
-    public Server(){
+    public Server(Project project){
+        this.project = project;
         startServer.start();
     }
 
@@ -57,7 +58,7 @@ public class Server implements ActionHandler{
         switch(actionType){
             case REQUEST_PROJECT_NAME:
                 // Tells the connector to use the project name
-                connector.sendFile(new Sender(project.getName(), ActionType.UPDATE_PROJECT_NAME));
+                connector.sendFile(new Sender(project.getProjectName(), ActionType.UPDATE_PROJECT_NAME));
                 break;
             case ADD_COLLABORATOR_USERNAME:
                 // Add the newly connected user to the list of contributors
@@ -73,7 +74,7 @@ public class Server implements ActionHandler{
             case REQUEST_ORIGINAL_IMAGE:
                 // Give the current connector the original image
                 try{
-                    FileInputStream fileInputStream = new FileInputStream(new File(project.getOriginalImage().toUri()));
+                    FileInputStream fileInputStream = new FileInputStream(project.getOriginalImage());
                     connector.sendFile(new Sender(fileInputStream, FileType.IMAGE, ActionType.UPDATE_ORIGINAL_IMAGE));
                 }catch(IOException e){
                     // Do nothing

@@ -20,14 +20,15 @@ import java.util.concurrent.PriorityBlockingQueue;
  */
 public class Client implements ActionHandler{
     private Connector connector;
-    private Project project = Project.getInstance();
+    private final Project project;
 
     /**
      * Constructs a Client to communicate with a network
      * @param targetHost IP address of the network
      * @param targetPort Port of the network
      */
-    public Client(String targetHost, int targetPort) throws IOException {
+    public Client(String targetHost, int targetPort, Project project) throws IOException {
+        this.project = project;
         connector = new Connector(new Socket(targetHost, targetPort), this);
         connector.start();
     }
@@ -43,7 +44,7 @@ public class Client implements ActionHandler{
                 project.setCollaborators(message.split(", "));
                 break;
             case UPDATE_PROJECT_NAME:
-                project.setName(message);
+                //project.setName(message);
                 break;
         }
 
@@ -53,7 +54,7 @@ public class Client implements ActionHandler{
     public void handle(byte[] file, FileType fileType, ActionType actionType, Connector connector) {
         switch(actionType){
             case UPDATE_ORIGINAL_IMAGE:
-
+                project.setOriginalImage(file);
                 break;
         }
     }
