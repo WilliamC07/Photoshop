@@ -2,7 +2,12 @@ package views;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import model.imageManipulation.edits.PerformEdit;
+import model.imageManipulation.edits.Point;
+import model.imageManipulation.edits.RectangleFactory;
+import model.imageManipulation.edits.RequirePoints;
 import network.Server;
 import project.Project;
 
@@ -27,12 +32,27 @@ import java.net.UnknownHostException;
  */
 final class MainDisplay extends SplitPane {
     private final Project project;
+    private final PerformEdit performEdit;
+    private RequirePoints requirePoints;
 
     MainDisplay(Project project) {
         this.project = project;
+        this.performEdit = new PerformEdit(project);
         // Screen is divided into 3 different parts
         getItems().addAll(new ToolsComponent(this), new EditingComponent(project, this), new RightSide());
         setDividerPositions(0.2f, 0.6f);
+    }
+
+    void makeRectangle(){
+        RectangleFactory rectangleFactory = performEdit.createRectangle();
+        rectangleFactory.setColor(Color.BLACK);
+        requirePoints = rectangleFactory;
+        System.out.println("made rectangle factory");
+    }
+
+    void supplyPoints(Point point){
+        if(requirePoints != null)
+            requirePoints.addPoint(point);
     }
 
     /**

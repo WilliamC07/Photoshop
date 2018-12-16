@@ -12,7 +12,7 @@ public class ToolsComponent extends FlowPane {
 
         // TODO: Design
         // Buttons and such
-
+        createButtons();
     }
 
     /**
@@ -20,7 +20,7 @@ public class ToolsComponent extends FlowPane {
      * Creating shapes
      */
     private void createButtons(){
-        Button createShapeButton = new Button();
+        Button createShapeButton = new Button("Shape");
         createShapeButton.setOnAction(this::createShape);
 
 
@@ -28,6 +28,6 @@ public class ToolsComponent extends FlowPane {
     }
 
     private void createShape(ActionEvent actionEvent){
-
+        parent.makeRectangle();
     }
 }

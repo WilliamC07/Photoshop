@@ -43,7 +43,7 @@ class EditingComponent extends VBox {
     /**
      * Zoom factor of how zoomed in or zoomed out the {@link #imageView} is
      */
-    private double scaleFactor;
+    private double scaleFactor = 1;
     /**
      * Maximum scale factor the {@link #imageView} can be
      */
@@ -143,10 +143,7 @@ class EditingComponent extends VBox {
         });
 
         imageView.setOnMouseClicked(e -> {
-            int xCord = (int) (e.getX() / scaleFactor);
-            int yCord = (int) (e.getY() / scaleFactor);
-            System.out.println(xCord);
-            System.out.println(yCord);
+            parent.supplyPoints(new Point(e.getX(), e.getY(), scaleFactor));
         });
 
         // Only add if it isn't already being shown
