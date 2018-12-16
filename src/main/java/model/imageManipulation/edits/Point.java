@@ -36,4 +36,18 @@ public class Point {
     public int getY() {
         return y;
     }
+
+    @Override
+    public String toString() {
+        return String.format("(%d, %d)", x, y);
+    }
+
+    /**
+     * Determines if two points are equal. That is if they share the same x and y values.
+     * @param p Point to check against.
+     * @return True if the points share the same x and y values, false otherwise
+     */
+    public boolean equals(Point p){
+        return p.getY() == getY() && p.getX() == getX();
+    }
 }

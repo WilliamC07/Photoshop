@@ -1,26 +1,40 @@
 package model.imageManipulation.edits;
 
-public class Rectangle implements Shape{
-    private Point[] points;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.paint.Color;
 
-    public Rectangle(Point p1, Point p2, Point p3, Point p4){
-        points = new Point[]{p1, p2, p3, p4};
+public class Rectangle extends Edit{
+    private final int x, y, width, height;
+    private final Color color;
+
+    /**
+     * Constructs a rectangle (Vertical one only)
+     * @param start Top left point of the rectangle
+     * @param width Width of the rectangle
+     * @param height Height of the rectangle
+     * @param color Color to fill the rectangle
+     */
+    public Rectangle(Point start, int width, int height, Color color) {
+        this.x = start.getX();
+        this.y = start.getY();
+        this.width = width;
+        this.height = height;
+        this.color = color;
     }
 
     @Override
-    public boolean pointExists(Point point) {
+    void change(PixelWriter pixelWriter) {
+        for(int h = 0; h < height; h++){
+            for(int w = 0; w < width; w++){
+                pixelWriter.setColor(x + w, y + h, color);
+            }
+        }
 
-        return false;
+        System.out.println("finish");
     }
 
     @Override
-    public boolean onBorder(Point point) {
-
-        return false;
-    }
-
-    @Override
-    public Point[] getPoints() {
-        return new Point[0];
+    String getStringRepresentation() {
+        return String.format("RECTANGLE %d %d %d %d", x, y, width, height);
     }
 }
