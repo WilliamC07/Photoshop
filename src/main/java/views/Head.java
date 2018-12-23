@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.information.ScreenDimensions;
+import network.Server;
 import project.Project;
 
 
@@ -65,7 +66,17 @@ public class Head extends Application{
 	 * Called when Platform.exit() is run.
 	 */
 	@Override
-    public void stop(){}
+    public void stop(){
+	    // Closes any connections
+	    Server server = project.getServer();
+	    if(server != null){
+	        server.terminate();
+        }
+
+	    // TODO: Saves the most recently worked on image to disk
+
+        System.out.println("System quit successfully");
+    }
 
 	/**
 	 * This is what starts the application. This should NOT be the starting point of the program. Another class should
