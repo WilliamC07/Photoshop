@@ -1,7 +1,6 @@
 package model.imageManipulation.edits;
 
 import javafx.scene.control.ColorPicker;
-import javafx.scene.paint.Color;
 
 public class RectangleFactory implements RequirePoints{
     private final Point[] points = new Point[2];
@@ -21,7 +20,6 @@ public class RectangleFactory implements RequirePoints{
 
                 if(i == points.length - 1){
                     // Make the shape
-                    System.out.println("made edit");
                     constructEdit();
                 }
 

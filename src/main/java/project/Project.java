@@ -87,7 +87,6 @@ public class Project {
         client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
     }
 
-
     public Client getClient(){
         return client;
     }
@@ -118,6 +117,10 @@ public class Project {
 
     public void setServer(Server server) {
         this.server = server;
+    }
+
+    public Server getServer() {
+        return server;
     }
 
     public void setCollaborators(String[] collaborators){

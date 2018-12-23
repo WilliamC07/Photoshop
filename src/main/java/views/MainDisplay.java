@@ -4,10 +4,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import model.imageManipulation.edits.PerformEdit;
-import model.imageManipulation.edits.Point;
-import model.imageManipulation.edits.RectangleFactory;
-import model.imageManipulation.edits.RequirePoints;
+import model.imageManipulation.edits.*;
 import project.Project;
 
 
@@ -42,7 +39,7 @@ final class MainDisplay extends SplitPane {
         this.project = project;
         this.performEdit = new PerformEdit(project);
         // Screen is divided into 3 different parts
-        this.toolsComponent = new ToolsComponent(this);
+        this.toolsComponent = new ToolsComponent(this, project);
         this.toolsExtensionComponent = new ToolsExtensionComponent();
         this.editingComponent = new EditingComponent(project, this);
 
@@ -58,6 +55,11 @@ final class MainDisplay extends SplitPane {
         rectangleFactory.setColorPicker(colorPicker);
         requirePoints = rectangleFactory;
         System.out.println("made rectangle factory");
+    }
+
+    void resize(int width, int height){
+        new ResizeFactory(width, height, project.getImageBuilder());
+        editingComponent.generateView();
     }
 
     void supplyPoints(Point point){

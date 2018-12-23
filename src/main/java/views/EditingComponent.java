@@ -115,6 +115,8 @@ class EditingComponent extends VBox {
         viewWidth = (int) image.getWidth();
         imageHeight = (int) image.getHeight();
 
+        System.out.println(image.getWidth());
+
         imageView = new ImageView(image);
         imageWrapper = new ScrollPane(imageView);
 
@@ -146,10 +148,8 @@ class EditingComponent extends VBox {
             parent.supplyPoints(new Point(e.getX(), e.getY(), scaleFactor));
         });
 
-        // Only add if it isn't already being shown
-        if(!getChildren().contains(imageWrapper)){
-            getChildren().add(imageWrapper);
-        }
+        getChildren().clear();
+        getChildren().add(imageWrapper);
 
         // TODO: Show multiple pages --  see Google docs for more information
     }
