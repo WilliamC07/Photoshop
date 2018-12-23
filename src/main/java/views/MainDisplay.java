@@ -1,18 +1,15 @@
 package views;
 
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import model.imageManipulation.edits.PerformEdit;
 import model.imageManipulation.edits.Point;
 import model.imageManipulation.edits.RectangleFactory;
 import model.imageManipulation.edits.RequirePoints;
-import network.Server;
 import project.Project;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * This is the view that is always shown to the user. The components are:
@@ -33,19 +30,32 @@ import java.net.UnknownHostException;
 final class MainDisplay extends SplitPane {
     private final Project project;
     private final PerformEdit performEdit;
+    private ToolsComponent toolsComponent;
+    private ToolsExtensionComponent toolsExtensionComponent;
+    private EditingComponent editingComponent;
+    private NetworkComponent networkComponent;
+    private HistoryComponent historyComponent;
+
     private RequirePoints requirePoints;
 
     MainDisplay(Project project) {
         this.project = project;
         this.performEdit = new PerformEdit(project);
         // Screen is divided into 3 different parts
-        getItems().addAll(new ToolsComponent(this), new EditingComponent(project, this), new RightSide());
+        this.toolsComponent = new ToolsComponent(this);
+        this.toolsExtensionComponent = new ToolsExtensionComponent();
+        this.editingComponent = new EditingComponent(project, this);
+
+        VBox center = new VBox(toolsExtensionComponent, editingComponent);
+
+        SplitPane rightSide = generateRightSide();
+        getItems().addAll(toolsComponent, center, rightSide);
         setDividerPositions(0.2f, 0.6f);
     }
 
-    void makeRectangle(){
+    void makeRectangle(ColorPicker colorPicker){
         RectangleFactory rectangleFactory = performEdit.createRectangle();
-        rectangleFactory.setColor(Color.BLACK);
+        rectangleFactory.setColorPicker(colorPicker);
         requirePoints = rectangleFactory;
         System.out.println("made rectangle factory");
     }
@@ -56,47 +66,19 @@ final class MainDisplay extends SplitPane {
     }
 
     /**
-     * Goes on the right of the screen.
-     * Allows the user to host a server and view the collaborators and information on how to join (give ip address and
-     * port). Below this, the user can see the history of all the edits done on the image.
+     * Creates the right side view
      */
-    private class RightSide extends SplitPane {
-        RightSide() {
-            // Sets up the SplitPane
-            // Network half
-            getItems().add(setNetworkDisplay());
-            // History half
-            getItems().add(new Rectangle(20, 20)); // Replace with history section
-        }
+    private SplitPane generateRightSide(){
+        // Top is always network and bottom is always history
+        this.networkComponent = new NetworkComponent(project);
+        this.historyComponent = new HistoryComponent();
+        SplitPane splitPane = new SplitPane(networkComponent, historyComponent);
+        splitPane.setOrientation(Orientation.VERTICAL);
 
-        private VBox setNetworkDisplay() {
-            VBox container = new VBox();
-            Label header = new Label("Network:");
-            Button hostServer = new Button("Host server");
-            Label ipLabel = new Label();
-            Label portLabel = new Label();
-            Label errorLabel = new Label();
-            // Hosts the server for others to connect
-            hostServer.setOnAction(e -> {
-                if (project.getOriginalImage() != null) {
-                    Server server = new Server(project);
-                    try {
-                        ipLabel.setText("IP address: " + InetAddress.getLocalHost().getHostAddress());
-                    } catch (UnknownHostException error) {
-                        error.printStackTrace();
-                    }
-                    portLabel.setText("Port: 5000");
-                    container.getChildren().removeAll(hostServer, errorLabel);
-                    container.getChildren().addAll(ipLabel, portLabel);
-                    project.setServer(server);
-                } else {
-                    errorLabel.setText("Please choose an image before sharing");
-                }
-            });
+        return splitPane;
+    }
 
-            container.getChildren().addAll(header, hostServer, errorLabel);
-            return container;
-        }
-
+    ToolsExtensionComponent getToolsExtensionComponent(){
+        return toolsExtensionComponent;
     }
 }
