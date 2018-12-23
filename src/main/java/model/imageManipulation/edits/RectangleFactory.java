@@ -1,11 +1,12 @@
 package model.imageManipulation.edits;
 
+import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
 
 public class RectangleFactory implements RequirePoints{
     private final Point[] points = new Point[2];
     private final ImageBuilder imageBuilder;
-    private Color color = Color.BLACK;
+    private ColorPicker colorPicker;
 
     RectangleFactory(ImageBuilder imageBuilder){
         this.imageBuilder = imageBuilder;
@@ -31,10 +32,10 @@ public class RectangleFactory implements RequirePoints{
 
     /**
      * Set the color of the rectangle. Default color of black.
-     * @param color
+     * @param colorPicker Color choice
      */
-    public void setColor(Color color){
-        this.color = color;
+    public void setColorPicker(ColorPicker colorPicker){
+        this.colorPicker = colorPicker;
     }
 
     /**
@@ -71,6 +72,6 @@ public class RectangleFactory implements RequirePoints{
 
         }
 
-        imageBuilder.edit(new Rectangle(start, width, height, color));
+        imageBuilder.edit(new Rectangle(start, width, height, colorPicker.getValue()));
     }
 }

@@ -1,8 +1,9 @@
 package views;
 
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
 
 public class ToolsComponent extends FlowPane {
     private final MainDisplay parent;
@@ -20,14 +21,21 @@ public class ToolsComponent extends FlowPane {
      * Creating shapes
      */
     private void createButtons(){
-        Button createShapeButton = new Button("Shape");
-        createShapeButton.setOnAction(this::createShape);
-
-
-        getChildren().addAll(createShapeButton);
+        getChildren().addAll(shapeButton());
     }
 
-    private void createShape(ActionEvent actionEvent){
-        parent.makeRectangle();
+    private Button shapeButton(){
+        // Tool bar
+
+        // Button to select the tool
+        Button button = new Button("Shape");
+        button.setOnAction(e -> {
+            ColorPicker colorPicker = new ColorPicker(Color.BLACK);
+            parent.getToolsExtensionComponent().setContents(colorPicker);
+
+            parent.makeRectangle(colorPicker);
+        });
+
+        return button;
     }
 }
