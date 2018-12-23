@@ -38,20 +38,33 @@ public class Server implements ActionHandler{
     }
 
     /**
-     * ServerSocket.accept() waits until there is a connection before moving on with the code. Make another thread
-     * so it doesn't halt the main thread.
+     * Allows for multiple connections to the server
      */
-    private Thread startServer = new Thread(() -> {
-        try(ServerSocket serverSocket = new ServerSocket(5000)){
-            // IP address is the ip address of the current computer, so no need to access from ServerSocket
-            Connector connector = new Connector(serverSocket.accept(), this);
-            connector.start();
-            connectors.add(connector);
-        }catch(IOException e){
-            e.printStackTrace();
-            System.exit(1);
+    private Thread startServer = new Thread(){
+        private boolean isRunning = true;
+
+        @Override
+        public void run() {
+            while(isRunning){
+                try(ServerSocket serverSocket = new ServerSocket(5000)){
+                    // IP address is the ip address of the current computer, so no need to access from ServerSocket
+                    Connector connector = new Connector(serverSocket.accept(), Server.this);
+                    connector.start();
+                    connectors.add(connector);
+                }catch(IOException e){
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
         }
-    });
+
+        /**
+         * End the server
+         */
+        void terminate(){
+            isRunning = false;
+        }
+    };
 
     @Override
     public synchronized void handle(String message, ActionType actionType, Connector connector) {
