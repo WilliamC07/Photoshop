@@ -59,7 +59,7 @@ public class FileInformation {
     /**
      * Constructs an instance of this class. It will create the program directory if it doesn't already exist.
      */
-    public FileInformation() {
+    FileInformation() {
         // Create the program directory
         createProgramDirectory();
         // Get all the existing projects created in the program directory
@@ -118,7 +118,7 @@ public class FileInformation {
      * @param name Name of the project
      * @return True if the project was successfully created, false otherwise.
      */
-    public boolean createProject(String name) {
+    boolean createProject(String name) {
         projectPath = programPath.resolve(name);
 
         // Make sure the name is valid and unique
@@ -145,7 +145,7 @@ public class FileInformation {
      *
      * @param pathToProject Path to the existing project
      */
-    public void openExistingProject(Path pathToProject) {
+    void openExistingProject(Path pathToProject) {
         // Set variables
         projectPath = pathToProject;
 
@@ -172,7 +172,7 @@ public class FileInformation {
      * server (even if it is the same server). If this is called, it is assumed that the user is connected to the
      * server.
      */
-    public void serverConnectionProject() {
+    void serverConnectionProject() {
         // Delete the old connection data
         projectPath = programPath.resolve(SERVER_DIRECTORY_NAME);
 
@@ -197,7 +197,7 @@ public class FileInformation {
      *
      * @return Null if none exists, the file if one does
      */
-    public File getOriginalImage() {
+    File getOriginalImage() {
         if (images.keySet().contains("original")) {
             return images.get("original").toFile();
         }
@@ -212,7 +212,7 @@ public class FileInformation {
      * @return True if the image is valid (a .png file) and was successfully cloned and set ast he original image,
      * false other wise.
      */
-    public boolean setOriginalImage(File file) {
+    boolean setOriginalImage(File file) {
         Path path = Paths.get(file.toURI());
 
         if(path.getFileName().toString().endsWith(".png")){
@@ -231,7 +231,7 @@ public class FileInformation {
         return false; // Not a valid picture
     }
 
-    public Image setOriginalImage(byte[] fileBytes){
+    Image setOriginalImage(byte[] fileBytes){
         try{
             Path originalImagePath = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("original.png");
             System.out.println("path" + originalImagePath);
@@ -253,6 +253,8 @@ public class FileInformation {
 
         return null; // error in making the file with the received data
     }
+
+
 
     private void deleteContentsOfDirectory(Path path){
         if(!Files.isDirectory(path)){
