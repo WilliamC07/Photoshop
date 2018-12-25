@@ -1,7 +1,7 @@
 package model.imageManipulation.edits;
 
 public class DiskToEdit {
-    static Edit getEdit(String info){
+    public static Edit getEdit(String info){
         String[] parts = info.split(" ");
 
         switch(parts[0]){

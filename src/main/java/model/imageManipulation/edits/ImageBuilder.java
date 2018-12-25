@@ -3,6 +3,7 @@ package model.imageManipulation.edits;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.Image;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -74,4 +75,8 @@ public final class ImageBuilder{
 	public WritableImage getWritableImage(){
 	    return writableImage;
     }
+
+    public Edit[] getEdits(){
+		return edits_done.toArray(new Edit[0]);
+	}
 }

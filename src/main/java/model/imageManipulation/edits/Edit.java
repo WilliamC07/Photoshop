@@ -38,5 +38,5 @@ public abstract class Edit{
 	 * The xml file can be sent through sockets (between users and server) or it can be written to disk.
 	 * @return String representation of the object to be written onto an xml file.
 	 */
-	abstract String getStringRepresentation();
+	public abstract String getStringRepresentation();
 }

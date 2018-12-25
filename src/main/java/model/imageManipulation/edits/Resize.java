@@ -24,7 +24,7 @@ public class Resize extends Edit{
 
 
     @Override
-    String getStringRepresentation() {
+    public String getStringRepresentation() {
         return null;
     }
 }
