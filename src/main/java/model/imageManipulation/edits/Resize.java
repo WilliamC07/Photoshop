@@ -1,14 +1,12 @@
 package model.imageManipulation.edits;
 
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 
-public class Resize extends Edit{
+class Resize extends Edit{
     private final int newWidth;
     private final int newHeight;
 
-    public Resize(int newWidth, int newHeight) {
+    Resize(int newWidth, int newHeight) {
         this.newWidth = newWidth;
         this.newHeight = newHeight;
     }
@@ -25,6 +23,6 @@ public class Resize extends Edit{
 
     @Override
     public String getStringRepresentation() {
-        return null;
+        return String.format("RESIZE %d %d", newWidth, newHeight);
     }
 }

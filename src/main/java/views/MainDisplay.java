@@ -53,7 +53,8 @@ final class MainDisplay extends SplitPane {
     }
 
     void resize(int width, int height){
-        new ResizeFactory(width, height, project.getImageBuilder());
+        new ResizeBuilder(project.getImageBuilder(), width, height).makeEdit();
+        // Must update because we are creating a new image; we are not modifying
         editingComponent.generateView();
     }
 

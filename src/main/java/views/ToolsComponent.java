@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
-import model.imageManipulation.edits.Resize;
 import project.Project;
 
 public class ToolsComponent extends FlowPane {
