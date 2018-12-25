@@ -7,6 +7,7 @@ import network.Client;
 import network.Sender;
 import network.Server;
 import model.imageManipulation.edits.ImageBuilder;
+import views.MainDisplay;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,9 +45,16 @@ public class Project {
     private String[] collaborators;
 
     /**
+     * The username given by the user
+     */
+    private String myUsername;
+
+    /**
      * Builder of the most recent image with the most recent edits.
      */
     private ImageBuilder imageBuilder;
+
+    private MainDisplay mainDisplay;
 
     /**
      * Constructs the program and the project.
@@ -129,10 +137,11 @@ public class Project {
 
     public void setCollaborators(String[] collaborators){
         this.collaborators = collaborators;
+        mainDisplay.getNetworkComponent().updateCollabList(collaborators);
     }
 
-    public void setProjectName(String projectName){
-        this.projectName = projectName;
+    public String[] getCollaborators() {
+        return collaborators;
     }
 
     public String getProjectName(){
@@ -141,5 +150,34 @@ public class Project {
 
     public void save(){
         fileInformation.save(this);
+    }
+
+    public String getMyUsername() {
+        return myUsername;
+    }
+
+    /**
+     * This will only be called when there aren't any collaborator
+     * @param myUsername Username provided by the user
+     */
+    public void setMyUsername(String myUsername) {
+        this.myUsername = myUsername;
+        if(server != null){
+            // Need to update the server
+            server.setMyUsername(myUsername);
+            collaborators = new String[]{myUsername};
+        }
+    }
+
+    public void setMainDisplay(MainDisplay mainDisplay) {
+        this.mainDisplay = mainDisplay;
+    }
+
+    /**
+     * Tells if the program is connected to a server
+     * @return True if connected to a server, false otherwise
+     */
+    public boolean isConnectedToServer(){
+        return client != null;
     }
 }

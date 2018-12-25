@@ -56,7 +56,9 @@ public class Head extends Application{
      * @see MainDisplay
      */
 	public void showMainDisplay(){
-	    Scene scene = new Scene(new MainDisplay(project));
+		MainDisplay mainDisplay = new MainDisplay(project);
+		project.setMainDisplay(mainDisplay);
+	    Scene scene = new Scene(mainDisplay);
         primaryStage.setScene(scene);
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("PhotoshopEdit");

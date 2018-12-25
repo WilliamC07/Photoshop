@@ -23,7 +23,7 @@ import project.Project;
  * @see Head
  * @since 1.0
  */
-final class MainDisplay extends SplitPane {
+public final class MainDisplay extends SplitPane {
     private final Project project;
     private ToolsComponent toolsComponent;
     private ToolsExtensionComponent toolsExtensionComponent;
@@ -78,5 +78,9 @@ final class MainDisplay extends SplitPane {
 
     ToolsExtensionComponent getToolsExtensionComponent(){
         return toolsExtensionComponent;
+    }
+
+    public NetworkComponent getNetworkComponent() {
+        return networkComponent;
     }
 }

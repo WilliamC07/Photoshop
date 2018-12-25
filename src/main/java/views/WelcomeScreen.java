@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
+import model.information.InputCheck;
 import model.information.ScreenDimensions;
 import network.ActionType;
 import network.Client;
@@ -233,8 +234,8 @@ class WelcomeScreen extends VBox {
         continueButton.setOnAction(e -> {
             String username = usernameInput.getText();
             // ", " is the delimiter to convert a string to an list of user names
-            if(!username.isBlank() && !username.contains(", ")){
-                System.out.println("username + "+ username);
+            if(InputCheck.checkUsername(errorLabel, username)){
+                project.setMyUsername(username);
                 project.getClient().sendFile(new Sender(username, ActionType.ADD_COLLABORATOR_USERNAME));
                 head.showMainDisplay();
             }

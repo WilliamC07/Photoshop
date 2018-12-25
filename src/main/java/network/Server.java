@@ -1,5 +1,6 @@
 package network;
 
+import javafx.application.Platform;
 import project.Project;
 
 import java.io.File;
@@ -9,6 +10,7 @@ import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Only one user should have this instance running when sharing a file with collaborators.
@@ -19,9 +21,9 @@ public class Server implements ActionHandler{
     private volatile boolean isServerRunning = true;
     private volatile ServerSocket serverSocket = null;
     /**
-     * HashSet to prevent multiple users of the same name
+     * LinkedList because we are always adding to the end of the list
      */
-    private HashSet<String> collaborators = new HashSet<>();
+    private LinkedList<String> collaborators = new LinkedList<>();
 
     /**
      * Constructs a network to deal with the sharing of a file with multiple collaborators.
@@ -29,6 +31,10 @@ public class Server implements ActionHandler{
     public Server(Project project){
         this.project = project;
         startServer.start();
+    }
+
+    public void setMyUsername(String name){
+        collaborators.add(name);
     }
 
     /**
@@ -74,32 +80,36 @@ public class Server implements ActionHandler{
 
     @Override
     public synchronized void handle(String message, ActionType actionType, Connector connector) {
-        switch(actionType){
-            case REQUEST_PROJECT_NAME:
-                // Tells the connector to use the project name
-                connector.sendFile(new Sender(project.getProjectName(), ActionType.UPDATE_PROJECT_NAME));
-                break;
-            case ADD_COLLABORATOR_USERNAME:
-                // Add the newly connected user to the list of contributors
-                collaborators.add(message);
-                // Tell everyone to request for the update version of the list of collaborator
-                send(new Sender(collaboratorNames(), ActionType.UPDATE_TO_LATEST_COLLABORATOR));
-                break;
-            case REQUEST_COLLABORATOR_LIST:
-                // Tells all the connectors to update their list of contributors
-                send(new Sender(String.join(", ", collaborators.toArray(new String[0])),
-                                ActionType.UPDATE_TO_LATEST_COLLABORATOR));
-                break;
-            case REQUEST_ORIGINAL_IMAGE:
-                // Give the current connector the original image
-                try{
-                    FileInputStream fileInputStream = new FileInputStream(project.getOriginalImage());
-                    connector.sendFile(new Sender(fileInputStream, FileType.IMAGE, ActionType.UPDATE_ORIGINAL_IMAGE));
-                }catch(IOException e){
-                    // Do nothing
-                }
-                break;
-        }
+        Platform.runLater(() -> {
+            switch (actionType) {
+                case REQUEST_PROJECT_NAME:
+                    // Tells the connector to use the project name
+                    connector.sendFile(new Sender(project.getProjectName(), ActionType.UPDATE_PROJECT_NAME));
+                    break;
+                case ADD_COLLABORATOR_USERNAME:
+                    // Add the newly connected user to the list of contributors
+                    collaborators.add(message);
+                    // Update the host
+                    project.setCollaborators(collaborators.toArray(new String[0]));
+                    // Tell everyone to request for the update version of the list of collaborator
+                    send(new Sender(collaboratorNames(), ActionType.UPDATE_TO_LATEST_COLLABORATOR));
+                    break;
+                case REQUEST_COLLABORATOR_LIST:
+                    // Tells all the connectors to update their list of contributors
+                    send(new Sender(String.join(", ", collaborators.toArray(new String[0])),
+                            ActionType.UPDATE_TO_LATEST_COLLABORATOR));
+                    break;
+                case REQUEST_ORIGINAL_IMAGE:
+                    // Give the current connector the original image
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(project.getOriginalImage());
+                        connector.sendFile(new Sender(fileInputStream, FileType.IMAGE, ActionType.UPDATE_ORIGINAL_IMAGE));
+                    } catch (IOException e) {
+                        // Do nothing
+                    }
+                    break;
+            }
+        });
     }
 
     /**
@@ -112,16 +122,22 @@ public class Server implements ActionHandler{
 
     @Override
     public synchronized void handle(byte[] file, FileType fileType, ActionType actionType, Connector connector) {
+        Platform.runLater(() -> {
 
+        });
     }
 
     @Override
     public synchronized void handle(ActionType actionType, Connector connector) {
+        Platform.runLater(() -> {
 
+        });
     }
 
     @Override
     public synchronized void handle(byte[] file, FileType fileType, String message, ActionType actionType, Connector connector) {
+        Platform.runLater(() -> {
 
+        });
     }
 }
