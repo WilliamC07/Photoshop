@@ -56,18 +56,19 @@ public class Server implements ActionHandler{
      * Allows for multiple connections to the server
      */
     private Thread startServer = new Thread(() -> {
-        while(isServerRunning){
-            try{
-                // server socket will be closed when the terminate function is called
-                serverSocket = new ServerSocket(5000);
+        try{
+            // server socket will be closed when the terminate function is called
+            serverSocket = new ServerSocket(5000);
+
+            while(isServerRunning){
                 // IP address is the ip address of the current computer, so no need to access from ServerSocket
                 Connector connector = new Connector(serverSocket.accept(), Server.this);
                 connector.start();
                 connectors.add(connector);
-            }catch(IOException e){
-                e.printStackTrace();
-                System.exit(1);
             }
+        }catch(IOException e){
+            e.printStackTrace();
+            System.exit(1);
         }
     });
 
