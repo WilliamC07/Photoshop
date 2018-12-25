@@ -3,7 +3,7 @@ package model.imageManipulation.edits;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
-public class Rectangle extends Edit{
+class Rectangle extends Edit{
     private final int x, y, width, height;
     private final Color color;
 
@@ -14,7 +14,7 @@ public class Rectangle extends Edit{
      * @param height Height of the rectangle
      * @param color Color to fill the rectangle
      */
-    public Rectangle(Point start, int width, int height, Color color) {
+    Rectangle(Point start, int width, int height, Color color) {
         this.x = start.getX();
         this.y = start.getY();
         this.width = width;
@@ -29,8 +29,6 @@ public class Rectangle extends Edit{
                 pixelWriter.setColor(x + w, y + h, color);
             }
         }
-
-        System.out.println("finish");
     }
 
     @Override
