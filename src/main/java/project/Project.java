@@ -1,6 +1,7 @@
 package project;
 
 import javafx.scene.image.Image;
+import model.imageManipulation.edits.Edit;
 import network.ActionType;
 import network.Client;
 import network.Sender;
@@ -52,7 +53,6 @@ public class Project {
      */
     public Project(){
         fileInformation = new FileInformation();
-        // Show the view
     }
 
     /*
@@ -95,6 +95,10 @@ public class Project {
         if(imageBuilder == null){
             try{
                 imageBuilder = new ImageBuilder(new Image(Files.newInputStream(getOriginalImage().toPath())));
+                Edit[] edits = fileInformation.getEditsDone();
+                if(edits != null){
+                    imageBuilder.edit(fileInformation.getEditsDone());
+                }
             }catch(IOException e){
                 System.out.println("cannot get image builder");
                 e.printStackTrace();
@@ -133,5 +137,9 @@ public class Project {
 
     public String getProjectName(){
         return projectName;
+    }
+
+    public void save(){
+        fileInformation.save(this);
     }
 }

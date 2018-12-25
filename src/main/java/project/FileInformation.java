@@ -1,6 +1,8 @@
 package project;
 
 import javafx.scene.image.Image;
+import model.XMLHandle.EditsDoneXML;
+import model.imageManipulation.edits.Edit;
 import network.Client;
 
 import java.io.File;
@@ -27,6 +29,8 @@ public class FileInformation {
      * Name of the checkpoint directory. Each project has this directory.
      */
     private final String CHECKPOINT_IMAGE_DIRECTORY_NAME = "checkpoints";
+
+    private final String EDITS_DONE_FILE_NAME = "edits.xml";
     /**
      * Name of the server directory. Only one of this exists.
      */
@@ -55,6 +59,8 @@ public class FileInformation {
      * "recent" The most recent image created (the one with the most recent edits
      */
     private HashMap<String, Path> images = new HashMap<>();
+
+    private EditsDoneXML editsDoneXML;
 
     /**
      * Constructs an instance of this class. It will create the program directory if it doesn't already exist.
@@ -131,6 +137,7 @@ public class FileInformation {
 
             // Add all necessary files/directories in the project
             Files.createDirectory(projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME));
+            editsDoneXML = new EditsDoneXML(projectPath.resolve(EDITS_DONE_FILE_NAME));
         } catch (IOException e) {
             System.out.println("Cannot create project");
             e.printStackTrace();
@@ -150,6 +157,9 @@ public class FileInformation {
         projectPath = pathToProject;
 
         try {
+            // Get edits done on the images
+            editsDoneXML = new EditsDoneXML(projectPath.resolve(EDITS_DONE_FILE_NAME));
+
             // Get all the checkpoint images
             Files.walk(projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME)).
                     filter(p -> !Files.isDirectory(p)).
@@ -164,6 +174,10 @@ public class FileInformation {
             System.out.println("Bad project, missing information");
             System.exit(1);
         }
+    }
+
+    Edit[] getEditsDone(){
+        return editsDoneXML.getData();
     }
 
     /**
@@ -254,8 +268,6 @@ public class FileInformation {
         return null; // error in making the file with the received data
     }
 
-
-
     private void deleteContentsOfDirectory(Path path){
         if(!Files.isDirectory(path)){
             throw new IllegalArgumentException("Not a directory");
@@ -288,5 +300,10 @@ public class FileInformation {
         }catch(IOException e){
             // Do nothing
         }
+    }
+
+    void save(Project project){
+        editsDoneXML.writeData(project.getImageBuilder().getEdits());
+        editsDoneXML.save();
     }
 }
