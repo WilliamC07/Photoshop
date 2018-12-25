@@ -10,7 +10,7 @@ import org.w3c.dom.NodeList;
 import java.nio.file.Path;
 
 public class EditsDoneXML implements Savable {
-    private final Document document;
+    private Document document;
     private final Path fileLocation;
 
     public EditsDoneXML(Path fileLocation){
@@ -24,6 +24,9 @@ public class EditsDoneXML implements Savable {
     }
 
     public void writeData(Edit[] edits){
+        // Writing is basically deleting all the old ones and rewriting it all
+        document = XMLHelper.createDocument();
+        document.appendChild(document.createElement("edits"));
         Node rootNode = document.getDocumentElement();
         for(Edit edit : edits){
             Node sub = document.createElement("edit");
