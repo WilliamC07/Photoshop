@@ -17,6 +17,7 @@ public class Server implements ActionHandler{
     private final Project project;
     private volatile ArrayList<Connector> connectors = new ArrayList<>();
     private volatile boolean isServerRunning = true;
+    private volatile ServerSocket serverSocket = null;
     /**
      * HashSet to prevent multiple users of the same name
      */
@@ -44,6 +45,11 @@ public class Server implements ActionHandler{
     public void terminate(){
         connectors.forEach(c -> c.sendFile(new Sender(ActionType.QUIT_CONNECTION)));
         isServerRunning = false;
+        try{
+            serverSocket.close();
+        }catch(IOException e){
+            // Do nothing, program is closed, so we don't care
+        }
     }
 
     /**
@@ -51,7 +57,9 @@ public class Server implements ActionHandler{
      */
     private Thread startServer = new Thread(() -> {
         while(isServerRunning){
-            try(ServerSocket serverSocket = new ServerSocket(5000)){
+            try{
+                // server socket will be closed when the terminate function is called
+                serverSocket = new ServerSocket(5000);
                 // IP address is the ip address of the current computer, so no need to access from ServerSocket
                 Connector connector = new Connector(serverSocket.accept(), Server.this);
                 connector.start();
