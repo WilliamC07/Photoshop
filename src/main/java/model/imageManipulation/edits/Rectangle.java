@@ -33,6 +33,7 @@ class Rectangle extends Edit{
 
     @Override
     String getStringRepresentation() {
-        return String.format("RECTANGLE %d %d %d %d", x, y, width, height);
+        return String.format("RECTANGLE %d %d %d %d %s %f",
+                x, y, width, height, ColorUtility.toHex(color), color.getOpacity());
     }
 }

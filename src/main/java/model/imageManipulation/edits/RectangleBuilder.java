@@ -1,6 +1,7 @@
 package model.imageManipulation.edits;
 
 import javafx.scene.control.ColorPicker;
+import javafx.scene.paint.Color;
 
 public class RectangleBuilder extends AbstractEditBuilder implements RequirePoints {
     /**
@@ -8,8 +9,13 @@ public class RectangleBuilder extends AbstractEditBuilder implements RequirePoin
      * Only two points are required to make a rectangle.
      */
     private final Point[] points = new Point[2];
-    private final ColorPicker colorPicker;
-    private final ImageBuilder imageBuilder;
+    private ColorPicker colorPicker;
+    private ImageBuilder imageBuilder;
+
+    /**
+     * Should only be called by when reading info from the disk
+     */
+    RectangleBuilder(){ }
 
     public RectangleBuilder(ImageBuilder imageBuilder, ColorPicker colorPicker){
         this.imageBuilder = imageBuilder;
@@ -65,8 +71,13 @@ public class RectangleBuilder extends AbstractEditBuilder implements RequirePoin
     }
 
     @Override
-    public Edit convertDiskInfoToEdit(String data) {
-        return null;
+    Edit convertDiskInfoToEdit(String[] parts) {
+        // Start at 1 because first section is the name of the edit, so in this case it is "RECTANGLE"
+        Point point = new Point(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
+        int width = Integer.parseInt(parts[3]);
+        int height = Integer.parseInt(parts[4]);
+        Color color = Color.web(parts[5], Double.valueOf(parts[6]));
+        return new Rectangle(point, width, height, color);
     }
 
 
