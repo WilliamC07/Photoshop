@@ -1,5 +1,6 @@
 package network;
 
+import javafx.application.Platform;
 import project.Project;
 
 import java.io.File;
@@ -39,33 +40,41 @@ public class Client implements ActionHandler{
 
     @Override
     public void handle(String message, ActionType actionType, Connector connector) {
-        switch(actionType){
-            case UPDATE_TO_LATEST_COLLABORATOR:
-                project.setCollaborators(message.split(", "));
-                break;
-            case UPDATE_PROJECT_NAME:
-                //project.setName(message);
-                break;
-        }
+        Platform.runLater(() -> {
+            switch(actionType){
+                case UPDATE_TO_LATEST_COLLABORATOR:
+                    project.setCollaborators(message.split(", "));
+                    break;
+                case UPDATE_PROJECT_NAME:
+                    //project.setName(message);
+                    break;
+            }
+        });
 
     }
 
     @Override
     public void handle(byte[] file, FileType fileType, ActionType actionType, Connector connector) {
-        switch(actionType){
-            case UPDATE_ORIGINAL_IMAGE:
-                project.setOriginalImage(file);
-                break;
-        }
+        Platform.runLater(() -> {
+            switch(actionType){
+                case UPDATE_ORIGINAL_IMAGE:
+                    project.setOriginalImage(file);
+                    break;
+            }
+        });
     }
 
     @Override
     public void handle(ActionType actionType, Connector connector) {
+        Platform.runLater(() -> {
 
+        });
     }
 
     @Override
     public void handle(byte[] file, FileType fileType, String message, ActionType actionType, Connector connector) {
+        Platform.runLater(() -> {
 
+        });
     }
 }
