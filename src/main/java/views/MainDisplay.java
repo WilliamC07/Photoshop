@@ -59,8 +59,12 @@ public final class MainDisplay extends SplitPane {
     }
 
     void supplyPoints(Point point){
-        if(requirePoints != null)
+        if(requirePoints != null) {
             requirePoints.addPoint(point);
+            if(!requirePoints.needMorePoints()){
+                requirePoints = null;
+            }
+        }
     }
 
     /**
