@@ -24,6 +24,6 @@ public class ResizeBuilder extends AbstractEditBuilder{
 
     @Override
     public void makeEdit() {
-        imageBuilder.edit(new Resize(newWidth, newHeight));
+        imageBuilder.edit(new Resize(newWidth, newHeight), true);
     }
 }

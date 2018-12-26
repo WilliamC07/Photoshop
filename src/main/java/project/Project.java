@@ -1,6 +1,7 @@
 package project;
 
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import model.imageManipulation.edits.Edit;
 import network.ActionType;
 import network.Client;
@@ -102,7 +103,7 @@ public class Project {
     public ImageBuilder getImageBuilder() {
         if(imageBuilder == null){
             try{
-                imageBuilder = new ImageBuilder(new Image(Files.newInputStream(getOriginalImage().toPath())));
+                imageBuilder = new ImageBuilder(this, new Image(Files.newInputStream(getOriginalImage().toPath())));
                 Edit[] edits = fileInformation.getEditsDone();
                 if(edits != null){
                     imageBuilder.edit(fileInformation.getEditsDone());
@@ -120,7 +121,7 @@ public class Project {
     }
 
     public void setOriginalImage(byte[] file){
-        imageBuilder = new ImageBuilder(fileInformation.setOriginalImage(file));
+        imageBuilder = new ImageBuilder(this, fileInformation.setOriginalImage(file));
     }
 
     public File getOriginalImage(){
@@ -179,5 +180,9 @@ public class Project {
      */
     public boolean isConnectedToServer(){
         return client != null;
+    }
+
+    public void makeCheckpoint(int checkpointNumber, WritableImage image){
+        fileInformation.setCheckpointImage(checkpointNumber, image);
     }
 }

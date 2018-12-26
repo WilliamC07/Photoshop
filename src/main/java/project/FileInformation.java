@@ -1,10 +1,14 @@
 package project;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import model.XMLHandle.EditsDoneXML;
 import model.imageManipulation.edits.Edit;
 import network.Client;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -55,7 +59,7 @@ public class FileInformation {
     /**
      * Keys:
      * "original" The first image the user chose for the project
-     * "checkpoint#" The checkpoint images created by the program (checkpoint0, checkpoint1, ect.)
+     * "#" The checkpoint images created by the program (checkpoint0, checkpoint1, ect.)
      * "recent" The most recent image created (the one with the most recent edits
      */
     private HashMap<String, Path> images = new HashMap<>();
@@ -166,7 +170,7 @@ public class FileInformation {
                     forEach(p -> {
                         String fileName = p.getFileName().toString();
                         // Removes file extension (.png) to make it a key for the HashMap
-                        // The files are named as original.png, c# (ex. c0 for first checkpoint image), and recent.png
+                        // The files are named as original.png, c# (ex. 0 for first checkpoint image), and recent.png
                         images.put(fileName.substring(0, fileName.indexOf(".")), p);
                     });
 
@@ -305,5 +309,42 @@ public class FileInformation {
     void save(Project project){
         editsDoneXML.writeData(project.getImageBuilder().getEdits());
         editsDoneXML.save();
+    }
+
+    void setCheckpointImage(int checkpointNumber, WritableImage writableImage){
+        // Need to remove all checkpoint images from checkpointNumber onwards (inclusive)
+        // since all future images will no longer match up
+        for(String key : images.keySet()){
+            if(!key.equals("original") && !key.equals("recent") && Integer.valueOf(key) >= checkpointNumber){
+                deleteFile(images.get(key));
+            }
+        }
+
+        // Regenerate the checkpoint image
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        String format = "png"; // only supporting png
+        Path location = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve(checkpointNumber+".png");
+        try{
+            ImageIO.write(bufferedImage, format, location.toFile());
+        }catch(IOException e){
+            e.printStackTrace();
+            // do nothing
+        }
+
+        // add back to hash map
+        images.put(String.valueOf(checkpointNumber), location);
+    }
+
+    /**
+     * Deletes the given path.
+     * @param path Path to delete off the file system.
+     */
+    private void deleteFile(Path path){
+        try{
+            Files.delete(path);
+        }catch(IOException e){
+            e.printStackTrace();
+            // Do nothing
+        }
     }
 }

@@ -35,6 +35,11 @@ public class RectangleBuilder extends AbstractEditBuilder implements RequirePoin
     }
 
     @Override
+    public boolean needMorePoints() {
+        return points[0] == null || points[1] == null;
+    }
+
+    @Override
     public void makeEdit() {
         // Calculate the other points
         // Get the point with higher x and y value
@@ -67,7 +72,7 @@ public class RectangleBuilder extends AbstractEditBuilder implements RequirePoin
 
         }
 
-        imageBuilder.edit(new Rectangle(start, width, height, colorPicker.getValue()));
+        imageBuilder.edit(new Rectangle(start, width, height, colorPicker.getValue()), true);
     }
 
     @Override
