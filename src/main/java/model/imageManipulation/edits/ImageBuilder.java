@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import project.Project;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 /**
@@ -91,5 +92,12 @@ public final class ImageBuilder{
 
     public Edit[] getEdits(){
 		return edits_done.toArray(new Edit[0]);
+	}
+
+	/**
+	 * When loading the project from disk, give all the edits here
+	 */
+	public void setEdits(Edit[] edits){
+		edits_done.addAll(Arrays.asList(edits));
 	}
 }

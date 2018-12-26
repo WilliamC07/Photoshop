@@ -11,6 +11,7 @@ import model.imageManipulation.edits.ImageBuilder;
 import views.MainDisplay;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -103,7 +104,12 @@ public class Project {
     public ImageBuilder getImageBuilder() {
         if(imageBuilder == null){
             try{
-                imageBuilder = new ImageBuilder(this, new Image(Files.newInputStream(getOriginalImage().toPath())));
+                File recentImage = fileInformation.getRecentImage();
+                if(recentImage != null){
+                    imageBuilder = new ImageBuilder(this, new Image(new FileInputStream(recentImage)));
+                }else{
+                    imageBuilder = new ImageBuilder(this, new Image(new FileInputStream(fileInformation.getOriginalImage())));
+                }
                 Edit[] edits = fileInformation.getEditsDone();
                 if(edits != null){
                     imageBuilder.edit(fileInformation.getEditsDone());

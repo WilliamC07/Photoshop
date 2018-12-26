@@ -307,8 +307,12 @@ public class FileInformation {
     }
 
     void save(Project project){
+        // Save edits
         editsDoneXML.writeData(project.getImageBuilder().getEdits());
         editsDoneXML.save();
+
+        // Save to most recent image
+        setRecentImage(project.getImageBuilder().getWritableImage());
     }
 
     void setCheckpointImage(int checkpointNumber, WritableImage writableImage){
@@ -333,6 +337,27 @@ public class FileInformation {
 
         // add back to hash map
         images.put(String.valueOf(checkpointNumber), location);
+    }
+
+    void setRecentImage(WritableImage writableImage){
+        if(images.containsKey("recent")){
+            deleteFile(images.get("recent"));
+        }
+        Path location = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("recent.png");
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+        try{
+            ImageIO.write(bufferedImage, "png", location.toFile());
+        }catch(IOException e){
+            e.printStackTrace();
+            // do nothing
+        }
+    }
+
+    File getRecentImage(){
+        if(images.containsKey("recent")){
+            return images.get("recent").toFile();
+        }
+        return null;
     }
 
     /**
