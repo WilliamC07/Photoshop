@@ -365,6 +365,24 @@ public class FileInformation {
     }
 
     /**
+     * Sets the edits done and reads all the edits onto the program.
+     * @param file
+     */
+    void setEditsDone(byte[] file){
+        // Make the file
+        Path location = projectPath.resolve(EDITS_DONE_FILE_NAME);
+        try(FileOutputStream write = new FileOutputStream(location.toFile())){
+            write.write(file);
+        }catch(IOException e){
+            e.printStackTrace();
+            // Do nothing
+        }
+
+        // Read the file and uses it to recreate the image
+        editsDoneXML = new EditsDoneXML(location);
+    }
+
+    /**
      * Removes all the checkpoint images from the starting index onwards (inclusive)
      * @param start Checkpoint image number to start removal from
      */
