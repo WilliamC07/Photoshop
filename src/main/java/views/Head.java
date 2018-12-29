@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.information.ScreenDimensions;
+import network.Client;
 import network.Server;
 import project.Project;
 
@@ -74,6 +75,12 @@ public class Head extends Application{
 	    if(server != null){
 	        server.terminate();
         }
+
+	    // Closes connection to the server if one exists
+	    Client client = project.getClient();
+	    if(client != null){
+	    	//client.
+		}
 
 	    // TODO: Saves the most recently worked on image to disk
 		project.save();

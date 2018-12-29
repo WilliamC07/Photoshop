@@ -355,6 +355,7 @@ public class FileInformation {
         Path location = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve(checkpointNumber+".png");
         try(FileOutputStream makeFile = new FileOutputStream(location.toFile())){
             makeFile.write(file);
+            System.out.println("made file for checkpoint asdasasd");
         }catch(IOException e){
             e.printStackTrace();
             // Do nothing
@@ -380,6 +381,16 @@ public class FileInformation {
 
         // Read the file and uses it to recreate the image
         editsDoneXML = new EditsDoneXML(location);
+    }
+
+    /**
+     * Gets the checkpoint image given the index.
+     * @param index Index of the checkpoint image.
+     * @return File of the checkpoint image, null if none are found
+     */
+    File getCheckpointImage(int index){
+        Path pathToCheckpointImage = images.get(String.valueOf(index));
+        return pathToCheckpointImage == null ? null : pathToCheckpointImage.toFile();
     }
 
     /**

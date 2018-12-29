@@ -133,10 +133,11 @@ public class Server implements ActionHandler{
                     break;
                 case REQUEST_CHECKPOINT_IMAGES: {
                     // Give all the checkpoint images
-                    File fileToSend = null;
+                    File fileToSend;
                     int checkpointIndex = 0;
                     while((fileToSend = project.getCheckpointImage(checkpointIndex)) != null){
-                        connector.sendFile(new Sender(fileToSend, FileType.IMAGE, ActionType.UPDATE_CHECKPOINT_IMAGE));
+                        connector.sendFile(new Sender(fileToSend, String.valueOf(checkpointIndex), FileType.IMAGE, ActionType.UPDATE_CHECKPOINT_IMAGE));
+                        System.out.println("sending checkpoint : " + String.valueOf(checkpointIndex));
                         checkpointIndex++;
                     }
                 }

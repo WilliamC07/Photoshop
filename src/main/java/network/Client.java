@@ -73,8 +73,14 @@ public class Client implements ActionHandler{
 
     @Override
     public void handle(byte[] file, FileType fileType, String message, ActionType actionType, Connector connector) {
-        Platform.runLater(() -> {
+        System.out.println("-----received: " + message);
 
+        Platform.runLater(() -> {
+            switch (actionType){
+                case UPDATE_CHECKPOINT_IMAGE:
+                    project.setCheckpointImage(file, message);
+                    break;
+            }
         });
     }
 }

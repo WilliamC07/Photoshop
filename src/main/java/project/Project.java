@@ -94,6 +94,8 @@ public class Project {
         this.client = client;
         fileInformation.serverConnectionProject();
 
+        //TODO: need to make a ActionType SET_UP_PROJECT which will send all the needed files and the last one
+        //will tell the client to set up the server
         client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
         client.sendFile(new Sender(ActionType.REQUEST_CHECKPOINT_IMAGES));
     }
@@ -202,5 +204,14 @@ public class Project {
 
     public void makeCheckpoint(int checkpointNumber, WritableImage image){
         fileInformation.setCheckpointImage(checkpointNumber, image);
+    }
+
+    /**
+     * Gets the checkpoint image given the index.
+     * @param index Index of the checkpoint image.
+     * @return File of the checkpoint image, null if none are found
+     */
+    public File getCheckpointImage(int index){
+        return fileInformation.getCheckpointImage(index);
     }
 }

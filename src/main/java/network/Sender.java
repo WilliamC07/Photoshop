@@ -50,7 +50,8 @@ public final class Sender implements Comparable<Sender>{
         this.actionType = actionType;
 
         this.fileSize = (int) file.length();
-        this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE);
+        // first chunk is for message chunk. In this case, there isn't a message chunk, so an empty one is sent
+        this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE) + 1;
     }
 
     public Sender(FileInputStream fileInputStream, FileType fileType, ActionType actionType){
@@ -59,7 +60,8 @@ public final class Sender implements Comparable<Sender>{
         this.actionType = actionType;
         try{
             this.fileSize = fileInputStream.available();
-            this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE);
+            // first chunk is for message chunk. In this case, there isn't a message chunk, so an empty one is sent
+            this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE) + 1;
         }catch(IOException e){
             // Do nothing
         }
@@ -76,6 +78,7 @@ public final class Sender implements Comparable<Sender>{
         this.fileType = fileType;
         this.actionType = actionType;
         this.fileSize = (int) file.length();
+        this.chunksAmount = (int) Math.ceil((double) fileSize / MAX_DATA_SIZE) + 1; // add one because a message chunk is 1 chunk
     }
 
     public Sender(String message, ActionType actionType){
@@ -139,15 +142,18 @@ public final class Sender implements Comparable<Sender>{
      * @throws IOException Exception from the stream
      */
     private void sendFile(DataOutputStream stream) throws IOException{
-        int lastChunkSize = fileSize - (chunksAmount - 1) * MAX_DATA_SIZE;
+        int lastChunkSize = fileSize - (chunksAmount - 2) * MAX_DATA_SIZE;
 
-        // Start at i = 1 beacuse the first chunk is the message chunk (message chunks are data chunks)
-        for(int i = 1; i < chunksAmount + 1; i++){
+        // Start at i = 1 because the first chunk is the message chunk (message chunks are data chunks)
+        for(int i = 1; i < chunksAmount; i++){
             // Last chunk has a different sizes for all files
-            boolean isLastChunk = i == chunksAmount;
+            boolean isLastChunk = i == (chunksAmount - 1);
             // File must be converted into a byte array to be sent by a stream
             byte[] byteRepresentation = new byte[isLastChunk ? lastChunkSize : MAX_DATA_SIZE];
             fileInputStream.read(byteRepresentation);
+            System.out.println("chunk number / chunk total" + i + " / " + chunksAmount);
+            System.out.println("size of file " + fileSize);
+            System.out.println("size of chunk byte[] " + (isLastChunk ? lastChunkSize : MAX_DATA_SIZE));
 
             stream.writeInt(ChunkType.get(ChunkType.DATA)); // Chunk identifier
             stream.writeInt(i); // What chunk is being sent
@@ -160,7 +166,8 @@ public final class Sender implements Comparable<Sender>{
      * Sends the {@link #message} through the stream.
      * The chunk includes the following data:
      * 1. Chunk identifier
-     * 2. UTF representation of the string
+     * 2. Chunk number (always 0)
+     * 3. UTF representation of the string
      * @param stream Stream to send the data through
      * @throws IOException Exception from the stream
      */
