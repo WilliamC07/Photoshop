@@ -82,10 +82,6 @@ public class Server implements ActionHandler{
     public synchronized void handle(String message, ActionType actionType, Connector connector) {
         Platform.runLater(() -> {
             switch (actionType) {
-                case REQUEST_PROJECT_NAME:
-                    // Tells the connector to use the project name
-                    connector.sendFile(new Sender(project.getProjectName(), ActionType.UPDATE_PROJECT_NAME));
-                    break;
                 case ADD_COLLABORATOR_USERNAME:
                     // Add the newly connected user to the list of contributors
                     collaborators.add(message);
@@ -93,20 +89,6 @@ public class Server implements ActionHandler{
                     project.setCollaborators(collaborators.toArray(new String[0]));
                     // Tell everyone to request for the update version of the list of collaborator
                     send(new Sender(collaboratorNames(), ActionType.UPDATE_TO_LATEST_COLLABORATOR));
-                    break;
-                case REQUEST_COLLABORATOR_LIST:
-                    // Tells all the connectors to update their list of contributors
-                    send(new Sender(String.join(", ", collaborators.toArray(new String[0])),
-                            ActionType.UPDATE_TO_LATEST_COLLABORATOR));
-                    break;
-                case REQUEST_ORIGINAL_IMAGE:
-                    // Give the current connector the original image
-                    try {
-                        FileInputStream fileInputStream = new FileInputStream(project.getOriginalImage());
-                        connector.sendFile(new Sender(fileInputStream, FileType.IMAGE, ActionType.UPDATE_ORIGINAL_IMAGE));
-                    } catch (IOException e) {
-                        // Do nothing
-                    }
                     break;
             }
         });
@@ -130,7 +112,26 @@ public class Server implements ActionHandler{
     @Override
     public synchronized void handle(ActionType actionType, Connector connector) {
         Platform.runLater(() -> {
-
+            switch(actionType){
+                case REQUEST_PROJECT_NAME:
+                    // Tells the connector to use the project name
+                    connector.sendFile(new Sender(project.getProjectName(), ActionType.UPDATE_PROJECT_NAME));
+                    break;
+                case REQUEST_COLLABORATOR_LIST:
+                    // Tells all the connectors to update their list of contributors
+                    send(new Sender(String.join(", ", collaborators.toArray(new String[0])),
+                            ActionType.UPDATE_TO_LATEST_COLLABORATOR));
+                    break;
+                case REQUEST_ORIGINAL_IMAGE:
+                    // Give the current connector the original image
+                    try {
+                        FileInputStream fileInputStream = new FileInputStream(project.getOriginalImage());
+                        connector.sendFile(new Sender(fileInputStream, FileType.IMAGE, ActionType.UPDATE_ORIGINAL_IMAGE));
+                    } catch (IOException e) {
+                        // Do nothing
+                    }
+                    break;
+            }
         });
     }
 

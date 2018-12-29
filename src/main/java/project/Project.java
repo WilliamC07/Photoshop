@@ -95,6 +95,7 @@ public class Project {
         fileInformation.serverConnectionProject();
 
         client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
+        client.sendFile(new Sender(ActionType.REQUEST_CHECKPOINT_IMAGES));
     }
 
     public Client getClient(){
@@ -132,6 +133,17 @@ public class Project {
 
     public File getOriginalImage(){
         return fileInformation.getOriginalImage();
+    }
+
+    public void setCheckpointImage(byte[] file, String checkpointNumber){
+        fileInformation.setCheckpointImage(Integer.valueOf(checkpointNumber), file);
+    }
+
+    /**
+     * Creates the ImageBuilder given the edits.
+     */
+    public void setEditsDone(){
+
     }
 
     public void setServer(Server server) {

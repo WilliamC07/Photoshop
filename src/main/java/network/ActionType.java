@@ -35,6 +35,21 @@ public enum ActionType{
     UPDATE_ORIGINAL_IMAGE,
 
     /**
+     * Server to client
+     * Tells the client to use the given checkpoint image. This should be sent with a message to tell what the
+     * checkpoint index is.
+     */
+    UPDATE_CHECKPOINT_IMAGE,
+
+
+    /**
+     * Server to client
+     * Tells the client that they are out of sync. The client should respond by asking for instructions and all
+     * related images (original and checkpoint).
+     */
+    OUT_OF_SYNC,
+
+    /**
      * Client to server
      * Requests the server to send a list of the collaborators to the one sent. The server should respond with
      * {@link #UPDATE_TO_LATEST_COLLABORATOR}
@@ -79,9 +94,19 @@ public enum ActionType{
     REQUEST_ORIGINAL_IMAGE,
     /**
      * Client to server
-     * Gets the most recent checkpoint image.
+     * Tells the server to send all the checkpoint images to the client. If there are none, nothing will happen.
      */
-    REQUEST_LATEST_CHECKPOINT_IMAGE,
+    REQUEST_CHECKPOINT_IMAGES,
+
+    /**
+     * Client to server
+     * Note: Each checkpoint image has a number corresponding to how close it is to the most up to date image (higher
+     * being closer to the most up to date one).
+     * Tells the server to send all the checkpoint images that are numbered the one defined by a message onwards
+     * (inclusive). The client must give a number (will be represented as a string). If the checkpoint image does not
+     * exist, that means the connection is out of sync and the server will respond with
+     */
+    REQUEST_CHECKPOINT_ONWARDS,
     /**
      * Client to server
      * Gets all the instruction done on the original image

@@ -318,14 +318,15 @@ public class FileInformation {
         setRecentImage(project.getImageBuilder().getWritableImage());
     }
 
+    /**
+     * Makes a checkpoint given the image and checkpoint index.
+     * @param checkpointNumber Index of the checkpoint (zero based)
+     * @param writableImage Image to be saved
+     */
     void setCheckpointImage(int checkpointNumber, WritableImage writableImage){
         // Need to remove all checkpoint images from checkpointNumber onwards (inclusive)
         // since all future images will no longer match up
-        for(String key : images.keySet()){
-            if(!key.equals("original") && !key.equals("recent") && Integer.valueOf(key) >= checkpointNumber){
-                deleteFile(images.get(key));
-            }
-        }
+        removeCheckpointImages(checkpointNumber);
 
         // Regenerate the checkpoint image
         BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
@@ -340,6 +341,39 @@ public class FileInformation {
 
         // add back to hash map
         images.put(String.valueOf(checkpointNumber), location);
+    }
+
+    /**
+     * Saves the given byte representation of the image to disk as a checkpoint image. This will remove all checkpoint
+     * images that shares the same index onwards (inclusive).
+     * @param checkpointNumber Index of the checkpoint.
+     * @param file File to be saved
+     */
+    void setCheckpointImage(int checkpointNumber, byte[] file){
+        removeCheckpointImages(checkpointNumber);
+        // Create the file
+        Path location = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve(checkpointNumber+".png");
+        try(FileOutputStream makeFile = new FileOutputStream(location.toFile())){
+            makeFile.write(file);
+        }catch(IOException e){
+            e.printStackTrace();
+            // Do nothing
+        }
+
+        // Keep track of the added checkpoint
+        images.put(String.valueOf(checkpointNumber), location);
+    }
+
+    /**
+     * Removes all the checkpoint images from the starting index onwards (inclusive)
+     * @param start Checkpoint image number to start removal from
+     */
+    private void removeCheckpointImages(int start){
+        for(String key : images.keySet()){
+            if(!key.equals("original") && !key.equals("recent") && Integer.valueOf(key) >= start){
+                deleteFile(images.get(key));
+            }
+        }
     }
 
     void setRecentImage(WritableImage writableImage){
