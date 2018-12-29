@@ -126,7 +126,11 @@ class Connector extends Thread{
                 byte[] file = receiver.getFile();
 
                 if(file == null){
-                    actionHandler.handle(message, actionType, this);
+                    if(message == null){
+                        actionHandler.handle(actionType, this);
+                    }else{
+                        actionHandler.handle(message, actionType, this);
+                    }
                 }else if(file != null){
                     FileType fileType = receiver.getFileType();
 
