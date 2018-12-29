@@ -307,7 +307,10 @@ public class FileInformation {
     }
 
     void save(Project project){
-        // Save edits
+        // If no project has been opened, just return because there is nothing to save
+        if(editsDoneXML == null)
+            return;
+
         editsDoneXML.writeData(project.getImageBuilder().getEdits());
         editsDoneXML.save();
 
