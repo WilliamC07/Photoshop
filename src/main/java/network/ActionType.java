@@ -40,8 +40,6 @@ public enum ActionType{
      * checkpoint index is.
      */
     UPDATE_CHECKPOINT_IMAGE,
-
-
     /**
      * Server to client
      * Tells the client that they are out of sync. The client should respond by asking for instructions and all

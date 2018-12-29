@@ -1,9 +1,6 @@
 package network;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * This class is used to send instructions (ActionType), Files, or both.
@@ -14,7 +11,10 @@ public final class Sender implements Comparable<Sender>{
     public static final int MAX_DATA_SIZE = 100_000;
     // Either send a file or a message
     private FileInputStream fileInputStream;
-    private String message;
+    /**
+     * We are always sending a string to make it easier to code and understand
+     */
+    private String message = "";
 
     private final FileType fileType;
     private final ActionType actionType;
@@ -65,6 +65,19 @@ public final class Sender implements Comparable<Sender>{
         }
     }
 
+    public Sender(File file, String message, FileType fileType, ActionType actionType){
+        try{
+            this.fileInputStream = new FileInputStream(file);
+        }catch(FileNotFoundException e){
+            // Do nothing
+        }
+
+        this.message = message;
+        this.fileType = fileType;
+        this.actionType = actionType;
+        this.fileSize = (int) file.length();
+    }
+
     public Sender(String message, ActionType actionType){
         this.message = message;
         this.fileType = FileType.STRING;
@@ -89,12 +102,11 @@ public final class Sender implements Comparable<Sender>{
      */
     void send(DataOutputStream outputStream) throws IOException {
         sendIdentifier(outputStream);
+        sendMessage(outputStream);
+
         // Only send data if there is a file to send, otherwise just skip to closer
         if(fileInputStream != null){
             sendFile(outputStream);
-        }
-        if(!(message == null || message.isEmpty())){
-            sendMessage(outputStream);
         }
         sendCloser(outputStream);
     }
@@ -129,9 +141,10 @@ public final class Sender implements Comparable<Sender>{
     private void sendFile(DataOutputStream stream) throws IOException{
         int lastChunkSize = fileSize - (chunksAmount - 1) * MAX_DATA_SIZE;
 
-        for(int i = 0; i < chunksAmount; i++){
+        // Start at i = 1 beacuse the first chunk is the message chunk (message chunks are data chunks)
+        for(int i = 1; i < chunksAmount + 1; i++){
             // Last chunk has a different sizes for all files
-            boolean isLastChunk = i == chunksAmount - 1;
+            boolean isLastChunk = i == chunksAmount;
             // File must be converted into a byte array to be sent by a stream
             byte[] byteRepresentation = new byte[isLastChunk ? lastChunkSize : MAX_DATA_SIZE];
             fileInputStream.read(byteRepresentation);
@@ -153,6 +166,7 @@ public final class Sender implements Comparable<Sender>{
      */
     private void sendMessage(DataOutputStream stream) throws IOException{
         stream.writeInt(ChunkType.get(ChunkType.DATA)); // Chunk identifier
+        stream.writeInt(0); // Message chunks are always the first data chunk to be sent
         stream.writeUTF(message);
         stream.flush();
     }

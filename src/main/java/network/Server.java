@@ -131,6 +131,15 @@ public class Server implements ActionHandler{
                         // Do nothing
                     }
                     break;
+                case REQUEST_CHECKPOINT_IMAGES: {
+                    // Give all the checkpoint images
+                    File fileToSend = null;
+                    int checkpointIndex = 0;
+                    while((fileToSend = project.getCheckpointImage(checkpointIndex)) != null){
+                        connector.sendFile(new Sender(fileToSend, FileType.IMAGE, ActionType.UPDATE_CHECKPOINT_IMAGE));
+                        checkpointIndex++;
+                    }
+                }
             }
         });
     }

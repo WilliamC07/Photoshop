@@ -51,17 +51,22 @@ public class Receiver {
      * @throws IOException Exception from the stream
      */
     void build(DataInputStream stream) throws IOException {
-        if(fileType == FileType.STRING){
-            // Only a single UTF string is sent, so read that
+        // First data is always which chunk number
+        int chunkNumber = stream.readInt();
+        // Determine what data chunk is sent (the first data chunk, index 0, is the message chunk
+        if(chunkNumber == 0) {
             this.message = stream.readUTF();
+            if(this.message.isBlank()){
+                this.message = null;
+            }
         }else{
-            int chunkNumber = stream.readInt(); // First data is always which chunk number
-            int start = MAX_CHUNK_SIZE * chunkNumber; // data chunks starts at 0
+            int start = MAX_CHUNK_SIZE * (chunkNumber - 1); // data chunks starts at 1 and we want zero based
             int lastChunkSize = expectedReadBytes - MAX_CHUNK_SIZE * (chunksAmount - 1);
-            int size = chunkNumber == chunksAmount - 1 ? lastChunkSize : MAX_CHUNK_SIZE; // length of chunk
+            int size = chunkNumber == chunksAmount ? lastChunkSize : MAX_CHUNK_SIZE; // length of chunk
 
             readBytes += stream.read(byteRepresentation, start, size);
         }
+
     }
 
     /**

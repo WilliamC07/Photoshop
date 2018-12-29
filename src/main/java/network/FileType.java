@@ -27,9 +27,9 @@ public enum FileType {
     NONE,
 
     /**
-     * Value of 4
+     * Misc. stuff
      */
-    MISC;
+    STRING_AND_FILE;
 
     /**
      * Give values to the enum objects (index position)
