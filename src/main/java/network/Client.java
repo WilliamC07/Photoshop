@@ -34,6 +34,13 @@ public class Client implements ActionHandler{
         connector.start();
     }
 
+    /**
+     * Shuts down the connection to the server
+     */
+    public void terminate(){
+        connector.terminateConnection();
+    }
+
     public void sendFile(Sender sender){
         connector.sendFile(sender);
     }

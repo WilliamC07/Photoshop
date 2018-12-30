@@ -79,7 +79,7 @@ public class Head extends Application{
 	    // Closes connection to the server if one exists
 	    Client client = project.getClient();
 	    if(client != null){
-	    	//client.
+	    	client.terminate();
 		}
 
 	    // TODO: Saves the most recently worked on image to disk

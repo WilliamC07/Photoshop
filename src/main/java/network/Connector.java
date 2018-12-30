@@ -25,6 +25,8 @@ class Connector extends Thread{
      */
     private Receiver receiver;
 
+    private volatile boolean isConnectorRunning = true;
+
     /**
      * Creates a thread to listen and send information through a socket.
      * @param socket Socket to listen to and send information through
@@ -53,7 +55,7 @@ class Connector extends Thread{
              DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
             // Prevent connection from breaking if the user doesn't make changes
             socket.setSoTimeout(0);
-            while (true) {
+            while (true && isConnectorRunning) {
                 try{
                     // Send out data
                     sendData(outStream);
@@ -156,6 +158,7 @@ class Connector extends Thread{
      */
     void terminateConnection(){
         try{
+            isConnectorRunning = false;
             socket.close();
         }catch (IOException e){
             e.printStackTrace();

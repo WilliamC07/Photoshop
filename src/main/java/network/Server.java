@@ -49,7 +49,10 @@ public class Server implements ActionHandler{
      * Ends the server and informs the clients that the server is closed.
      */
     public void terminate(){
-        connectors.forEach(c -> c.sendFile(new Sender(ActionType.QUIT_CONNECTION)));
+        for(Connector connector : connectors){
+            connector.sendFile(new Sender(ActionType.QUIT_CONNECTION));
+            connector.terminateConnection();
+        }
         isServerRunning = false;
         try{
             serverSocket.close();
