@@ -144,6 +144,11 @@ public class Server implements ActionHandler{
                         checkpointIndex++;
                     }
                 }
+                    break;
+                case REQUEST_ALL_INSTRUCTIONS:{
+                    connector.sendFile(new Sender(project.getEditsDoneFile(), FileType.XML, ActionType.UPDATE_TO_LATEST_INSTRUCTION));
+                }
+                    break;
             }
         });
     }

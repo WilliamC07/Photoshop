@@ -369,7 +369,7 @@ public class FileInformation {
      * Sets the edits done and reads all the edits onto the program.
      * @param file
      */
-    void setEditsDone(byte[] file){
+    Edit[] setEditsDone(byte[] file){
         // Make the file
         Path location = projectPath.resolve(EDITS_DONE_FILE_NAME);
         try(FileOutputStream write = new FileOutputStream(location.toFile())){
@@ -381,6 +381,19 @@ public class FileInformation {
 
         // Read the file and uses it to recreate the image
         editsDoneXML = new EditsDoneXML(location);
+
+        // Returns all the edits done
+        return editsDoneXML.getData();
+    }
+
+    /**
+     * Get the xml file that contains all the edits done on the image.
+     * @return File containing all the edits done.
+     */
+    File getEditsDoneFile(Project project){
+        // Need to write all the information to disk before continuing.
+        save(project);
+        return projectPath.resolve(EDITS_DONE_FILE_NAME).toFile();
     }
 
     /**

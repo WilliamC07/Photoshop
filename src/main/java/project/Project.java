@@ -12,6 +12,7 @@ import views.MainDisplay;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -98,6 +99,7 @@ public class Project {
         //will tell the client to set up the server
         client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
         client.sendFile(new Sender(ActionType.REQUEST_CHECKPOINT_IMAGES));
+        client.sendFile(new Sender(ActionType.REQUEST_ALL_INSTRUCTIONS));
     }
 
     public Client getClient(){
@@ -137,15 +139,35 @@ public class Project {
         return fileInformation.getOriginalImage();
     }
 
+    private Image convertFileToImage(File file){
+        try{
+            return new Image(new FileInputStream(file));
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+            // Do nothing
+        }
+        return null; // This means the original image does not exist
+    }
+
     public void setCheckpointImage(byte[] file, String checkpointNumber){
         fileInformation.setCheckpointImage(Integer.valueOf(checkpointNumber), file);
     }
 
     /**
      * Creates the ImageBuilder given the edits.
+     * @param file File given by the connection to the server (if one exists)
      */
-    public void setEditsDone(){
+    public void setEditsDone(byte[] file){
+        fileInformation.setEditsDone(file);
+        imageBuilder = new ImageBuilder(this, convertFileToImage(getOriginalImage()));
+    }
 
+    /**
+     * Gets all the file containing all the edits done on the project.
+     * @return
+     */
+    public File getEditsDoneFile(){
+        return fileInformation.getEditsDoneFile(this);
     }
 
     public void setServer(Server server) {

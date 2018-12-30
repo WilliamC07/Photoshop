@@ -6,7 +6,7 @@ package network;
 public enum ActionType{
     /**
      * Server to client
-     * Tells the client to update their instructions to the one received.
+     * Gives the client a xml file that contains all the edits done on the project so far
      */
     UPDATE_TO_LATEST_INSTRUCTION,
 

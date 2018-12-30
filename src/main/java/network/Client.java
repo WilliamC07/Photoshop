@@ -67,6 +67,10 @@ public class Client implements ActionHandler{
                 case UPDATE_ORIGINAL_IMAGE:
                     project.setOriginalImage(file);
                     break;
+                case UPDATE_TO_LATEST_INSTRUCTION:
+                    project.setEditsDone(file);
+                    break;
+
             }
         });
     }
