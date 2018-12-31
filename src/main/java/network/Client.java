@@ -70,6 +70,7 @@ public class Client implements ActionHandler{
                     break;
                 case UPDATE_TO_LATEST_INSTRUCTION:
                     project.setEditsDone(file);
+                    project.setImageBuilder();
                     break;
 
             }

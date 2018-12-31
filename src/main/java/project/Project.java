@@ -106,23 +106,38 @@ public class Project {
 
     public ImageBuilder getImageBuilder() {
         if(imageBuilder == null){
-            try{
-                File recentImage = fileInformation.getRecentImage();
-                if(recentImage != null){
-                    imageBuilder = new ImageBuilder(this, new Image(new FileInputStream(recentImage)));
-                }else{
-                    imageBuilder = new ImageBuilder(this, new Image(new FileInputStream(fileInformation.getOriginalImage())));
-                }
-                Edit[] edits = fileInformation.getEditsDone();
-                if(edits != null){
-                    imageBuilder.edit(fileInformation.getEditsDone());
-                }
-            }catch(IOException e){
-                System.out.println("cannot get image builder");
-                e.printStackTrace();
-            }
+            setImageBuilder();
         }
         return imageBuilder;
+    }
+
+    public void setImageBuilder(){
+        imageBuilder = createImageBuilder();
+        // refreshes the view to update what the user sees
+        showMainDisplay();
+    }
+
+    private ImageBuilder createImageBuilder(){
+        try{
+            ImageBuilder builder;
+            File recentImage = fileInformation.getRecentImage();
+            if(recentImage != null){
+                builder = new ImageBuilder(this, new Image(new FileInputStream(recentImage)));
+            }else{
+                builder = new ImageBuilder(this, new Image(new FileInputStream(fileInformation.getOriginalImage())));
+            }
+            Edit[] edits = fileInformation.getEditsDone();
+            if(edits != null){
+                builder.edit(fileInformation.getEditsDone());
+            }
+
+            return builder;
+        }catch(IOException e){
+            System.out.println("cannot get image builder");
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public boolean setOriginalImage(File file){

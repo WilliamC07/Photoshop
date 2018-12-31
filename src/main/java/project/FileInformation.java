@@ -376,7 +376,6 @@ public class FileInformation {
 
         // Read the file and uses it to recreate the image
         editsDoneXML = new EditsDoneXML(location);
-        System.out.println("made edits done file");
 
         // Returns all the edits done
         return editsDoneXML.getData();
