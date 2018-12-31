@@ -151,9 +151,6 @@ public final class Sender implements Comparable<Sender>{
             // File must be converted into a byte array to be sent by a stream
             byte[] byteRepresentation = new byte[isLastChunk ? lastChunkSize : MAX_DATA_SIZE];
             fileInputStream.read(byteRepresentation);
-            System.out.println("chunk number / chunk total" + i + " / " + chunksAmount);
-            System.out.println("size of file " + fileSize);
-            System.out.println("size of chunk byte[] " + (isLastChunk ? lastChunkSize : MAX_DATA_SIZE));
 
             stream.writeInt(ChunkType.get(ChunkType.DATA)); // Chunk identifier
             stream.writeInt(i); // What chunk is being sent

@@ -6,6 +6,13 @@ package network;
 public enum ActionType{
     /**
      * Server to client
+     * Tells the client to use regenerate the view to use the most up to date. This should send all necessary files
+     * before sending this action.
+     */
+    UPDATE_PROJECT,
+
+    /**
+     * Server to client
      * Gives the client a xml file that contains all the edits done on the project so far
      */
     UPDATE_TO_LATEST_INSTRUCTION,
@@ -46,6 +53,13 @@ public enum ActionType{
      * related images (original and checkpoint).
      */
     OUT_OF_SYNC,
+
+    /**
+     * Client to server
+     * Requests the server to send all needed files to create the project. Server should respond with
+     * {@link #UPDATE_PROJECT}.
+     */
+    REQUEST_PROJECT,
 
     /**
      * Client to server

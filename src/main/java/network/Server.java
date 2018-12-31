@@ -140,13 +140,22 @@ public class Server implements ActionHandler{
                     int checkpointIndex = 0;
                     while((fileToSend = project.getCheckpointImage(checkpointIndex)) != null){
                         connector.sendFile(new Sender(fileToSend, String.valueOf(checkpointIndex), FileType.IMAGE, ActionType.UPDATE_CHECKPOINT_IMAGE));
-                        System.out.println("sending checkpoint : " + String.valueOf(checkpointIndex));
                         checkpointIndex++;
                     }
                 }
                     break;
                 case REQUEST_ALL_INSTRUCTIONS:{
                     connector.sendFile(new Sender(project.getEditsDoneFile(), FileType.XML, ActionType.UPDATE_TO_LATEST_INSTRUCTION));
+                }
+                    break;
+                case REQUEST_PROJECT:
+                {
+                    // Sends all the needed files
+                    handle(ActionType.REQUEST_ORIGINAL_IMAGE, connector);
+                    handle(ActionType.REQUEST_CHECKPOINT_IMAGES, connector);
+                    handle(ActionType.REQUEST_ALL_INSTRUCTIONS, connector);
+                    System.out.println("\n----sent all requests stuff-----\n");
+                    // Tells the connector to update its view
                 }
                     break;
             }

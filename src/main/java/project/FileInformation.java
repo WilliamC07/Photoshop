@@ -252,17 +252,13 @@ public class FileInformation {
     Image setOriginalImage(byte[] fileBytes){
         try{
             Path originalImagePath = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("original.png");
-            System.out.println("path" + originalImagePath);
-            File file = new File(originalImagePath.toUri());
-            System.out.println("File: " + file.toString());
-            System.out.println("Check exists: " + Files.isDirectory(originalImagePath.getParent()));
-            System.out.println(file.createNewFile());
-            FileOutputStream outputStream = new FileOutputStream(file);
+            FileOutputStream outputStream = new FileOutputStream(originalImagePath.toFile());
             outputStream.write(fileBytes);
             outputStream.close();
 
             // Update the program
             images.put("original", originalImagePath);
+            System.out.println("made original image");
             return new Image(Files.newInputStream(originalImagePath));
         }catch(IOException e){
             e.printStackTrace();
@@ -355,7 +351,6 @@ public class FileInformation {
         Path location = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve(checkpointNumber+".png");
         try(FileOutputStream makeFile = new FileOutputStream(location.toFile())){
             makeFile.write(file);
-            System.out.println("made file for checkpoint asdasasd");
         }catch(IOException e){
             e.printStackTrace();
             // Do nothing
@@ -381,6 +376,7 @@ public class FileInformation {
 
         // Read the file and uses it to recreate the image
         editsDoneXML = new EditsDoneXML(location);
+        System.out.println("made edits done file");
 
         // Returns all the edits done
         return editsDoneXML.getData();

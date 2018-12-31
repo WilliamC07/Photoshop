@@ -8,6 +8,7 @@ import network.Client;
 import network.Sender;
 import network.Server;
 import model.imageManipulation.edits.ImageBuilder;
+import views.Head;
 import views.MainDisplay;
 
 import java.io.File;
@@ -59,10 +60,13 @@ public class Project {
 
     private MainDisplay mainDisplay;
 
+    private final Head head;
+
     /**
      * Constructs the program and the project.
      */
-    public Project(){
+    public Project(Head head){
+        this.head = head;
         fileInformation = new FileInformation();
     }
 
@@ -94,12 +98,6 @@ public class Project {
     public void connectToServer(Client client){
         this.client = client;
         fileInformation.serverConnectionProject();
-
-        //TODO: need to make a ActionType SET_UP_PROJECT which will send all the needed files and the last one
-        //will tell the client to set up the server
-        client.sendFile(new Sender(ActionType.REQUEST_ORIGINAL_IMAGE));
-        client.sendFile(new Sender(ActionType.REQUEST_CHECKPOINT_IMAGES));
-        client.sendFile(new Sender(ActionType.REQUEST_ALL_INSTRUCTIONS));
     }
 
     public Client getClient(){
@@ -171,6 +169,8 @@ public class Project {
     }
 
     public void setServer(Server server) {
+        // Save the files first so we can send them
+        save();
         this.server = server;
     }
 
@@ -180,7 +180,7 @@ public class Project {
 
     public void setCollaborators(String[] collaborators){
         this.collaborators = collaborators;
-        mainDisplay.getNetworkComponent().updateCollabList(collaborators);
+        //mainDisplay.getNetworkComponent().updateCollabList(collaborators);
     }
 
     public String[] getCollaborators() {
@@ -235,5 +235,9 @@ public class Project {
      */
     public File getCheckpointImage(int index){
         return fileInformation.getCheckpointImage(index);
+    }
+
+    public void showMainDisplay(){
+        head.showMainDisplay();
     }
 }

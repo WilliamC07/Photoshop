@@ -56,24 +56,16 @@ public class Receiver {
         // Determine what data chunk is sent (the first data chunk, index 0, is the message chunk
         if(chunkNumber == 0) {
             this.message = stream.readUTF();
-            System.out.println("mssage read in receiver" + message);
             if(this.message.isBlank()){
-                System.out.println(String.format("%s is blank", message));
                 this.message = null;
             }
         }else{
             int start = MAX_CHUNK_SIZE * (chunkNumber - 1); // data chunks starts at 1 and we want zero based
             int lastChunkSize = expectedReadBytes - MAX_CHUNK_SIZE * (chunksAmount - 2);
             int size = chunkNumber == (chunksAmount - 1) ? lastChunkSize : MAX_CHUNK_SIZE; // length of chunk
-            System.out.println("chunk number / total: " + chunkNumber + " / " + chunksAmount);
-            System.out.println("size read " + size);
-            System.out.println("is last chunk: " + (chunkNumber == (chunksAmount - 1)));
-            System.out.println("last chunk size " + lastChunkSize);
 
             readBytes += stream.read(byteRepresentation, start, size);
         }
-
-        System.out.println(stream.available());
     }
 
     /**

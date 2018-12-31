@@ -66,6 +66,7 @@ public class Client implements ActionHandler{
             switch(actionType){
                 case UPDATE_ORIGINAL_IMAGE:
                     project.setOriginalImage(file);
+                    project.showMainDisplay();
                     break;
                 case UPDATE_TO_LATEST_INSTRUCTION:
                     project.setEditsDone(file);
@@ -78,7 +79,9 @@ public class Client implements ActionHandler{
     @Override
     public void handle(ActionType actionType, Connector connector) {
         Platform.runLater(() -> {
+            switch(actionType){
 
+            }
         });
     }
 

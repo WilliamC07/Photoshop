@@ -21,7 +21,7 @@ public class Head extends Application{
     /**
      * Information about the project being worked on.
      */
-    private final Project project = new Project();
+    private final Project project = new Project(this);
     /**
      * Stage of the program.
      */

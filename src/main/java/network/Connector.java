@@ -127,8 +127,6 @@ class Connector extends Thread{
                 String message = receiver.getMessage();
                 byte[] file = receiver.getFile();
 
-                System.out.println("--------->" + message);
-
                 if(file == null){
                     if(message == null){
                         actionHandler.handle(actionType, this);
@@ -137,7 +135,6 @@ class Connector extends Thread{
                     }
                 }else{
                     FileType fileType = receiver.getFileType();
-                    System.out.println("received message: " + message);
                     if(message != null){
                         actionHandler.handle(file, fileType, message, actionType, this);
                     }else{

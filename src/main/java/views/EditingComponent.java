@@ -60,13 +60,13 @@ class EditingComponent extends VBox {
     EditingComponent(Project project, MainDisplay parent){
         this.project = project;
         this.parent = parent;
-        // TODO: should be located in a css for design
         setAlignment(Pos.CENTER);
 
         if(project.getOriginalImage() != null){
-           generateView();
+            generateView();
         }else{
             // Allow the user to choose a file
+            System.out.println("original image has not been found -----------");
             showRequestMode();
         }
     }

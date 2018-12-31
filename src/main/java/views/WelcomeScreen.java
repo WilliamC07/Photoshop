@@ -237,7 +237,8 @@ class WelcomeScreen extends VBox {
             if(InputCheck.checkUsername(errorLabel, username)){
                 project.setMyUsername(username);
                 project.getClient().sendFile(new Sender(username, ActionType.ADD_COLLABORATOR_USERNAME));
-                head.showMainDisplay();
+                // requests all the needed files and show the view
+                project.getClient().sendFile(new Sender(ActionType.REQUEST_PROJECT));
             }
         });
 
