@@ -3,10 +3,7 @@ package project;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import model.imageManipulation.edits.Edit;
-import network.ActionType;
-import network.Client;
-import network.Sender;
-import network.Server;
+import network.*;
 import model.imageManipulation.edits.ImageBuilder;
 import views.Head;
 import views.MainDisplay;
@@ -190,9 +187,26 @@ public class Project {
      */
     public void setEditsDone(byte[] file){
         editsDoneLock.lock();
-        fileInformation.setEditsDone(file);
-        imageBuilder = new ImageBuilder(this, convertFileToImage(getOriginalImage()));
+        fileInformation.setEditsDone(file, this);
+
         editsDoneLock.unlock();
+    }
+
+    public void updateConnectors(String stringRepresentation){
+        // Send the information
+        if(server != null){
+            server.send(new Sender(fileInformation.getEditsDoneFile(this), FileType.XML, ActionType.UPDATE_TO_LATEST_INSTRUCTION));
+        }else if(client != null){
+            client.sendFile(new Sender(stringRepresentation, ActionType.PUSH_INSTRUCTION));
+        }
+    }
+
+    void setEditsDone(boolean needToRecreate, Edit[] edits){
+        if(needToRecreate){
+            imageBuilder = new ImageBuilder(this, convertFileToImage(getOriginalImage()));
+        }
+        imageBuilder.edit(edits);
+        mainDisplay.regenerateEditingView();
     }
 
     /**

@@ -115,8 +115,6 @@ class EditingComponent extends VBox {
         viewWidth = (int) image.getWidth();
         imageHeight = (int) image.getHeight();
 
-        System.out.println(image.getWidth());
-
         imageView = new ImageView(image);
         imageWrapper = new ScrollPane(imageView);
 

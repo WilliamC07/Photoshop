@@ -1,6 +1,7 @@
 package network;
 
 import javafx.application.Platform;
+import model.imageManipulation.edits.DiskToEdit;
 import project.Project;
 
 import java.io.File;
@@ -41,8 +42,12 @@ public class Server implements ActionHandler{
      * Sends information to all the connected users
      * @param sender Information to be sent
      */
-    private void send(Sender sender){
+    public void send(Sender sender){
         connectors.forEach(c -> c.sendFile(sender));
+    }
+
+    public void sendToAllBut(Sender sender, Connector connector){
+        connectors.stream().filter(c -> c.equals(connector)).forEach(c -> c.sendFile(sender));
     }
 
     /**
@@ -92,6 +97,11 @@ public class Server implements ActionHandler{
                     project.setCollaborators(collaborators.toArray(new String[0]));
                     // Tell everyone to request for the update version of the list of collaborator
                     send(new Sender(collaboratorNames(), ActionType.UPDATE_TO_LATEST_COLLABORATOR));
+                    break;
+                case PUSH_INSTRUCTION:
+                    project.getImageBuilder().edit(DiskToEdit.getEdit(message), true);
+                    // Tell everyone to update other than the connector
+                    sendToAllBut(new Sender(project.getEditsDoneFile(), FileType.XML, ActionType.UPDATE_TO_LATEST_INSTRUCTION), connector);
                     break;
             }
         });
@@ -154,7 +164,6 @@ public class Server implements ActionHandler{
                     handle(ActionType.REQUEST_ORIGINAL_IMAGE, connector);
                     handle(ActionType.REQUEST_CHECKPOINT_IMAGES, connector);
                     handle(ActionType.REQUEST_ALL_INSTRUCTIONS, connector);
-                    System.out.println("\n----sent all requests stuff-----\n");
                     // Tells the connector to update its view
                 }
                     break;

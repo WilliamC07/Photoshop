@@ -16,9 +16,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.function.BiConsumer;
+import java.util.Arrays;
 
 /**
  * Deals with the file system on the computer. Creates all needed files and provides paths.
@@ -258,7 +261,6 @@ public class FileInformation {
 
             // Update the program
             images.put("original", originalImagePath);
-            System.out.println("made original image");
             return new Image(Files.newInputStream(originalImagePath));
         }catch(IOException e){
             e.printStackTrace();
@@ -304,8 +306,10 @@ public class FileInformation {
 
     void save(Project project){
         // If no project has been opened, just return because there is nothing to save
-        if(editsDoneXML == null)
+        if(editsDoneXML == null) {
+            System.out.println("nothing to save -- nothing done");
             return;
+        }
 
         editsDoneXML.writeData(project.getImageBuilder().getEdits());
         editsDoneXML.save();
@@ -364,21 +368,69 @@ public class FileInformation {
      * Sets the edits done and reads all the edits onto the program.
      * @param file
      */
-    Edit[] setEditsDone(byte[] file){
-        // Make the file
-        Path location = projectPath.resolve(EDITS_DONE_FILE_NAME);
-        try(FileOutputStream write = new FileOutputStream(location.toFile())){
+    void setEditsDone(byte[] file, Project project){
+        // Write the data to disk so we can use it
+        Path diskFile = projectPath.resolve(EDITS_DONE_FILE_NAME);
+        try(FileOutputStream write = new FileOutputStream(diskFile.toFile())){
             write.write(file);
         }catch(IOException e){
             e.printStackTrace();
             // Do nothing
         }
 
-        // Read the file and uses it to recreate the image
-        editsDoneXML = new EditsDoneXML(location);
+        // Get the existing edits done to compare to the downloaded one
+        Edit[] preexistingEdits = project.getImageBuilder().getEdits();
+        Edit[] downloadedEdits = new EditsDoneXML(diskFile).getData();
 
-        // Returns all the edits done
-        return editsDoneXML.getData();
+        // The wrapper will determine if we need to
+        EditsWrapper wrapper = compareEdits(preexistingEdits, downloadedEdits);
+
+        // Compare the results and use the new one
+        project.setEditsDone(wrapper.usingOld, wrapper.edits);
+    }
+
+    /**
+     * Compares the edit history from two list. The returned value is the one that should be used in the project. If
+     * there is any difference, automatically resort to using the downloaded one.
+     * @param original The edits in the edits.xml file (the one that exists before the new file was downloaded.
+     * @param downloaded The edits in the temp.xml file (the one that was downloaded from the server
+     * @return The edits done to be used in the project.
+     */
+    private EditsWrapper compareEdits(Edit[] original, Edit[] downloaded){
+        // If the downloaded one is less than the original, then use the downloaded one because undo is priority
+        if(original.length >= downloaded.length)
+            return new EditsWrapper(downloaded, false);
+
+        // If the downloaded one is longer and is just appending, then just add the changes to the original
+        // We know that download length is longer based on the previous conditional
+        Edit[] edits = new Edit[downloaded.length];
+        for(int i = 0; i < original.length; i++){
+            if(original[i].equals(downloaded[i])){
+                edits[i] = original[i];
+            }
+        }
+        // Add on the additional changes
+        for(int i = original.length; i < downloaded.length; i++){
+            edits[i] = downloaded[i];
+        }
+
+        return new EditsWrapper(edits, true);
+
+
+
+    }
+
+    /**
+     * Small wrapper to allow returning multiple data for {@link #compareEdits(Edit[], Edit[])}
+     */
+    private class EditsWrapper{
+        Edit[] edits;
+        boolean usingOld;
+
+        EditsWrapper(Edit[] edits, boolean usingOld){
+            this.edits = edits;
+            this.usingOld = usingOld;
+        }
     }
 
     /**

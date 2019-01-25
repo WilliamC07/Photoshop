@@ -7,7 +7,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public class EditsDoneXML implements Savable {
     private Document document;
@@ -15,9 +17,12 @@ public class EditsDoneXML implements Savable {
 
     public EditsDoneXML(Path fileLocation){
         this.fileLocation = fileLocation;
-        if(fileLocation.toFile().isFile()){
+        // Make sure the file exists
+        if(Files.exists(fileLocation)){
             document = XMLHelper.getDocument(fileLocation);
+            System.out.println("File existts");
         }else{
+            // Create the file if it doesn't exist
             document = XMLHelper.createDocument();
             document.appendChild(document.createElement("edits"));
         }
@@ -36,9 +41,11 @@ public class EditsDoneXML implements Savable {
     }
 
     public Edit[] getData(){
+        System.out.println("ran the getData()");
         // Occurs when no edits have been done
         if(!document.getDocumentElement().hasChildNodes()){
-            return null;
+            //If there are no nodes, that means no edits had been done
+            return new Edit[0];
         }
         NodeList nodeElements = document.getDocumentElement().getElementsByTagName("edit");
         Edit[] edits = new Edit[nodeElements.getLength()];
@@ -46,6 +53,7 @@ public class EditsDoneXML implements Savable {
             Node text = nodeElements.item(i);
             edits[i] = DiskToEdit.getEdit(text.getTextContent());
         }
+        System.out.println("read from xml+ " + Arrays.toString(edits));
         return edits;
     }
 

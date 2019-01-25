@@ -87,4 +87,8 @@ public final class MainDisplay extends SplitPane {
     public NetworkComponent getNetworkComponent() {
         return networkComponent;
     }
+
+    public void regenerateEditingView(){
+        editingComponent.generateView();
+    }
 }

@@ -52,12 +52,16 @@ public final class ImageBuilder{
 		instruction.change(writableImage.getPixelWriter());
 		instruction.change(this);
 		edits_done.add(instruction);
-		System.out.println(edits_done.size());
 
-		// Make a checkpoint image every 10 edits
+		// Make a checkpoint image every 10 edits given that the user made it (so not the server server information or form disk)
 		if(isNewEdit && edits_done.size() % 10 == 0){
 			int checkpointNumber = (edits_done.size() / 10) - 1;
 			project.makeCheckpoint(checkpointNumber, writableImage);
+		}
+
+		// Send the data if it is a new edit to the server
+		if(isNewEdit){
+			project.updateConnectors(instruction.getStringRepresentation());
 		}
 		return this;
 	}
