@@ -17,6 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This is the head of the entire program. Think of this as the root node of a node tree.
@@ -61,6 +63,11 @@ public class Project {
     private MainDisplay mainDisplay;
 
     private final Head head;
+
+    //
+    // Locks for accessing files
+    //
+    private Lock editsDoneLock = new ReentrantLock(true);
 
     /**
      * Constructs the program and the project.
@@ -119,13 +126,24 @@ public class Project {
 
     private ImageBuilder createImageBuilder(){
         try{
-            ImageBuilder builder;
+            ImageBuilder builder = null;
             File recentImage = fileInformation.getRecentImage();
-            if(recentImage != null){
-                builder = new ImageBuilder(this, new Image(new FileInputStream(recentImage)));
-            }else{
+
+            // Try to get the original image, sometimes it gets corrupted so check for that
+            try{
+                if(recentImage != null) {
+                    builder = new ImageBuilder(this, new Image(new FileInputStream(recentImage)));
+                }
+            }catch(IllegalArgumentException e){
+                // Happens when the original image is corrupted
+            }
+
+            // Sets the builder to the original image because either there isn't a most recent image or the most recent
+            // image has been corrupted while saving (no idea why that happens).
+            if(builder == null) {
                 builder = new ImageBuilder(this, new Image(new FileInputStream(fileInformation.getOriginalImage())));
             }
+
             Edit[] edits = fileInformation.getEditsDone();
             if(edits != null){
                 builder.edit(fileInformation.getEditsDone());
@@ -171,8 +189,10 @@ public class Project {
      * @param file File given by the connection to the server (if one exists)
      */
     public void setEditsDone(byte[] file){
+        editsDoneLock.lock();
         fileInformation.setEditsDone(file);
         imageBuilder = new ImageBuilder(this, convertFileToImage(getOriginalImage()));
+        editsDoneLock.unlock();
     }
 
     /**
