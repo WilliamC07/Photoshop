@@ -27,6 +27,10 @@ class Connector extends Thread{
 
     private volatile boolean isConnectorRunning = true;
 
+    private final int id;
+
+    private static int id_max = 0;
+
     /**
      * Creates a thread to listen and send information through a socket.
      * @param socket Socket to listen to and send information through
@@ -35,6 +39,7 @@ class Connector extends Thread{
     Connector(Socket socket, ActionHandler actionHandler){
         this.socket = socket;
         this.actionHandler = actionHandler;
+        id = ++id_max;
     }
 
     /**
@@ -160,5 +165,10 @@ class Connector extends Thread{
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean equals(Object other){
+        return other instanceof Connector && ((Connector) other).id == this.id;
     }
 }
