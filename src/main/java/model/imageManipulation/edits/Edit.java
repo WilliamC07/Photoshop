@@ -39,4 +39,14 @@ public abstract class Edit{
 	 * @return String representation of the object to be written onto an xml file.
 	 */
 	public abstract String getStringRepresentation();
+
+	/**
+	 * Two Edits are the same if their String Representation is equal. This is a pretty ineffective way as com
+	 * @param o Object to be compared to
+	 * @return True if the two edits are the same, false otherwise
+	 */
+	@Override
+	public boolean equals(Object o){
+		return o instanceof Edit && ((Edit) o).getStringRepresentation().equals(this.getStringRepresentation());
+	}
 }
