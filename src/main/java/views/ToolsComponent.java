@@ -25,7 +25,7 @@ public class ToolsComponent extends FlowPane {
      * Creating shapes
      */
     private void createButtons(){
-        getChildren().addAll(shapeButton(), resizeButton());
+        getChildren().addAll(shapeButton());
     }
 
     /**
@@ -47,7 +47,9 @@ public class ToolsComponent extends FlowPane {
     }
 
     /**
-     * Resize the image. This is a toolbar command
+     * Resize the image. This is a toolbar command.
+     * This is so broken to the point i don't even know if i am bad or if the javafx code is bad (Apple error not java).
+     * DON'T USE THIS DON'T USE THIS
      * @return Button to click
      */
     private Button resizeButton(){

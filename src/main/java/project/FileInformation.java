@@ -59,6 +59,7 @@ public class FileInformation {
      * is connect to a server. The information received from the server will be located in this path.
      */
     private Path projectPath;
+    private Edit[] edits = null;
     /**
      * Keys:
      * "original" The first image the user chose for the project
@@ -184,7 +185,11 @@ public class FileInformation {
     }
 
     Edit[] getEditsDone(){
-        return editsDoneXML.getData();
+        if(edits != null){
+            return edits;
+        }else{
+            return editsDoneXML.getData();
+        }
     }
 
     /**
@@ -384,6 +389,7 @@ public class FileInformation {
 
         // The wrapper will determine if we need to
         EditsWrapper wrapper = compareEdits(preexistingEdits, downloadedEdits);
+        edits = wrapper.edits;
 
         // Compare the results and use the new one
         project.setEditsDone(wrapper.usingOld, wrapper.edits);
