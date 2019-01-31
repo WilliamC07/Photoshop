@@ -7,6 +7,8 @@ public class DiskToEdit {
         switch(parts[0]){
             case "RECTANGLE":
                 return new RectangleBuilder().convertDiskInfoToEdit(parts);
+            case "LINE":
+                return new LineBuilder().convertDiskInfoToEdit(parts);
             default:
                 System.out.println("don't know what is " + info);
         }

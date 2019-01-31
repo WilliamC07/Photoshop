@@ -52,6 +52,10 @@ public final class MainDisplay extends SplitPane {
         requirePoints = builder;
     }
 
+    void makeLine(ColorPicker colorPicker, TextField width){
+        LineBuilder lineBuilder = new LineBuilder(project.getImageBuilder(), colorPicker, width);
+        requirePoints = lineBuilder;
+    }
 
     void supplyPoints(Point point){
         if(requirePoints != null) {

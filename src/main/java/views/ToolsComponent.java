@@ -25,7 +25,7 @@ public class ToolsComponent extends FlowPane {
      * Creating shapes
      */
     private void createButtons(){
-        getChildren().addAll(shapeButton());
+        getChildren().addAll(shapeButton(), lineButton());
     }
 
     /**
@@ -46,4 +46,17 @@ public class ToolsComponent extends FlowPane {
         return button;
     }
 
+    private Button lineButton(){
+        Button button = new Button("line");
+        button.setOnAction(e -> {
+            // tool bar
+            ColorPicker colorPicker = new ColorPicker(Color.BLACK);
+            TextField width = new TextField();
+            width.setPromptText("width (> 0)");
+            parent.getToolsExtensionComponent().setContents(colorPicker, width);
+
+            parent.makeLine(colorPicker, width);
+        });
+        return button;
+    }
 }
