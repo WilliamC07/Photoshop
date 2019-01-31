@@ -1,6 +1,7 @@
 package views;
 
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import model.imageManipulation.edits.*;
@@ -41,10 +42,11 @@ public final class MainDisplay extends SplitPane {
         this.editingComponent = new EditingComponent(project, this);
 
         VBox center = new VBox(toolsExtensionComponent, editingComponent);
+        center.setAlignment(Pos.CENTER);
 
         SplitPane rightSide = generateRightSide();
         getItems().addAll(toolsComponent, center, rightSide);
-        setDividerPositions(0.2f, 0.6f);
+        setDividerPositions(0.1f, 0.8f);
     }
 
     void makeRectangle(ColorPicker colorPicker){

@@ -45,13 +45,13 @@ class EditingComponent extends VBox {
      */
     private double scaleFactor = 1;
     /**
-     * Maximum scale factor the {@link #imageView} can be
+     * Maximum scale factor the {@link #imageView} can be for width
      */
-    private final double maxScaleFactor = 2;
+    private final double maxScaleFactorWidth = 2;
     /**
      * Minimum scale factor the {@link #imageView} can be
      */
-    private final double minScaleFactor = .5;
+    private final double minScaleFactor = .8;
 
     private final Project project;
 
@@ -124,7 +124,7 @@ class EditingComponent extends VBox {
             double zoomFactor = z.getZoomFactor();
 
             // Only resize the view if the zoom in or zoom out fits the requirements
-            if (!(zoomFactor * viewWidth >= image.getWidth() * maxScaleFactor ||
+            if (!(zoomFactor * viewWidth >= image.getWidth() * maxScaleFactorWidth ||
                   zoomFactor * viewWidth <= image.getWidth() * minScaleFactor)) {
                 viewWidth *= zoomFactor;
                 imageHeight *= zoomFactor;
