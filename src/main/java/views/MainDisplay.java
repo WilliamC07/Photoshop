@@ -52,11 +52,6 @@ public final class MainDisplay extends SplitPane {
         requirePoints = builder;
     }
 
-    void resize(int width, int height){
-        new ResizeBuilder(project.getImageBuilder(), width, height).makeEdit();
-        // Must update because we are creating a new image; we are not modifying
-        editingComponent.generateView();
-    }
 
     void supplyPoints(Point point){
         if(requirePoints != null) {

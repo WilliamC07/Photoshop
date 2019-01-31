@@ -46,45 +46,4 @@ public class ToolsComponent extends FlowPane {
         return button;
     }
 
-    /**
-     * Resize the image. This is a toolbar command.
-     * This is so broken to the point i don't even know if i am bad or if the javafx code is bad (Apple error not java).
-     * DON'T USE THIS DON'T USE THIS
-     * @return Button to click
-     */
-    private Button resizeButton(){
-        Button button = new Button("Resize");
-        button.setOnAction(e -> {
-            // Tool bar
-            TextField widthInput = new TextField();
-            TextField heightInput = new TextField();
-            Button push = new Button("Make changes");
-            Label error = new Label();
-
-            widthInput.setPromptText("Width");
-            widthInput.setText(String.valueOf((int) project.getImageBuilder().getWritableImage().getWidth()));
-            heightInput.setPromptText("Height");
-            heightInput.setText(String.valueOf((int) project.getImageBuilder().getWritableImage().getHeight()));
-
-            push.setOnAction(x -> {
-                try{
-                    int width = Integer.valueOf(widthInput.getText());
-                    int height = Integer.valueOf(heightInput.getText());
-
-                    if(width < 0 || height < 0){
-                        throw new NumberFormatException();
-                    }
-
-                    parent.resize(width, height);
-                }catch(NumberFormatException exc){
-                    exc.printStackTrace();
-                    error.setText("Must be a positive number");
-                }
-            });
-
-            parent.getToolsExtensionComponent().setContents(widthInput, heightInput, push, error);
-        });
-
-        return button;
-    }
 }
