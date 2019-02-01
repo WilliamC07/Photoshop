@@ -84,8 +84,6 @@ public class Head extends Application{
 
 	    // TODO: Saves the most recently worked on image to disk
 		project.save();
-
-        System.out.println("System quit successfully");
     }
 
 	/**

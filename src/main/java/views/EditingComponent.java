@@ -255,12 +255,6 @@ class EditingComponent extends VBox {
     }
 
     public void updateView(){
-        System.out.println("---");
-        System.out.println(project.getImageBuilder().getWritableImage());
-        for(Edit edit : project.getImageBuilder().getEdits()){
-            System.out.println(edit.getStringRepresentation());
-        }
-        System.out.println("---");
         imageView.setImage(project.getImageBuilder().getWritableImage());
     }
 }
