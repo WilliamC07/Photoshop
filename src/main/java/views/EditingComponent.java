@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import model.imageManipulation.edits.Edit;
 import model.imageManipulation.edits.Point;
 import project.Project;
 
@@ -31,8 +32,8 @@ import java.util.function.Consumer;
  * @see MainDisplay
  */
 class EditingComponent extends VBox {
-    private ImageView imageView;
-    private ScrollPane imageWrapper;
+    private ImageView imageView = new ImageView();
+    private final ScrollPane imageWrapper = new ScrollPane(imageView);
     /**
      * The width of the fit width of {@link #imageView}
      */
@@ -213,13 +214,11 @@ class EditingComponent extends VBox {
      * Sets the view up to allow the user to edit the image.
      * Call this to refresh the view.
      */
-    public void generateView(){
+    private void generateView(){
         WritableImage image = project.getImageBuilder().getWritableImage();
         viewWidth = (int) image.getWidth();
         imageHeight = (int) image.getHeight();
-
-        imageView = new ImageView(image);
-        imageWrapper = new ScrollPane(imageView);
+        imageView.setImage(image);
 
         imageView.setPreserveRatio(true);
 
@@ -253,5 +252,15 @@ class EditingComponent extends VBox {
         getChildren().add(imageWrapper);
 
         // TODO: Show multiple pages --  see Google docs for more information
+    }
+
+    public void updateView(){
+        System.out.println("---");
+        System.out.println(project.getImageBuilder().getWritableImage());
+        for(Edit edit : project.getImageBuilder().getEdits()){
+            System.out.println(edit.getStringRepresentation());
+        }
+        System.out.println("---");
+        imageView.setImage(project.getImageBuilder().getWritableImage());
     }
 }

@@ -90,6 +90,6 @@ public final class MainDisplay extends SplitPane {
     }
 
     public void regenerateEditingView(){
-        editingComponent.generateView();
+        editingComponent.updateView();
     }
 }

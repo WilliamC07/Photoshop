@@ -1,5 +1,6 @@
 package project;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import model.imageManipulation.edits.Edit;
@@ -118,7 +119,7 @@ public class Project {
     public void setImageBuilder(){
         imageBuilder = createImageBuilder();
         // refreshes the view to update what the user sees
-        showMainDisplay();
+
     }
 
     private ImageBuilder createImageBuilder(){
