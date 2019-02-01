@@ -1,19 +1,28 @@
 package views;
 
+import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.ZoomEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import model.imageManipulation.edits.Point;
 import project.Project;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.util.function.Consumer;
 
 /**
  * If the user chose the original image for the project or one already exists, this should be be shown the the user.
@@ -80,6 +89,15 @@ class EditingComponent extends VBox {
      *
      */
     private void showRequestMode(){
+        VBox container = new VBox();
+        container.getChildren().addAll(openExistingComponent(temp -> getChildren().remove(container)));
+        container.getChildren().add(separatorComponent());
+        container.getChildren().add(makeNewImageComponent(temp -> getChildren().remove(container)));
+
+        getChildren().add(container);
+    }
+
+    private Node[] openExistingComponent(Consumer<Object> removeView){
         Label directions = new Label("Open a image to get started");
         Button chooseFile = new Button("Pick an image");
         Label errorLabel = new Label();
@@ -95,15 +113,88 @@ class EditingComponent extends VBox {
             if(file != null && project.setOriginalImage(file)){
                 // User can now start editing the image
                 // Remove the nodes created by this method
-                this.getChildren().removeAll(directions, chooseFile, errorLabel);
+                removeView.accept(null);
                 // show the image on the screen
                 generateView();
             }else{
                 errorLabel.setText("Please choose a valid image (.png files only)");
             }
         });
+        return new Node[]{directions, chooseFile, errorLabel};
+    }
 
-        this.getChildren().addAll(directions, chooseFile, errorLabel);
+    private HBox separatorComponent(){
+        Separator separator1 = new Separator(Orientation.HORIZONTAL);
+        Label or = new Label(" or "); // spaces so the separators don't touch the text
+        Separator separator2 = new Separator(Orientation.HORIZONTAL);
+
+        or.setFont(new Font(30));
+
+        // expand fully
+        HBox.setHgrow(separator1, Priority.ALWAYS);
+        HBox.setHgrow(separator2, Priority.ALWAYS);
+
+        return new HBox(separator1, or, separator2);
+    }
+
+    private VBox makeNewImageComponent(Consumer<Object> removeView){
+        TextField widthNode = new TextField();
+        TextField heightNode = new TextField();
+        ColorPicker backgroundNode = new ColorPicker(Color.BLACK);
+        Button createNode = new Button("Create");
+        Label errorNode = new Label();
+
+        errorNode.setFont(new Font(20));
+        widthNode.setPromptText("width");
+        heightNode.setPromptText("height");
+
+        HBox chooser = new HBox(widthNode, heightNode, backgroundNode, createNode);
+        chooser.setAlignment(Pos.CENTER);
+        chooser.setSpacing(5);
+        VBox container = new VBox(chooser, errorNode);
+
+        createNode.setOnAction(e -> {
+            int width = 500;
+            int height = 500;
+            Color colorChosen = backgroundNode.getValue();
+            try {
+                width = Integer.parseInt(widthNode.getText());
+                height = Integer.parseInt(heightNode.getText());
+
+                if (width <= 0 || height <= 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException nfe) {
+                errorNode.setText("Width and height must be positive integers");
+                return;
+            }
+            // make new image
+            WritableImage writableImage = new WritableImage(width, height);
+            PixelWriter writer = writableImage.getPixelWriter();
+            // fill in of the chosen color
+            for(int w = 0; w < width; w++){
+                for(int h = 0; h < height; h++){
+                    writer.setColor(w, h, colorChosen);
+                }
+            }
+
+            try{
+                File temp = File.createTempFile("photoshopJava" + System.currentTimeMillis(), ".png", null);
+                System.out.println(temp.toPath().toString());
+                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
+                ImageIO.write(bufferedImage, "png", temp);
+                project.setOriginalImage(temp);
+            }catch(IOException ioe) {
+                errorNode.setText("failed to make file, try again");
+                return;
+            }
+
+            // remove this and begin the view
+            removeView.accept(null);
+            generateView();
+        });
+
+        return container;
     }
 
     /**
