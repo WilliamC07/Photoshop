@@ -93,6 +93,8 @@ class EditingComponent extends VBox {
         container.getChildren().addAll(openExistingComponent(temp -> getChildren().remove(container)));
         container.getChildren().add(separatorComponent());
         container.getChildren().add(makeNewImageComponent(temp -> getChildren().remove(container)));
+        container.setAlignment(Pos.CENTER);
+        container.setSpacing(10);
 
         getChildren().add(container);
     }
@@ -134,7 +136,10 @@ class EditingComponent extends VBox {
         HBox.setHgrow(separator1, Priority.ALWAYS);
         HBox.setHgrow(separator2, Priority.ALWAYS);
 
-        return new HBox(separator1, or, separator2);
+        HBox container = new HBox(separator1, or, separator2);
+        container.setAlignment(Pos.CENTER);
+
+        return container;
     }
 
     private VBox makeNewImageComponent(Consumer<Object> removeView){
@@ -145,18 +150,25 @@ class EditingComponent extends VBox {
         Label errorNode = new Label();
 
         errorNode.setFont(new Font(20));
-        widthNode.setPromptText("width");
-        heightNode.setPromptText("height");
+        widthNode.setPromptText("width (pixels)");
+        heightNode.setPromptText("height (pixels)");
 
         HBox chooser = new HBox(widthNode, heightNode, backgroundNode, createNode);
         chooser.setAlignment(Pos.CENTER);
         chooser.setSpacing(5);
         VBox container = new VBox(chooser, errorNode);
+        container.setAlignment(Pos.CENTER);
 
         createNode.setOnAction(e -> {
             int width = 500;
             int height = 500;
             Color colorChosen = backgroundNode.getValue();
+
+            if(colorChosen.equals(Color.TRANSPARENT)){
+                errorNode.setText("No support for transparent images");
+                return;
+            }
+
             try {
                 width = Integer.parseInt(widthNode.getText());
                 height = Integer.parseInt(heightNode.getText());

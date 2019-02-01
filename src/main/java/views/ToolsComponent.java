@@ -1,8 +1,8 @@
 package views;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -16,6 +16,7 @@ public class ToolsComponent extends VBox {
     ToolsComponent(MainDisplay parent, Project project){
         this.parent = parent;
         this.project = project;
+        this.setAlignment(Pos.CENTER);
         // TODO: Design
         // Buttons and such
         createButtons();
