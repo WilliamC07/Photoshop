@@ -23,25 +23,32 @@ class BlurredRectangle extends Edit{
         this.height = height;
     }
 
-    Color[][] averageColors = new Color[width][height];
-
-    void fillArray(PixelReader pixelReader){
-      for(int h = 0; h < height; h++){
-          for(int w = 0; w < width; w++){
-            averageColors[w][h] = pixelReader.getColor(x + w, y + h);
-          }
-      }
-    }
 
     Color getAverageColor(int x, int y){
+      PixelReader pixelReader;
+      Color temp;
+      Color average;
+      double red = 0;
+      double blue = 0;
+      double green = 0;
 
+      for(int i = y+1; i >= y-1; i--){
+        for(int u = x-1; u <= x+1; u++){
+          temp = pixelReader.getColor(i,u);
+          red+= temp.getRed();
+          green+= temp.getGreen();
+          blue+= temp.getBlue();
+        }
+      }
+      average = Color.color(red/9,green/9,blue/9,1.0);
+      return average;
     }
 
     @Override
     void change(PixelWriter pixelWriter) {
         for(int h = 0; h < height; h++){
             for(int w = 0; w < width; w++){
-                pixelWriter.setColor(x + w, y + h, color);
+                pixelWriter.setColor(x + w, y + h, getAverageColor(x+w,y+h));
             }
         }
     }
