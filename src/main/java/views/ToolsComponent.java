@@ -34,7 +34,7 @@ public class ToolsComponent extends VBox {
      * Creating shapes
      */
     private void createButtons(){
-        getChildren().addAll(shapeButton(), lineButton(), saveAs());
+        getChildren().addAll(shapeButton(), lineButton(), blurButton(), saveAs());
     }
 
     /**
@@ -105,6 +105,14 @@ public class ToolsComponent extends VBox {
         });
 
         return button;
+    }
+
+    private Button blurButton(){
+      Button button = new Button("blur");
+      button.setOnAction(e -> {
+        parent.makeBlurredRectangle();
+      });
+      return button;
     }
 
     private ColorPicker makeColorPicker(){
