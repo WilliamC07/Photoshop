@@ -9,6 +9,8 @@ public class DiskToEdit {
                 return new RectangleBuilder().convertDiskInfoToEdit(parts);
             case "LINE":
                 return new LineBuilder().convertDiskInfoToEdit(parts);
+            case "BLURREDRECTANGLE":
+                return new BlurredRectangleBuilder().convertDiskInfoToEdit(parts);
             default:
                 System.out.println("don't know what is " + info);
         }
