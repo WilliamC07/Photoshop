@@ -2,6 +2,7 @@ package model.imageManipulation.edits;
 
 import javafx.scene.control.ColorPicker;
 import javafx.scene.paint.Color;
+import javafx.scene.image.PixelReader;
 
 public class BlurredRectangleBuilder extends AbstractEditBuilder implements RequirePoints {
     /**
@@ -10,6 +11,7 @@ public class BlurredRectangleBuilder extends AbstractEditBuilder implements Requ
      */
     private final Point[] points = new Point[2];
     private ImageBuilder imageBuilder;
+    private PixelReader pixelReader;
 
     /**
      * Should only be called by when reading info from the disk
@@ -18,6 +20,7 @@ public class BlurredRectangleBuilder extends AbstractEditBuilder implements Requ
 
     public BlurredRectangleBuilder(ImageBuilder imageBuilder){
         this.imageBuilder = imageBuilder;
+        this.pixelReader = imageBuilder.getWritableImage().getPixelReader();
     }
 
     @Override
