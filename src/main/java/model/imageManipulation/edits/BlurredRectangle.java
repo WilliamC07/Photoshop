@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 class BlurredRectangle extends Edit{
     private final int x, y, width, height;
     private int red, green, blue;
+    private Color[][] averages;
 
     /**
      * Constructs a rectangle (Vertical one only)
@@ -21,6 +22,7 @@ class BlurredRectangle extends Edit{
         this.y = start.getY();
         this.width = width;
         this.height = height;
+        averages = new Color[width][height];
     }
 
 
@@ -44,18 +46,26 @@ class BlurredRectangle extends Edit{
       return average;
     }
 
+    void fillArray(){
+      for(int h = 0; h < height; h++){
+          for(int w = 0; w < width; w++){
+              averages[w][h] = getAverageColor(x+w,y+h);
+          }
+      }
+    }
+
     @Override
     void change(PixelWriter pixelWriter) {
         for(int h = 0; h < height; h++){
             for(int w = 0; w < width; w++){
-                pixelWriter.setColor(x + w, y + h, getAverageColor(x+w,y+h));
+                pixelWriter.setColor(x + w, y + h, averages[w][h]);
             }
         }
     }
 
     @Override
     public String getStringRepresentation() {
-        return String.format("RECTANGLE %d %d %d %d %s %f",
-                x, y, width, height, ColorUtility.toHex(color), color.getOpacity());
+        return String.format("BLURREDRECTANGLE %d %d %d %d",
+                x, y, width, height);
     }
 }
