@@ -64,6 +64,10 @@ public final class MainDisplay extends SplitPane {
       requirePoints = blurBuilder;
     }
 
+    void makeBrightness(boolean makeBrighter){
+        new BrightnessBuilder(project.getImageBuilder(), makeBrighter).makeEdit();
+    }
+
     void supplyPoints(Point point){
         if(requirePoints != null) {
             requirePoints.addPoint(point);

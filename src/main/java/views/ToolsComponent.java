@@ -34,7 +34,7 @@ public class ToolsComponent extends VBox {
      * Creating shapes
      */
     private void createButtons(){
-        getChildren().addAll(shapeButton(), lineButton(), blurButton(), saveAs());
+        getChildren().addAll(shapeButton(), lineButton(), blurButton(), brightnessButton(), saveAs());
     }
 
     /**
@@ -113,6 +113,22 @@ public class ToolsComponent extends VBox {
         parent.makeBlurredRectangle();
       });
       return button;
+    }
+
+    private Button brightnessButton(){
+        Button button = new Button("Brightness");
+        button.setOnAction(e -> {
+            Button brighter = new Button("Brighter");
+            Button darker = new Button("Darker");
+
+
+            brighter.setOnAction(e1 -> parent.makeBrightness(true));
+            darker.setOnAction(e1 -> parent.makeBrightness(false));
+
+            // add to toolbar
+            parent.getToolsExtensionComponent().setContents(brighter, darker);
+        });
+        return button;
     }
 
     private ColorPicker makeColorPicker(){

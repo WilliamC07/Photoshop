@@ -3,26 +3,25 @@ package model.imageManipulation.edits;
 public class BrightnessBuilder extends AbstractEditBuilder{
 
     private ImageBuilder imageBuilder;
+    private boolean makeBrighter;
 
     BrightnessBuilder() { }
 
-    public BrightnessBuilder(ImageBuilder imageBuilder) {
+    public BrightnessBuilder(ImageBuilder imageBuilder, boolean makeBrighter) {
       this.imageBuilder = imageBuilder;
+      this.makeBrighter = makeBrighter;
     }
 
     @Override
     Edit convertDiskInfoToEdit(String[] parts) {
-      boolean makeBrighter = false;
-      if (parts[1].equals("true")){
-        makeBrighter = true;
-      }
-      int width = Integer.parseInt(parts[2]);
-      int height = Integer.parseInt(parts[3]);
-      return new Brightness(makeBrighter, width, height);
+        boolean makeBright = parts[1].equalsIgnoreCase("true");
+        return new Brightness(makeBright, Integer.valueOf(parts[2]), Integer.valueOf(parts[3]));
     }
 
     @Override
     public void makeEdit() {
-      
+        int width = (int) imageBuilder.getWritableImage().getWidth();
+        int height = (int) imageBuilder.getWritableImage().getHeight();
+        imageBuilder.edit(new Brightness(makeBrighter, width, height), true);
     }
 }

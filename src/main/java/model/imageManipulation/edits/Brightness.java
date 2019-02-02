@@ -6,8 +6,8 @@ import javafx.scene.paint.Color;
 
 public class Brightness extends Edit{
     private final boolean makeBrighter;
-    private final int width;
-    private final int height;
+    private int width;
+    private int height;
 
     public Brightness(boolean makeBrighter, int width, int height) {
         this.makeBrighter = makeBrighter;
@@ -20,10 +20,9 @@ public class Brightness extends Edit{
       for (int w = 0; w < width; w++) {
         for (int h = 0; h < height; h ++) {
           Color toChange = pixelReader.getColor(w,h);
-          if (makeBrighter == true) {
+          if (makeBrighter) {
             pixelWriter.setColor(w,h,toChange.brighter());
-          }
-          if (makeBrighter == false) {
+          }else{
             pixelWriter.setColor(w,h,toChange.darker());
           }
         }
@@ -32,13 +31,6 @@ public class Brightness extends Edit{
 
     @Override
     public String getStringRepresentation() {
-      String makeChange = "";
-      if (makeBrighter == true) {
-        makeChange = "true";
-      }
-      if (makeBrighter == false) {
-        makeChange = "false";
-      }
-        return String.format("BRIGHTNESS", makeChange, width, height);
+        return String.format("BRIGHTNESS %s %d %d", Boolean.valueOf(makeBrighter).toString(), width, height);
     }
 }
