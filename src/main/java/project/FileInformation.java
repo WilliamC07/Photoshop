@@ -310,8 +310,8 @@ public class FileInformation {
     }
 
     void save(Project project){
-        // If no project has been opened, just return because there is nothing to save
-        if(editsDoneXML == null) {
+        // If there isn't an original image, that means there is nothing to be saved
+        if(!images.containsKey("original")) {
             System.out.println("nothing to save -- nothing done");
             return;
         }
@@ -476,12 +476,11 @@ public class FileInformation {
             deleteFile(images.get("recent"));
         }
         Path location = projectPath.resolve(CHECKPOINT_IMAGE_DIRECTORY_NAME).resolve("recent.png");
-        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(writableImage, null);
         try{
-            ImageIO.write(bufferedImage, "png", location.toFile());
+            saveImageToDisk(location, writableImage);
         }catch(IOException e){
-            e.printStackTrace();
-            // do nothing
+            // Do nothing
+            System.out.println("cannot save recent image");
         }
     }
 
@@ -504,4 +503,18 @@ public class FileInformation {
             // Do nothing
         }
     }
+
+    /**
+     * Will make a copy of the most recent image into the new directory.
+     * @param savePath
+     */
+    public void copyRecentImage(Path savePath, WritableImage recentImage) throws IOException{
+        saveImageToDisk(savePath, recentImage);
+    }
+
+    private void saveImageToDisk(Path location, Image image) throws IOException{
+        BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
+        ImageIO.write(bufferedImage, "png", location.toFile());
+    }
+
 }
