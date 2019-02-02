@@ -290,4 +290,9 @@ public class Project {
     public void showMainDisplay(){
         head.showMainDisplay();
     }
+
+    public void copyRecentImage(Path savePath) throws IOException{
+        // copy to the other directory
+        fileInformation.copyRecentImage(savePath, getImageBuilder().getWritableImage());
+    }
 }
