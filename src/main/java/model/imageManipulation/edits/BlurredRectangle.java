@@ -9,6 +9,7 @@ class BlurredRectangle extends Edit{
     private final int x, y, width, height;
     private int red, green, blue;
     private Color[][] averages;
+    private PixelReader pixelReader;
 
     /**
      * Constructs a rectangle (Vertical one only)
@@ -17,17 +18,18 @@ class BlurredRectangle extends Edit{
      * @param height Height of the rectangle
      * @param color Color to fill the rectangle
      */
-    BlurredRectangle(Point start, int width, int height) {
+    BlurredRectangle(Point start, int width, int height, PixelReader pixelReader) {
         this.x = start.getX();
         this.y = start.getY();
         this.width = width;
         this.height = height;
+        this.pixelReader = pixelReader;
         averages = new Color[width][height];
     }
 
 
     Color getAverageColor(int x, int y){
-      PixelReader pixelReader;
+
       Color temp;
       Color average;
       double red = 0;
@@ -36,7 +38,7 @@ class BlurredRectangle extends Edit{
 
       for(int i = y+1; i >= y-1; i--){
         for(int u = x-1; u <= x+1; u++){
-          temp = pixelReader.getColor(i,u);
+          temp = pixelReader.getColor(u,i);
           red+= temp.getRed();
           green+= temp.getGreen();
           blue+= temp.getBlue();
@@ -54,8 +56,18 @@ class BlurredRectangle extends Edit{
       }
     }
 
+    void clearArray(){
+      for(int q = 0; q < height; q++){
+        for(int t = 0; t < width; t++){
+          averages[t][q] = null;
+        }
+      }
+    }
+
     @Override
     void change(PixelWriter pixelWriter) {
+      clearArray();
+      fillArray();
         for(int h = 0; h < height; h++){
             for(int w = 0; w < width; w++){
                 pixelWriter.setColor(x + w, y + h, averages[w][h]);

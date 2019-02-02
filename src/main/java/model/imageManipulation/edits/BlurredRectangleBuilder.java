@@ -73,7 +73,7 @@ public class BlurredRectangleBuilder extends AbstractEditBuilder implements Requ
 
         }
 
-        imageBuilder.edit(new BlurredRectangle(start, width, height), true);
+        imageBuilder.edit(new BlurredRectangle(start, width, height, pixelReader), true);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class BlurredRectangleBuilder extends AbstractEditBuilder implements Requ
         Point point = new Point(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
         int width = Integer.parseInt(parts[3]);
         int height = Integer.parseInt(parts[4]);
-        return new BlurredRectangle(point, width, height);
+        return new BlurredRectangle(point, width, height,pixelReader);
     }
 
 
