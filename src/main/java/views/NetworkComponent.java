@@ -21,7 +21,9 @@ public class NetworkComponent extends VBox {
         Label header = new Label("Network:");
         this.getChildren().add(header);
         // Only able to host the server if the user is not connected to a server
-        if(!project.isConnectedToServer()){
+        if(project.isConnectedToServer()){
+            setUpClientComponenets();
+        }else{
             setUpServerComponents();
         }
     }
@@ -50,6 +52,11 @@ public class NetworkComponent extends VBox {
         getChildren().addAll(usernameLabel, usernameField, hostServerButton, errorLabel);
     }
 
+    private void setUpClientComponenets(){
+        this.getChildren().add(collabList);
+        updateCollabList(project.getCollaborators());
+    }
+
     private void setUpServer(){
         Label ipLabel = new Label();
         Label portLabel = new Label();
@@ -71,7 +78,6 @@ public class NetworkComponent extends VBox {
         if(!getChildren().contains(collabList)){
             getChildren().add(collabList);
         }
-
 
         // clear list to refresh
         collabList.getItems().clear();
