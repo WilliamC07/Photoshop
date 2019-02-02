@@ -30,7 +30,6 @@ public final class MainDisplay extends SplitPane {
     private ToolsExtensionComponent toolsExtensionComponent;
     private EditingComponent editingComponent;
     private NetworkComponent networkComponent;
-    private HistoryComponent historyComponent;
 
     private RequirePoints requirePoints;
 
@@ -44,8 +43,7 @@ public final class MainDisplay extends SplitPane {
         VBox center = new VBox(toolsExtensionComponent, editingComponent);
         center.setAlignment(Pos.CENTER);
 
-        SplitPane rightSide = generateRightSide();
-        getItems().addAll(toolsComponent, center, rightSide);
+        getItems().addAll(toolsComponent, center, generateRightSide());
         setDividerPositions(0.1f, 0.8f);
     }
 
@@ -80,14 +78,11 @@ public final class MainDisplay extends SplitPane {
     /**
      * Creates the right side view
      */
-    private SplitPane generateRightSide(){
+    private NetworkComponent generateRightSide(){
         // Top is always network and bottom is always history
         this.networkComponent = new NetworkComponent(project);
-        this.historyComponent = new HistoryComponent();
-        SplitPane splitPane = new SplitPane(networkComponent, historyComponent);
-        splitPane.setOrientation(Orientation.VERTICAL);
 
-        return splitPane;
+        return this.networkComponent;
     }
 
     ToolsExtensionComponent getToolsExtensionComponent(){
