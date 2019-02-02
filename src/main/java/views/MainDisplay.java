@@ -59,6 +59,11 @@ public final class MainDisplay extends SplitPane {
         requirePoints = lineBuilder;
     }
 
+    void makeBlurredRectangle(){
+      BlurredRectangleBuilder blurBuilder = new BlurredRectangleBuilder(project.getImageBuilder());
+      requirePoints = blurBuilder;
+    }
+
     void supplyPoints(Point point){
         if(requirePoints != null) {
             requirePoints.addPoint(point);
