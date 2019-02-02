@@ -2,6 +2,7 @@ package model.imageManipulation.edits;
 
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
+import javafx.scene.paint.Color;
 
 public class Brightness extends Edit{
     private final boolean makeBrighter;
@@ -31,6 +32,13 @@ public class Brightness extends Edit{
 
     @Override
     public String getStringRepresentation() {
-        return null;
+      String makeChange = "";
+      if (makeBrighter == true) {
+        makeChange = "true";
+      }
+      if (makeBrighter == false) {
+        makeChange = "false";
+      }
+        return String.format("BRIGHTNESS", makeChange, width, height);
     }
 }
