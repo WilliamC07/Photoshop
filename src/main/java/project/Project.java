@@ -230,7 +230,7 @@ public class Project {
 
     public void setCollaborators(String[] collaborators){
         this.collaborators = collaborators;
-        //mainDisplay.getNetworkComponent().updateCollabList(collaborators);
+        mainDisplay.getNetworkComponent().updateCollabList(collaborators);
     }
 
     public String[] getCollaborators() {

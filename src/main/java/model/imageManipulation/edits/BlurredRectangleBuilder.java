@@ -11,16 +11,12 @@ public class BlurredRectangleBuilder extends AbstractEditBuilder implements Requ
      */
     private final Point[] points = new Point[2];
     private ImageBuilder imageBuilder;
-    private PixelReader pixelReader;
 
-    /**
-     * Should only be called by when reading info from the disk
-     */
-    BlurredRectangleBuilder(){ }
+    // Empty constructor for when reading from disk
+    public BlurredRectangleBuilder(){ }
 
     public BlurredRectangleBuilder(ImageBuilder imageBuilder){
         this.imageBuilder = imageBuilder;
-        this.pixelReader = imageBuilder.getWritableImage().getPixelReader();
     }
 
     @Override
@@ -73,7 +69,7 @@ public class BlurredRectangleBuilder extends AbstractEditBuilder implements Requ
 
         }
 
-        imageBuilder.edit(new BlurredRectangle(start, width, height, pixelReader), true);
+        imageBuilder.edit(new BlurredRectangle(start, width, height), true);
     }
 
     @Override
@@ -82,7 +78,7 @@ public class BlurredRectangleBuilder extends AbstractEditBuilder implements Requ
         Point point = new Point(Integer.valueOf(parts[1]), Integer.valueOf(parts[2]));
         int width = Integer.parseInt(parts[3]);
         int height = Integer.parseInt(parts[4]);
-        return new BlurredRectangle(point, width, height,pixelReader);
+        return new BlurredRectangle(point, width, height);
     }
 
 

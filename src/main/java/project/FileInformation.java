@@ -316,8 +316,11 @@ public class FileInformation {
             return;
         }
 
-        editsDoneXML.writeData(project.getImageBuilder().getEdits());
-        editsDoneXML.save();
+        // Save any edits if there are
+        if(project.getImageBuilder().getEdits().length != 0){
+            editsDoneXML.writeData(project.getImageBuilder().getEdits());
+            editsDoneXML.save();
+        }
 
         // Save to most recent image
         setRecentImage(project.getImageBuilder().getWritableImage());

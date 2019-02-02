@@ -1,5 +1,6 @@
 package model.imageManipulation.edits;
 
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
@@ -23,7 +24,7 @@ class Line extends Edit{
     }
 
     @Override
-    void change(PixelWriter pixelWriter) {
+    void change(PixelWriter pixelWriter, PixelReader reader) {
         int x1 = point1.getX();
         int y1 = point1.getY();
         int x2 = point2.getX();

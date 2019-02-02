@@ -1,5 +1,6 @@
 package model.imageManipulation.edits;
 
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 
@@ -23,7 +24,7 @@ public abstract class Edit{
 	 * This method will be the one directly working with PixelWriter from ImageBuilder. It should also be the only
 	 * package-private method (other than the constructor). Everything else should be private (fields, methods, ect.) 
 	 */
-	abstract void change(PixelWriter pixelWriter);
+	abstract void change(PixelWriter pixelWriter, PixelReader pixelReader);
 
 	/**
 	 * When writing the Edit onto a xml file, this method will return what data to write. This allows the object to be

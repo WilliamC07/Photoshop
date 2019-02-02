@@ -11,6 +11,8 @@ public class DiskToEdit {
                 return new LineBuilder().convertDiskInfoToEdit(parts);
             case "BLURREDRECTANGLE":
                 return new BlurredRectangleBuilder().convertDiskInfoToEdit(parts);
+            case "BRIGHTNESS":
+                return new BrightnessBuilder().convertDiskInfoToEdit(parts);
             default:
                 System.out.println("don't know what is " + info);
         }

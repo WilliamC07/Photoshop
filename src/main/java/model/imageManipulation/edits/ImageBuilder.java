@@ -49,7 +49,7 @@ public final class ImageBuilder{
 	 * @return Newly edited image
 	 */
 	public ImageBuilder edit(Edit instruction, boolean isNewEdit){
-		instruction.change(writableImage.getPixelWriter());
+		instruction.change(writableImage.getPixelWriter(), writableImage.getPixelReader());
 		edits_done.add(instruction);
 
 		// Make a checkpoint image every 10 edits given that the user made it (so not the server server information or form disk)
