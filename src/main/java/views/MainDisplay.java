@@ -59,6 +59,11 @@ public final class MainDisplay extends SplitPane {
         requirePoints = lineBuilder;
     }
 
+    void makeColorSwap(ColorPicker icolor, ColorPicker fColor) {
+      ColorSwapBuilder colorSwapBuilder = new colorSwapBuilder(project.getImageBuilder(), colorPicker, colorPicker);
+      requirePoints = colorSwapBuilder;
+    }
+
     void supplyPoints(Point point){
         if(requirePoints != null) {
             requirePoints.addPoint(point);

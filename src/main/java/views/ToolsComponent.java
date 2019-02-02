@@ -27,7 +27,7 @@ public class ToolsComponent extends VBox {
      * Creating shapes
      */
     private void createButtons(){
-        getChildren().addAll(shapeButton(), lineButton());
+        getChildren().addAll(shapeButton(), lineButton(), colorSwap());
     }
 
     /**
@@ -60,6 +60,17 @@ public class ToolsComponent extends VBox {
             parent.makeLine(colorPicker, width);
         });
         return button;
+    }
+
+    private Button colorSwap() {
+      Button button = new BUtton("Color Swap");
+      button.setOnAction(e -> {
+        ColorPicker iColorPicker = makeColorPicker();
+        ColorPicker fColorPicker = makeColorPicker();
+        parent.getToolsExtensionComponent().setContents(iColorPicker, fColorPicker);
+        parent.makeColorSwap(iColorPicker, fColorPicker);
+      });
+      return button;
     }
 
     private ColorPicker makeColorPicker(){
