@@ -1,5 +1,6 @@
 package model.imageManipulation.edits;
 
+import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
@@ -23,7 +24,7 @@ class Rectangle extends Edit{
     }
 
     @Override
-    void change(PixelWriter pixelWriter) {
+    void change(PixelWriter pixelWriter, PixelReader reader) {
         for(int h = 0; h < height; h++){
             for(int w = 0; w < width; w++){
                 pixelWriter.setColor(x + w, y + h, color);
