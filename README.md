@@ -15,7 +15,7 @@ Download the repository and change your terminal directory into it. Run the foll
 * Manually: 
 	1. Make the jar: ```mvn clean compile assembly:single```
 	2. Run the jar: 
-	```cd target; java -jar Photoshop-1.0-jar-with-dependencies.jar```
+	```java -jar target/Photoshop-1.0-jar-with-dependencies.jar```
 * Build script (runs the commands defined in "manually"):
 	1. ```./run.sh```
 
