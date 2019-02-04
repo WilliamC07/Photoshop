@@ -317,7 +317,7 @@ public class FileInformation {
         }
 
         // Save any edits if there are
-        if(project.getImageBuilder().getEdits().length != 0){
+        if(project.getImageBuilder().getEdits().length != 0 && editsDoneXML != null){
             editsDoneXML.writeData(project.getImageBuilder().getEdits());
             editsDoneXML.save();
         }

@@ -20,7 +20,6 @@ public class EditsDoneXML implements Savable {
         // Make sure the file exists
         if(Files.exists(fileLocation)){
             document = XMLHelper.getDocument(fileLocation);
-            System.out.println("File existts");
         }else{
             // Create the file if it doesn't exist
             document = XMLHelper.createDocument();
@@ -41,7 +40,6 @@ public class EditsDoneXML implements Savable {
     }
 
     public Edit[] getData(){
-        System.out.println("ran the getData()");
         // Occurs when no edits have been done
         if(!document.getDocumentElement().hasChildNodes()){
             //If there are no nodes, that means no edits had been done
@@ -53,7 +51,6 @@ public class EditsDoneXML implements Savable {
             Node text = nodeElements.item(i);
             edits[i] = DiskToEdit.getEdit(text.getTextContent());
         }
-        System.out.println("read from xml+ " + Arrays.toString(edits));
         return edits;
     }
 
