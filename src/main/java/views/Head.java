@@ -82,7 +82,6 @@ public class Head extends Application{
 	    	client.terminate();
 		}
 
-	    // TODO: Saves the most recently worked on image to disk
 		project.save();
     }
 
