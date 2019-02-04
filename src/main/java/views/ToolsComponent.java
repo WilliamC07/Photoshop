@@ -111,6 +111,7 @@ public class ToolsComponent extends VBox {
       Button button = new Button("blur");
       button.setOnAction(e -> {
         parent.makeBlurredRectangle();
+        parent.getToolsExtensionComponent().getChildren().clear();
       });
       return button;
     }
