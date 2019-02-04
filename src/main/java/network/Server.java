@@ -81,7 +81,6 @@ public class Server implements ActionHandler{
                 connectors.add(connector);
             }
         }catch(IOException e){
-            e.printStackTrace();
             System.exit(1);
         }
     });
