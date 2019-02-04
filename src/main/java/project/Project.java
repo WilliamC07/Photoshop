@@ -230,7 +230,10 @@ public class Project {
 
     public void setCollaborators(String[] collaborators){
         this.collaborators = collaborators;
-        mainDisplay.getNetworkComponent().updateCollabList(collaborators);
+        // Make sure there is something to view
+        if(mainDisplay != null){
+            mainDisplay.getNetworkComponent().updateCollabList(collaborators);
+        }
     }
 
     public String[] getCollaborators() {
