@@ -33,15 +33,15 @@ class BlurredRectangle extends Edit{
       double blue = 0;
       double green = 0;
 
-      for(int i = y+1; i >= y-1; i--){
-        for(int u = x-1; u <= x+1; u++){
+      for(int i = y+3; i >= y-3; i--){
+        for(int u = x-3; u <= x+3; u++){
           temp = pixelReader.getColor(u,i);
           red+= temp.getRed();
           green+= temp.getGreen();
           blue+= temp.getBlue();
         }
       }
-      average = Color.color(red/9,green/9,blue/9,1.0);
+      average = Color.color(red/49,green/49,blue/49,1.0);
       return average;
     }
 
