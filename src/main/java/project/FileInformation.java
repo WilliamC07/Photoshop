@@ -312,7 +312,6 @@ public class FileInformation {
     void save(Project project){
         // If there isn't an original image, that means there is nothing to be saved
         if(!images.containsKey("original")) {
-            System.out.println("nothing to save -- nothing done");
             return;
         }
 
