@@ -20,7 +20,8 @@ Download the repository and change your terminal directory into it. Run the foll
 	1. ```./run.sh```
 
 ## How do I use the program?
-Look at the demo [here](https://www.youtube.com/watch?v=AaUzGyxngZs)
+Look at the demo [here](https://www.youtube.com/watch?v=AaUzGyxngZs).  
+Watch our presentation [here](https://www.youtube.com/watch?v=tADZawDH_kc)
 
 ## Reflection
 This program was our first experience with going through the full software development cycle. In school, projects were limited
