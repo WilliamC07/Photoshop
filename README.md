@@ -22,6 +22,7 @@ Download the repository and change your terminal directory into it. Run the foll
 ## How do I use the program?
 Look at the demo [here](https://www.youtube.com/watch?v=AaUzGyxngZs).  
 Watch our presentation [here](https://www.youtube.com/watch?v=tADZawDH_kc)
+Look at a detailed outline [here](https://docs.google.com/document/d/1Df27M6uHJ1JbGpDip46LwhSg6ltJfHEcxFLZT1Ndlts/edit?usp=sharing)
 
 ## Reflection
 This program was our first experience with going through the full software development cycle. In school, projects were limited
