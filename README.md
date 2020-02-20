@@ -1,5 +1,9 @@
 # Photoshop
 Repository for the Google Mentorship for Fall Term of 2018-2019.
+
+## Demo [link](https://www.youtube.com/watch?v=AaUzGyxngZs)
+## Presentation [link](https://youtu.be/tADZawDH_kc)
+
 ## What is this program?
 This is a photo editor that allows for multiple users to edit the image concurrently on the same network. Simple operations like drawing lines and rectangles are supported, along with more complicated features like blurring a section and making the image darker/lighter. Checkout a video of the program in use: [YouTube Demo](https://www.youtube.com/watch?v=AaUzGyxngZs)
 
